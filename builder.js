@@ -15,6 +15,7 @@ const gameIcon = $("game-icon");
 const iconSpinner = $("icon-spinner");
 const iconFile = $("icon-file");
 const firebaseFile = $("firebase-file");
+const versionMode = $("version-mode");
 const loading = $("loading");
 
 const BRANCHES = { "zey-win/plinko": [{ ref: "main", label: "Plinko" }] };
@@ -36,6 +37,9 @@ const REPO_ICONS = {
 
 let runMeta = {}, releases = [], firebaseJson = null, currentIconDataUrl = null, iconLoadedDeferred = null;
 let savedConfigs = [], selectedConfigId = null;
+const versionCache = new Map();
+const firebaseCache = new Map();
+let batchBuildRunning = false;
 let runs = [];
 
 function repoFromTitle(t) { const s = (t || "").toLowerCase().replace(/[^a-z0-9 ]/g, " "); for (const [repo, name] of Object.entries(REPO_NAMES)) if (s.includes(name)) return repo; return null; }
@@ -110,6 +114,51 @@ async function loadArtifactVersions() {
         }
       }
     } catch {}
+  }
+}
+
+async function loadVersionSuggestion(packageName, force = false) {
+  const pkg = (packageName || "").trim();
+  if (!pkg) return null;
+  if (!force && versionCache.has(pkg)) return versionCache.get(pkg);
+  try {
+    const res = await fetch(`${apiBase}/api/versions?package_name=${encodeURIComponent(pkg)}`, { headers: op() });
+    if (!res.ok) return null;
+    const data = await res.json();
+    versionCache.set(pkg, data);
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+async function syncVersionFields(force = false) {
+  if (versionMode && versionMode.value === "manual") return;
+  const pkg = $("f-pkg")?.value?.trim();
+  if (!pkg) return;
+  const data = await loadVersionSuggestion(pkg, force);
+  const suggested = data?.aab || {};
+  const versionName = suggested.versionName || data?.latest?.versionName || "1";
+  const versionCode = suggested.versionCode || data?.latest?.versionCode || "1";
+  const versionInput = $("f-version");
+  const codeInput = $("f-vcode");
+  if (versionInput && versionName) versionInput.value = versionName;
+  if (codeInput && versionCode) codeInput.value = versionCode;
+}
+
+async function loadFirebaseConfigBase64(firebaseCfg) {
+  const cfg = (firebaseCfg || "").trim();
+  if (!cfg) return "";
+  if (firebaseCache.has(cfg)) return firebaseCache.get(cfg);
+  try {
+    const res = await fetch(`./firebase-cfg/${encodeURIComponent(cfg)}`);
+    if (!res.ok) return "";
+    const text = await res.text();
+    const base64 = btoa(unescape(encodeURIComponent(text)));
+    firebaseCache.set(cfg, base64);
+    return base64;
+  } catch {
+    return "";
   }
 }
 
@@ -315,50 +364,164 @@ function flashRed() {
   });
 }
 
-repoSelect.addEventListener("change", () => { updateBranches(); });
+async function submitBuildPayload(payload) {
+  const btn = $("modal-submit");
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "Подожди...";
+  }
+
+  try {
+    const requestPayload = { ...payload };
+    if (requestPayload.version_mode !== "manual") {
+      requestPayload.aab_version_name = "";
+      requestPayload.aab_version_code = "";
+    }
+
+    const res = await fetch(`${apiBase}/api/build`, { method: "POST", headers: op(), body: JSON.stringify(requestPayload) });
+    if (!res.ok) {
+      throw new Error(await res.text().catch(() => ""));
+    }
+    const d = await res.json();
+    if (d.run) {
+      const serverIconPath = d.icon?.path;
+      const serverIconUrl = serverIconPath ? `https://raw.githubusercontent.com/zey-win/ci-cd/main/${serverIconPath}` : (d.icon?.htmlUrl || null);
+      runMeta[d.run.id] = { icon: serverIconUrl || null, ver: payload.aab_version_name || payload.version_name || "", code: payload.aab_version_code || payload.version_code || "" };
+      try {
+        const sv = JSON.parse(localStorage.getItem('rv')||'{}');
+        sv[d.run.id] = { ver: payload.aab_version_name || payload.version_name || '', code: payload.aab_version_code || payload.version_code || '' };
+        if (d.latestArtifact?.apkDownloadUrl) { runMeta[d.run.id].apk = d.latestArtifact.apkDownloadUrl; sv[d.run.id].apk = d.latestArtifact.apkDownloadUrl; }
+        if (d.latestArtifact?.aabDownloadUrl) { runMeta[d.run.id].aab = d.latestArtifact.aabDownloadUrl; sv[d.run.id].aab = d.latestArtifact.aabDownloadUrl; }
+        localStorage.setItem('rv',JSON.stringify(sv));
+      } catch {}
+      timers[d.run.id] = { start: Date.now(), total: (39 + (d.run.id % 12)) * 60 * 1000 };
+      runs = [d.run, ...runs];
+      renderAll();
+    } else {
+      loadBuilds();
+    }
+    return d;
+  } catch (err) {
+    throw new Error(err.message || String(err));
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "Собрать";
+    }
+  }
+}
+
+async function buildFromConfig(cfg, { useNextVersion = true, buildFormat = "apk_aab" } = {}) {
+  const pkg = cfg.package_name || "";
+  const versionData = useNextVersion ? await loadVersionSuggestion(pkg, true) : null;
+  const suggested = versionData?.aab || {};
+  const versionName = useNextVersion ? (suggested.versionName || versionData?.latest?.versionName || cfg.version_name || "1") : (cfg.version_name || "1");
+  const versionCode = useNextVersion ? String(suggested.versionCode || versionData?.latest?.versionCode || cfg.version_code || "1") : String(cfg.version_code || "1");
+  const iconData = await getIconDataUrl(cfg.game_repository, "main");
+  const firebaseBase64 = await loadFirebaseConfigBase64(cfg.firebase_cfg);
+  return submitBuildPayload({
+    game_repository: cfg.game_repository || "zey-win/plinko",
+    game_ref: "main",
+    app_name: cfg.app_name || cfg.label || "",
+    package_name: pkg,
+    build_format: buildFormat,
+    version_mode: "auto_next",
+    version_name: versionName,
+    version_code: versionCode,
+    aab_version_name: "",
+    aab_version_code: "",
+    zeywin_api_key: cfg.zeywin_api_key || "",
+    admob_android_app_id: cfg.admob_app_id || "",
+    admob_android_banner_id: cfg.admob_banner || "",
+    admob_android_interstitial_id: cfg.admob_interstitial || "",
+    admob_android_rewarded_id: cfg.admob_rewarded || "",
+    iconDataUrl: iconData || "",
+    firebaseJsonBase64: firebaseBase64 || ""
+  }, { autoSave: false });
+}
+
+async function runBatchBuilds() {
+  if (batchBuildRunning) return;
+  if (!savedConfigs.length) {
+    alert("Нет сохранённых конфигов");
+    return;
+  }
+
+  batchBuildRunning = true;
+  const progress = $("build-progress");
+  const steps = $("bp-steps");
+  const formEl = $("build-form");
+  const previousFormDisplay = formEl?.style.display || "";
+  if (progress && steps) {
+    progress.classList.remove("hidden");
+    steps.innerHTML = "";
+  }
+  if (formEl) formEl.style.display = "none";
+
+  try {
+    for (const cfg of savedConfigs) {
+      const line = document.createElement("div");
+      line.style.cssText = "padding:6px 0;border-bottom:1px solid #21262d;color:#c9d1d9;font-size:13px";
+      line.textContent = `▶ ${cfg.label}`;
+      steps?.appendChild(line);
+      try {
+        await buildFromConfig(cfg, { useNextVersion: true, buildFormat: "apk_aab" });
+        line.textContent = `✅ ${cfg.label}`;
+      } catch (error) {
+        line.textContent = `❌ ${cfg.label}: ${error.message}`;
+      }
+      await new Promise(resolve => setTimeout(resolve, 1200));
+    }
+  } finally {
+    batchBuildRunning = false;
+    if (formEl) formEl.style.display = previousFormDisplay;
+  }
+}
+
+repoSelect.addEventListener("change", () => { updateBranches(); syncVersionFields(true); });
 branchSelect.addEventListener("change", () => {
   getIconDataUrl(repoSelect.value, branchSelect.value).then(url => { if (url) currentIconDataUrl = url; });
 });
+if (versionMode) {
+  versionMode.addEventListener("change", () => {
+    syncVersionFields(true);
+  });
+}
 
 newBuildBtn.addEventListener("click", () => {
   currentIconDataUrl = null; firebaseJson = null;
   form.style.display = "";
   $("build-progress").classList.add("hidden");
+  if (versionMode) versionMode.value = "auto_next";
   const all = form.querySelectorAll("label, .modal-actions, .form-row, .icon-format-row");
   all.forEach(el => { el.style.opacity = ""; el.style.transform = ""; el.style.transition = ""; });
   modal.classList.remove("hidden");
   updateBranches();
   iconLoadedDeferred = getIconDataUrl(repoSelect.value, branchSelect.value).then(url => { if (url) currentIconDataUrl = url; });
+  syncVersionFields(true);
 });
 cancelBtn.addEventListener("click", () => modal.classList.add("hidden"));
 modal.addEventListener("click", e => { if (e.target === modal) modal.classList.add("hidden"); });
 
 form.addEventListener("submit", async e => {
   e.preventDefault();
-  const btn = $("modal-submit");
-  btn.disabled = true;
-  btn.textContent = "Подожди...";
-
   const fd = new FormData(form);
   if (!currentIconDataUrl && iconLoadedDeferred) {
     try { const url = await iconLoadedDeferred; if (url) currentIconDataUrl = url; } catch {}
   }
   const iconData = currentIconDataUrl || "";
   const buildFormat = fd.get("build_format") || "apk";
-  const rawVersion = fd.get("version_name") || "1";
-  const rawCode = fd.get("version_code") || "1";
-
-  // APK always gets version=1/1, AAB gets actual values
   const p = {
     game_repository: fd.get("game_repository") || "zey-win/plinko",
     game_ref: fd.get("game_ref") || "main",
     app_name: fd.get("app_name") || "",
     package_name: fd.get("package_name") || "",
     build_format: buildFormat,
-    version_name: buildFormat === "aab" ? rawVersion : "1",
-    version_code: buildFormat === "aab" ? rawCode : "1",
-    aab_version_name: buildFormat !== "apk" ? rawVersion : "1",
-    aab_version_code: buildFormat !== "apk" ? rawCode : "1",
+    version_mode: fd.get("version_mode") || "auto_next",
+    version_name: fd.get("version_name") || "1",
+    version_code: fd.get("version_code") || "1",
+    aab_version_name: fd.get("version_name") || "1",
+    aab_version_code: fd.get("version_code") || "1",
     zeywin_api_key: fd.get("zeywin_api_key") || "",
     admob_android_app_id: fd.get("admob_app_id") || "",
     admob_android_banner_id: fd.get("admob_banner") || "",
@@ -368,33 +531,19 @@ form.addEventListener("submit", async e => {
     firebaseJsonBase64: firebaseJson || ""
   };
   try {
-    const res = await fetch(`${apiBase}/api/build`, { method: "POST", headers: op(), body: JSON.stringify(p) });
-    btn.disabled = false;
-    btn.textContent = "Собрать";
-    if (!res.ok) { alert("Ошибка: " + await res.text().catch(() => "")); return; }
-    const d = await res.json();
+    const d = await submitBuildPayload(p);
     if (d.run) {
-      const serverIconPath = d.icon?.path;
-      const serverIconUrl = serverIconPath ? `https://raw.githubusercontent.com/zey-win/ci-cd/main/${serverIconPath}` : (d.icon?.htmlUrl || null);
-      runMeta[d.run.id] = { icon: serverIconUrl || null, ver: p.version_name || "", code: p.version_code || "" };
-      try {
-        const sv = JSON.parse(localStorage.getItem('rv')||'{}');
-        sv[d.run.id]={ver:p.version_name||'',code:p.version_code||''};
-        if (d.latestArtifact?.apkDownloadUrl) { runMeta[d.run.id].apk = d.latestArtifact.apkDownloadUrl; sv[d.run.id].apk = d.latestArtifact.apkDownloadUrl; }
-        if (d.latestArtifact?.aabDownloadUrl) { runMeta[d.run.id].aab = d.latestArtifact.aabDownloadUrl; sv[d.run.id].aab = d.latestArtifact.aabDownloadUrl; }
-        localStorage.setItem('rv',JSON.stringify(sv));
-      } catch {}
-      timers[d.run.id] = { start: Date.now(), total: (39 + (d.run.id % 12)) * 60 * 1000 };
-      runs = [d.run, ...runs];
-      renderAll();
-    } else loadBuilds();
+      const latestVersion = p.aab_version_name || p.version_name || "";
+      const latestCode = p.aab_version_code || p.version_code || "";
+      runMeta[d.run.id] = { ...(runMeta[d.run.id] || {}), ver: latestVersion, code: latestCode };
+    }
     autoSaveConfig(fd);
     iconLoadedDeferred = null;
     modal.classList.add("hidden");
     form.style.display = "";
     $("build-progress")?.classList.add("hidden");
     form.querySelectorAll("label, .modal-actions, .form-row, .icon-format-row").forEach(el => { el.style.opacity = ""; el.style.transform = ""; });
-  } catch (err) { btn.disabled = false; btn.textContent = "Собрать"; alert("Ошибка: " + err.message); }
+  } catch (err) { alert("Ошибка: " + err.message); }
 });
 
 // ----- Configs: build history dropdown -----
@@ -403,6 +552,19 @@ function renderConfigDropdown() {
   const trigger = $("config-trigger");
   if (!list) return;
   list.innerHTML = "";
+  const toolbar = document.createElement("div");
+  toolbar.style.cssText = "display:flex;gap:6px;align-items:center;padding:8px 10px;border-bottom:1px solid #21262d;background:#0d1117;position:sticky;top:0;z-index:1";
+  const batchBtn = document.createElement("button");
+  batchBtn.type = "button";
+  batchBtn.textContent = "Собрать всё";
+  batchBtn.style.cssText = "flex:1;padding:7px 8px;background:#238636;border:none;border-radius:4px;color:#fff;font-size:13px;cursor:pointer";
+  batchBtn.onclick = async (e) => { e.stopPropagation(); closeDropdown(); await runBatchBuilds(); };
+  toolbar.appendChild(batchBtn);
+  const hint = document.createElement("span");
+  hint.textContent = "APK = v1, AAB = i+1";
+  hint.style.cssText = "color:#8b949e;font-size:11px;white-space:nowrap";
+  toolbar.appendChild(hint);
+  list.appendChild(toolbar);
   for (const c of savedConfigs) {
     const item = document.createElement("div");
     item.style.cssText = "display:flex;align-items:center;padding:6px 10px;cursor:pointer;border-bottom:1px solid #21262d;font-size:14px";
@@ -511,6 +673,7 @@ function fillConfig(configId) {
     package_name: cfg.package_name,
     version_name: cfg.version_name,
     version_code: cfg.version_code,
+    version_mode: cfg.version_mode || "auto_next",
     zeywin_api_key: cfg.zeywin_api_key,
     admob_app_id: cfg.admob_app_id,
     admob_banner: cfg.admob_banner,
@@ -543,6 +706,7 @@ function fillConfig(configId) {
   }
   // Load icon
   getIconDataUrl(cfg.game_repository, "main").then(url => { if (url) currentIconDataUrl = url; });
+  syncVersionFields(true);
   const trigger = $("config-trigger");
   if (trigger) trigger.textContent = "📜 " + cfg.label;
 }
@@ -560,6 +724,7 @@ async function autoSaveConfig(fd) {
     package_name: fd.get("package_name") || "",
     version_name: fd.get("version_name") || "1",
     version_code: fd.get("version_code") || "1",
+    version_mode: fd.get("version_mode") || "auto_next",
     zeywin_api_key: fd.get("zeywin_api_key") || "",
     admob_app_id: fd.get("admob_app_id") || "",
     admob_banner: fd.get("admob_banner") || "",
@@ -640,6 +805,7 @@ function showAdmobFields() {
 // ----- Package name reveals extra fields -----
 $("f-pkg").addEventListener("input", function() {
   if (this.value) document.querySelectorAll(".pkg-hidden").forEach(el => el.classList.add("show"));
+  syncVersionFields(false);
 });
 
 // ----- all-txt-paste: parse entire data block into app_name field -----
