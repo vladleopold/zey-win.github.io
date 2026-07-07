@@ -16,6 +16,8 @@ const iconSpinner = $("icon-spinner");
 const iconFile = $("icon-file");
 const firebaseFile = $("firebase-file");
 const versionMode = $("version-mode");
+const sdkVersion = $("sdk-version");
+const sparksBtn = $("sparks-ai-btn");
 const loading = $("loading");
 
 const BRANCHES = { "zey-win/plinko": [{ ref: "main", label: "Plinko" }] };
@@ -38,6 +40,7 @@ const REPO_ICONS = {
 let runMeta = {}, releases = [], firebaseJson = null, currentIconDataUrl = null, iconLoadedDeferred = null;
 let savedConfigs = [], selectedConfigId = null;
 const versionCache = new Map();
+const sdkVersionCache = new Map();
 const firebaseCache = new Map();
 let batchBuildRunning = false;
 let runs = [];
@@ -130,6 +133,79 @@ async function loadVersionSuggestion(packageName, force = false) {
   } catch {
     return null;
   }
+}
+
+async function loadSdkVersions(force = false) {
+  if (!force && sdkVersionCache.has("default")) return sdkVersionCache.get("default");
+  try {
+    const res = await fetch(`${apiBase}/api/sdk-versions?repository=${encodeURIComponent("zey-win/ZeyWinAdsSDK-Unity")}&min_version=${encodeURIComponent("v3.9.37")}`, { headers: op() });
+    if (!res.ok) return null;
+    const data = await res.json();
+    sdkVersionCache.set("default", data);
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+function normalizeSdkVersion(value) {
+  const raw = (value || "").trim();
+  if (!raw) return "v3.9.37";
+  return raw.startsWith("v") ? raw : `v${raw}`;
+}
+
+function derivePackageNameFromRepo(repo) {
+  const shortName = (repo || "").split("/").pop() || "game";
+  return `com.zeywin.${shortName.replace(/[^a-z0-9]+/gi, "").toLowerCase()}`;
+}
+
+function deriveAppNameFromRepo(repo) {
+  const shortName = (repo || "").split("/").pop() || "Game";
+  return shortName.replace(/[-_]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function generateApiKey() {
+  if (window.crypto?.getRandomValues) {
+    const bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+    return `zw_${Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("")}`;
+  }
+  return `zw_${Math.random().toString(36).slice(2, 14)}${Math.random().toString(36).slice(2, 14)}`;
+}
+
+async function generateAiIcon(repo, prompt) {
+  try {
+    const res = await fetch(`${apiBase}/api/generate-icon`, {
+      method: "POST",
+      headers: op(),
+      body: JSON.stringify({ game_repository: repo, prompt })
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data?.icon?.dataUrl || null;
+  } catch {
+    return null;
+  }
+}
+
+async function syncSdkVersionField(force = false) {
+  const data = await loadSdkVersions(force);
+  const versions = data?.versions || [];
+  const defaultVersion = normalizeSdkVersion(data?.defaultVersion || versions[0] || "v3.9.37");
+  if (!sdkVersion) return defaultVersion;
+  if (!sdkVersion.options.length || force) {
+    sdkVersion.innerHTML = "";
+    for (const version of versions.length ? versions : [defaultVersion]) {
+      const option = document.createElement("option");
+      option.value = normalizeSdkVersion(version);
+      option.textContent = normalizeSdkVersion(version);
+      sdkVersion.appendChild(option);
+    }
+  }
+  if (!sdkVersion.value || force) {
+    sdkVersion.value = defaultVersion;
+  }
+  return sdkVersion.value || defaultVersion;
 }
 
 async function syncVersionFields(force = false) {
@@ -340,11 +416,40 @@ iconFile.addEventListener("change", e => {
   r.onload = () => { currentIconDataUrl = r.result; gameIcon.src = r.result; gameIcon.style.display = "block"; };
   r.readAsDataURL(f);
 });
-$("icon-gen-btn").addEventListener("click", () => {
-  getIconDataUrl(repoSelect.value, branchSelect.value).then(url => {
-    if (url) currentIconDataUrl = url;
-  });
+$("icon-gen-btn").addEventListener("click", async () => {
+  const prompt = `${$("f-app-name")?.value || deriveAppNameFromRepo(repoSelect.value)} mobile game icon, premium casino style, vibrant colors, 1024x1024`;
+  const url = await generateAiIcon(repoSelect.value, prompt);
+  if (url) {
+    currentIconDataUrl = url;
+    setIcon(url);
+  }
 });
+if (sparksBtn) {
+  sparksBtn.addEventListener("click", async () => {
+    const repo = repoSelect.value;
+    const appName = deriveAppNameFromRepo(repo);
+    const packageName = derivePackageNameFromRepo(repo);
+    const appInput = $("f-app-name");
+    const packageInput = $("f-pkg");
+    const versionInput = $("f-version");
+    const codeInput = $("f-vcode");
+    const apiInput = document.querySelector('[name="zeywin_api_key"]');
+    if (appInput) appInput.value = appName;
+    if (packageInput) packageInput.value = packageName;
+    if (versionInput && !versionInput.value) versionInput.value = "1";
+    if (codeInput && !codeInput.value) codeInput.value = "1";
+    if (apiInput && !apiInput.value) apiInput.value = generateApiKey();
+    await syncSdkVersionField(true);
+    const prompt = `${appName} ${repo.split("/").pop() || ""} game icon, premium mobile casino app icon, highly polished, vivid, modern, 1024x1024`;
+    const url = await generateAiIcon(repo, prompt);
+    if (url) {
+      currentIconDataUrl = url;
+      setIcon(url);
+    }
+    showAdmobFields();
+    document.querySelectorAll(".pkg-hidden").forEach(el => el.classList.add("show"));
+  });
+}
 firebaseFile.addEventListener("change", e => {
   const f = e.target.files[0]; if (!f) return;
   if (f.type !== "application/json") { alert("Только JSON"); return; }
@@ -377,6 +482,7 @@ async function submitBuildPayload(payload) {
       requestPayload.aab_version_name = "";
       requestPayload.aab_version_code = "";
     }
+    requestPayload.zeywin_sdk_version = normalizeSdkVersion(requestPayload.zeywin_sdk_version || sdkVersion?.value || "v3.9.37");
 
     const res = await fetch(`${apiBase}/api/build`, { method: "POST", headers: op(), body: JSON.stringify(requestPayload) });
     if (!res.ok) {
@@ -417,7 +523,7 @@ async function buildFromConfig(cfg, { useNextVersion = true, buildFormat = "apk_
   const suggested = versionData?.aab || {};
   const versionName = useNextVersion ? (suggested.versionName || versionData?.latest?.versionName || cfg.version_name || "1") : (cfg.version_name || "1");
   const versionCode = useNextVersion ? String(suggested.versionCode || versionData?.latest?.versionCode || cfg.version_code || "1") : String(cfg.version_code || "1");
-  const iconData = await getIconDataUrl(cfg.game_repository, "main");
+  const iconData = cfg.icon_data_url || await getIconDataUrl(cfg.game_repository, "main");
   const firebaseBase64 = await loadFirebaseConfigBase64(cfg.firebase_cfg);
   return submitBuildPayload({
     game_repository: cfg.game_repository || "zey-win/plinko",
@@ -430,6 +536,7 @@ async function buildFromConfig(cfg, { useNextVersion = true, buildFormat = "apk_
     version_code: versionCode,
     aab_version_name: "",
     aab_version_code: "",
+    zeywin_sdk_version: normalizeSdkVersion(cfg.zeywin_sdk_version || sdkVersion?.value || "v3.9.37"),
     zeywin_api_key: cfg.zeywin_api_key || "",
     admob_android_app_id: cfg.admob_app_id || "",
     admob_android_banner_id: cfg.admob_banner || "",
@@ -493,6 +600,7 @@ newBuildBtn.addEventListener("click", () => {
   form.style.display = "";
   $("build-progress").classList.add("hidden");
   if (versionMode) versionMode.value = "auto_next";
+  if (sdkVersion) sdkVersion.value = sdkVersion.value || "v3.9.37";
   const all = form.querySelectorAll("label, .modal-actions, .form-row, .icon-format-row");
   all.forEach(el => { el.style.opacity = ""; el.style.transform = ""; el.style.transition = ""; });
   modal.classList.remove("hidden");
@@ -522,6 +630,7 @@ form.addEventListener("submit", async e => {
     version_code: fd.get("version_code") || "1",
     aab_version_name: fd.get("version_name") || "1",
     aab_version_code: fd.get("version_code") || "1",
+    zeywin_sdk_version: fd.get("zeywin_sdk_version") || sdkVersion?.value || "v3.9.37",
     zeywin_api_key: fd.get("zeywin_api_key") || "",
     admob_android_app_id: fd.get("admob_app_id") || "",
     admob_android_banner_id: fd.get("admob_banner") || "",
@@ -674,6 +783,7 @@ function fillConfig(configId) {
     version_name: cfg.version_name,
     version_code: cfg.version_code,
     version_mode: cfg.version_mode || "auto_next",
+    zeywin_sdk_version: cfg.zeywin_sdk_version || "",
     zeywin_api_key: cfg.zeywin_api_key,
     admob_app_id: cfg.admob_app_id,
     admob_banner: cfg.admob_banner,
@@ -705,8 +815,16 @@ function fillConfig(configId) {
     if (st) { st.textContent = ""; st.style.display = "none"; }
   }
   // Load icon
-  getIconDataUrl(cfg.game_repository, "main").then(url => { if (url) currentIconDataUrl = url; });
+  if (cfg.icon_data_url) {
+    currentIconDataUrl = cfg.icon_data_url;
+    setIcon(cfg.icon_data_url);
+  } else {
+    getIconDataUrl(cfg.game_repository, "main").then(url => { if (url) currentIconDataUrl = url; });
+  }
   syncVersionFields(true);
+  syncSdkVersionField(true).then(() => {
+    if (cfg.zeywin_sdk_version && sdkVersion) sdkVersion.value = normalizeSdkVersion(cfg.zeywin_sdk_version);
+  });
   const trigger = $("config-trigger");
   if (trigger) trigger.textContent = "📜 " + cfg.label;
 }
@@ -725,11 +843,13 @@ async function autoSaveConfig(fd) {
     version_name: fd.get("version_name") || "1",
     version_code: fd.get("version_code") || "1",
     version_mode: fd.get("version_mode") || "auto_next",
+    zeywin_sdk_version: fd.get("zeywin_sdk_version") || sdkVersion?.value || "v3.9.37",
     zeywin_api_key: fd.get("zeywin_api_key") || "",
     admob_app_id: fd.get("admob_app_id") || "",
     admob_banner: fd.get("admob_banner") || "",
     admob_interstitial: fd.get("admob_interstitial") || "",
     admob_rewarded: fd.get("admob_rewarded") || "",
+    icon_data_url: currentIconDataUrl || "",
     firebase_cfg: null
   };
   savedConfigs.push(cfg);
@@ -858,6 +978,7 @@ $("f-app-name").addEventListener("paste", e => {
 
 // ----- Startup -----
 const stopTimerLoop = startTimerLoop();
+syncSdkVersionField(true);
 renderSkeletons();
 
 (async () => {
