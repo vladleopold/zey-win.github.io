@@ -994,3 +994,18 @@ function renderSkeletons() {
   activeContainer.style.display = "none";
   buildsContainer.innerHTML = '<div class="skeleton-card"></div>'.repeat(20);
 }
+
+// Copy ZeyWin API key ("copy symbols")
+(function attachCopyApiKey() {
+  const btn = document.getElementById("copy-api-key");
+  if (!btn) return;
+  btn.addEventListener("click", () => {
+    const input = document.getElementById("f-zeywin-key");
+    const value = input?.value?.trim();
+    if (!value) return;
+    navigator.clipboard?.writeText(value).then(
+      () => { btn.classList.add("is-copied"); setTimeout(() => btn.classList.remove("is-copied"), 1500); },
+      () => {}
+    );
+  });
+})();
