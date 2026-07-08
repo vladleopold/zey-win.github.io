@@ -29,14 +29,16 @@ header h1 { font-size: clamp(18px, 4vw, 24px); }
 }
 @media (max-width: 720px) {
   #build-form { padding: 8px; border-radius: 16px; }
-  .meta-row, .form-row, .ver-format-row, .arch-vc-row { grid-template-columns: 1fr; flex-direction: column; }
+  .meta-row, .ver-format-row, .arch-vc-row { grid-template-columns: 1fr; flex-direction: column; }
   .icon-col, .format-col { flex-basis: 100%; }
   #config-dropdown { width: 100% !important; }
   #config-trigger { font-size: 12px; padding: 6px; }
   #build-form input, #build-form select, #build-form button { min-height: 24px; font-size: 13px; }
   #build-form label { font-size: 13px; }
   .modal-actions button { flex: 1; padding: 6px 12px; font-size: 13px; }
-  #add-repo-btn { width: 36px !important; height: 36px !important; font-size: 18px !important; }
+  .il .fw { min-height: 26px; padding: 3px 6px; }
+  .il .fp { font-size: 11px; }
+  .il select, .il input { font-size: 12px; }
 }
 @media (max-width: 480px) {
   #modal form { padding: 8px; }
@@ -48,10 +50,12 @@ header h1 { font-size: clamp(18px, 4vw, 24px); }
   #icon-wrapper { width: 56px; height: 56px; }
   #game-icon { width: 56px !important; height: 56px !important; }
   .icon-btn { font-size: 10px; padding: 4px 6px; }
-  #add-repo-btn { width: 32px !important; height: 32px !important; font-size: 16px !important; }
   .meta-row { gap: 1px; }
-  .firebase-row { padding: 4px; gap: 1px; }
   .firebase-btn { font-size: 10px; padding: 4px 8px; }
+  .il .fw { min-height: 22px; padding: 2px 4px; gap: 2px; }
+  .il .fp { font-size: 10px; }
+  .il select, .il input { font-size: 11px; }
+  .il .step-btn { width: 18px; height: 18px; font-size: 10px; }
 }
 </style>
 </head>
@@ -68,9 +72,10 @@ header h1 { font-size: clamp(18px, 4vw, 24px); }
 <button type="button" id="config-trigger" style="width:100%;text-align:left;padding:8px;background:#0d1117;border:1px solid #30363d;border-radius:4px;color:#c9d1d9;font-size:14px;cursor:pointer">📜 история сборок</button>
 <div id="config-list" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:999;background:#161b22;border:1px solid #30363d;border-radius:4px;max-height:300px;overflow-y:auto"></div>
 </div>
-<label>Игра
-<span style="display:flex;gap:4px;align-items:center">
-<select name="game_repository" id="repo-select" style="flex:1">
+<label class="il">
+<span class="fw">
+<span class="fp">ИГРА:</span>
+<select name="game_repository" id="repo-select">
 <option value="zey-win/plinko">Plinko</option>
 <option value="zey-win/blackjack">Blackjack</option>
 <option value="zey-win/roulette">Roulette</option>
@@ -80,7 +85,7 @@ header h1 { font-size: clamp(18px, 4vw, 24px); }
 <option value="zey-win/Unstopable">Unstopable</option>
 <option value="zey-win/SlotSpot">SlotSpot</option>
 </select>
-<button type="button" id="add-repo-btn" class="step-btn" title="Добавить репозиторий" style="flex-shrink:0;width:36px;height:36px;font-size:18px;line-height:1">+</button>
+<button type="button" id="add-repo-btn" class="step-btn" title="Добавить репозиторий" style="flex-shrink:0;width:26px;height:26px;font-size:14px;line-height:1;padding:0">+</button>
 </span>
 </label>
 
@@ -100,54 +105,104 @@ header h1 { font-size: clamp(18px, 4vw, 24px); }
 </div>
 <div class="format-col">
 <div class="ver-format-row">
-<label style="flex:1">Формат <select name="build_format">
+<label class="il" style="flex:1">
+<span class="fw">
+<span class="fp">ФОРМАТ:</span>
+<select name="build_format">
 <option value="apk">APK</option>
 <option value="aab">AAB</option>
 <option value="apk_aab">APK+AAB</option>
-</select></label>
-<label style="flex:1">Версия
-<div style="display:flex;gap:1px;align-items:center">
-<input name="version_name" id="f-version" type="number" step="0.1" value="1" style="flex:1">
+</select>
+</span>
+</label>
+<label class="il" style="flex:1">
+<span class="fw">
+<span class="fp">ВЕРСИЯ:</span>
+<input name="version_name" id="f-version" type="number" step="0.1" value="1">
 <button type="button" class="step-btn" data-target="f-version" data-step="0.1" data-dir="1">+</button>
 <button type="button" class="step-btn" data-target="f-version" data-step="0.1" data-dir="-1">−</button>
-</div>
+</span>
 </label>
 </div>
 <div class="arch-vc-row">
-<label style="flex:1">bit's <select name="fast_build">
+<label class="il" style="flex:1">
+<span class="fw">
+<span class="fp">БИТ:</span>
+<select name="fast_build">
 <option value="false">32x+64x</option>
 <option value="true">64x</option>
-</select></label>
-<label style="flex:1">Version Code
-<div style="display:flex;gap:1px;align-items:center">
-<input name="version_code" id="f-vcode" type="number" step="1" value="1" style="flex:1">
+</select>
+</span>
+</label>
+<label class="il" style="flex:1">
+<span class="fw">
+<span class="fp">VC:</span>
+<input name="version_code" id="f-vcode" type="number" step="1" value="1">
 <button type="button" class="step-btn" data-target="f-vcode" data-step="1" data-dir="1">+</button>
 <button type="button" class="step-btn" data-target="f-vcode" data-step="1" data-dir="-1">−</button>
-</div>
+</span>
 </label>
 </div>
-<label style="margin-top:1px">Версия ZeyWin Ads SDK
+<label class="il">
+<span class="fw">
+<span class="fp">zw sdk:</span>
 <select name="zeywin_sdk_version" id="sdk-version"></select>
+</span>
 </label>
 </div>
 </div>
 
 <div class="meta-row" style="margin-top:1px">
-<label>Название приложения
-  <input name="app_name" id="f-app-name">
+<label class="il" style="flex:1">
+<span class="fw">
+<span class="fp">НАЗВАНИЕ:</span>
+<input name="app_name" id="f-app-name">
+</span>
 </label>
-<label>Package name <input name="package_name" id="f-pkg"></label>
+<label class="il" style="flex:1">
+<span class="fw">
+<span class="fp">PKG:</span>
+<input name="package_name" id="f-pkg">
+</span>
+</label>
 </div>
-<label class="pkg-hidden">ZeyWin API Key <input name="zeywin_api_key" id="f-zeywin-key"></label>
-<label class="pkg-hidden">AdMob App ID <input name="admob_app_id" id="f-admob-app"></label>
-<label class="admob-field">AdMob Banner <input name="admob_banner"></label>
-<label class="admob-field">AdMob Interstitial <input name="admob_interstitial"></label>
-<label class="admob-field">AdMob Rewarded <input name="admob_rewarded"></label>
-<label class="pkg-hidden firebase-row" id="firebase-label">
-<span style="font-size:15px;font-weight:600">Firebase. google-services.json</span>
+<label class="pkg-hidden il">
+<span class="fw">
+<span class="fp">API KEY:</span>
+<input name="zeywin_api_key" id="f-zeywin-key">
+</span>
+</label>
+<label class="pkg-hidden il">
+<span class="fw">
+<span class="fp">AdMob ID:</span>
+<input name="admob_app_id" id="f-admob-app">
+</span>
+</label>
+<label class="admob-field il">
+<span class="fw">
+<span class="fp">AdMob Banner:</span>
+<input name="admob_banner">
+</span>
+</label>
+<label class="admob-field il">
+<span class="fw">
+<span class="fp">AdMob Inter:</span>
+<input name="admob_interstitial">
+</span>
+</label>
+<label class="admob-field il">
+<span class="fw">
+<span class="fp">AdMob Rew:</span>
+<input name="admob_rewarded">
+</span>
+</label>
+<label class="pkg-hidden il firebase-row" id="firebase-label">
+<span class="fw">
+<span class="fp">firebase.google-services</span>
 <input type="file" id="firebase-file" accept=".json" style="display:none">
 <span class="firebase-btn" id="firebase-btn">Загрузить</span>
-<span id="firebase-status" style="font-size:13px;color:#fff;display:none;margin-left:8px"></span>
+<span id="firebase-status" style="font-size:11px;color:#fff;display:none"></span>
+</span>
 </label>
 
 <div class="modal-actions">

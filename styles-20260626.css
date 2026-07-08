@@ -17,13 +17,18 @@ button{cursor:pointer;padding:8px 16px;border:none;border-radius:6px;font-size:1
 #modal form{animation:glow-breathe 6s ease-in-out infinite}@keyframes glow-breathe{0%,90%,100%{border-color:rgba(168,85,247,0.03);box-shadow:none}40%,50%{border-color:rgba(192,132,252,0.45);box-shadow:0 0 12px rgba(168,85,247,0.45),0 0 30px rgba(168,85,247,0.15),0 0 50px rgba(139,92,246,0.06),inset 0 0 10px rgba(168,85,247,0.04)}}
 label{display:block;margin-bottom:2px;font-size:15px;font-weight:600;color:#8b949e}
 label input,label select{display:block;width:100%;margin-top:4px;padding:8px;background:#0d1117;border:1px solid #30363d;border-radius:4px;color:#c9d1d9;font-size:14px}
+.il{display:block!important;margin-bottom:2px!important;font-size:0!important}
+.il .fw{display:flex;align-items:center;background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:4px 8px;gap:4px;width:100%;min-height:30px}
+.il .fp{color:#8b949e;font-size:12px;font-weight:600;white-space:nowrap;flex-shrink:0;line-height:1}
+.il select,.il input{border:none!important;background:transparent!important;padding:0!important;margin:0!important;flex:1;min-width:0;min-height:auto!important;outline:none;color:#c9d1d9;font-size:13px;height:auto;width:auto;display:block}
+.il .step-btn{width:22px;height:22px;font-size:12px;flex-shrink:0;border-radius:4px}
 input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 input[type=number]{-moz-appearance:textfield}
 input[name^="admob_"]{text-align:right;direction:rtl}
 input[name="zeywin_api_key"]{text-align:right;direction:rtl}
 .step-btn{background:#21262d;border:1px solid #30363d;color:#c9d1d9;width:32px;height:32px;border-radius:4px;font-size:16px;line-height:1;padding:0;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
 .step-btn:hover{background:#30363d}
-.firebase-row{display:flex;align-items:center;gap:2px;padding:8px;border:1px dashed #30363d;border-radius:4px;cursor:pointer;margin-bottom:2px}
+.firebase-row .fw{border-style:dashed!important;border-color:#30363d!important;cursor:pointer}
 .firebase-btn{background:#d4871a;color:#fff;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0}
 .firebase-btn:hover{background:#e09e30}
 .admob-field{overflow:hidden;max-height:0;opacity:0;margin:0;padding:0;border:0;pointer-events:none;transition:max-height .5s ease,opacity .5s ease,margin .5s ease,padding .5s ease}
