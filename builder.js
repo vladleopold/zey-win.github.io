@@ -10,18 +10,16 @@ const form = $("build-form");
 const newBuildBtn = $("new-build");
 const cancelBtn = $("modal-cancel");
 const repoSelect = $("repo-select");
-const branchSelect = $("branch-select");
+const branchSelect = null;
 const gameIcon = $("game-icon");
 const iconSpinner = $("icon-spinner");
 const iconFile = $("icon-file");
 const firebaseFile = $("firebase-file");
-const versionMode = $("version-mode");
+const versionMode = null;
 const sdkVersion = $("sdk-version");
-const sparksBtn = $("sparks-ai-btn");
+const sparksBtn = null;
 const loading = $("loading");
 
-const BRANCHES = { "zey-win/plinko": [{ ref: "main", label: "Plinko" }] };
-const DEFAULT_BRANCHES = [{ ref: "main", label: "main" }];
 const REPO_NAMES = { "zey-win/plinko": "plinko", "zey-win/blackjack": "blackjack", "zey-win/roulette": "roulette", "zey-win/dragon-tiger": "dragon tiger", "zey-win/baccarat-tiger": "baccarat", "zey-win/wheel-of-fortune": "lucky wheel", "zey-win/Unstopable": "unstopable", "zey-win/SlotSpot": "slotspot" };
 const REPO_ICONS = {
   "zey-win/plinko": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/plinko.png",
@@ -290,7 +288,7 @@ function buildCardHTML(r, idx) {
   const iconBlock = iconUrl ? `<img class="card-icon" src="${iconUrl}" alt="" loading="lazy" onerror="this.onerror=null;this.alt='🎮'">` : `<div class="card-icon card-icon-placeholder">🎮</div>`;
   const timerId = `t-${r.id}`;
   const timerHtml = `<span class="timer" id="${timerId}" data-run="${r.id}" style="display:${st!=='completed'&&timers[r.id]?'inline':'none'};color:#ffd700;font-size:15px;font-weight:700">⏱ 00:00,00</span>`;
-  return `<div class="build-card${isProgress?' in-progress':''}" style="${bgStyle}" data-id="${r.id}"><div class="card-media">${iconBlock}<div class="info"><div class="app-name">${versionInfo}</div><div class="meta">${esc(pkg)}</div>${dateStr?`<div class="meta">${esc(dateStr)}</div>`:""}</div></div><div class="right-col"><div class="actions-col dl-col">${concl==="success"&&downloads.apk?`<a class="dl-btn dl-btn-apk" href="${downloads.apk}" download>APK</a>`:""}${concl==="success"&&downloads.aab?`<a class="dl-btn dl-btn-aab" href="${downloads.aab}" download>AAB</a>`:""}${concl!=="success"?`<a href="${esc(url)}" target="_blank" class="log-btn log-btn-bottom">Логи</a>`:""}</div><div class="actions-col ctrl-col"><div class="status-row">${timerHtml}<span class="status ${cls} status-small">${label}</span></div><button class="del-btn" onclick="deleteRun(${r.id},event)" title="Удалить">✕</button></div></div></div>`;
+  return `<div class="build-card${isProgress?' in-progress':''}" style="${bgStyle}" data-id="${r.id}"><div class="card-media">${iconBlock}<div class="info"><div class="app-name">${versionInfo}</div><div class="meta">${esc(pkg)}</div>${dateStr?`<div class="meta">${esc(dateStr)}</div>`:""}</div></div><div class="right-col"><div class="btn-group">${concl==="success"&&downloads.apk?`<a class="dl-btn dl-btn-apk" href="${downloads.apk}" download>APK</a>`:""}${concl==="success"&&downloads.aab?`<a class="dl-btn dl-btn-aab" href="${downloads.aab}" download>AAB</a>`:""}${concl!=="success"?`<a href="${esc(url)}" target="_blank" class="log-btn">Логи</a>`:""}<div class="status-row">${timerHtml}<span class="status ${cls} status-small">${label}</span></div><button class="del-btn" onclick="deleteRun(${r.id},event)" title="Удалить">✕</button></div></div></div>`;
 }
 
 function updateTimers() {
@@ -402,11 +400,8 @@ async function deleteRun(runId, e) {
   finally { if (btn) btn.disabled = false; }
 }
 
-function updateBranches() {
-  const repo = repoSelect.value;
-  const list = BRANCHES[repo] || DEFAULT_BRANCHES;
-  branchSelect.innerHTML = list.map(b => `<option value="${b.ref}">${b.label}</option>`).join("");
-  getIconDataUrl(repo, branchSelect.value);
+function updateIcon() {
+  getIconDataUrl(repoSelect.value, "main");
 }
 
 iconFile.addEventListener("change", e => {
@@ -424,32 +419,7 @@ $("icon-gen-btn").addEventListener("click", async () => {
     setIcon(url);
   }
 });
-if (sparksBtn) {
-  sparksBtn.addEventListener("click", async () => {
-    const repo = repoSelect.value;
-    const appName = deriveAppNameFromRepo(repo);
-    const packageName = derivePackageNameFromRepo(repo);
-    const appInput = $("f-app-name");
-    const packageInput = $("f-pkg");
-    const versionInput = $("f-version");
-    const codeInput = $("f-vcode");
-    const apiInput = document.querySelector('[name="zeywin_api_key"]');
-    if (appInput) appInput.value = appName;
-    if (packageInput) packageInput.value = packageName;
-    if (versionInput && !versionInput.value) versionInput.value = "1";
-    if (codeInput && !codeInput.value) codeInput.value = "1";
-    if (apiInput && !apiInput.value) apiInput.value = generateApiKey();
-    await syncSdkVersionField(true);
-    const prompt = `${appName} ${repo.split("/").pop() || ""} game icon, premium mobile casino app icon, highly polished, vivid, modern, 1024x1024`;
-    const url = await generateAiIcon(repo, prompt);
-    if (url) {
-      currentIconDataUrl = url;
-      setIcon(url);
-    }
-    showAdmobFields();
-    document.querySelectorAll(".pkg-hidden").forEach(el => el.classList.add("show"));
-  });
-}
+
 firebaseFile.addEventListener("change", e => {
   const f = e.target.files[0]; if (!f) return;
   if (f.type !== "application/json") { alert("Только JSON"); return; }
@@ -585,27 +555,34 @@ async function runBatchBuilds() {
   }
 }
 
-repoSelect.addEventListener("change", () => { updateBranches(); syncVersionFields(true); });
-branchSelect.addEventListener("change", () => {
-  getIconDataUrl(repoSelect.value, branchSelect.value).then(url => { if (url) currentIconDataUrl = url; });
-});
-if (versionMode) {
-  versionMode.addEventListener("change", () => {
+repoSelect.addEventListener("change", () => { updateIcon(); syncVersionFields(true); });
+const addRepoBtn = $("add-repo-btn");
+if (addRepoBtn) {
+  addRepoBtn.addEventListener("click", () => {
+    const val = prompt("Введите репозиторий в формате owner/name");
+    if (!val) return;
+    const repo = val.trim();
+    if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) { alert("Неверный формат. Используйте owner/name"); return; }
+    if ([...repoSelect.options].some(o => o.value === repo)) { repoSelect.value = repo; updateIcon(); syncVersionFields(true); return; }
+    const opt = document.createElement("option");
+    opt.value = repo;
+    opt.textContent = repo.split("/").pop();
+    repoSelect.appendChild(opt);
+    repoSelect.value = repo;
+    updateIcon();
     syncVersionFields(true);
   });
 }
-
 newBuildBtn.addEventListener("click", () => {
   currentIconDataUrl = null; firebaseJson = null;
   form.style.display = "";
   $("build-progress").classList.add("hidden");
-  if (versionMode) versionMode.value = "auto_next";
   if (sdkVersion) sdkVersion.value = sdkVersion.value || "v3.9.37";
   const all = form.querySelectorAll("label, .modal-actions, .form-row, .icon-format-row");
   all.forEach(el => { el.style.opacity = ""; el.style.transform = ""; el.style.transition = ""; });
   modal.classList.remove("hidden");
-  updateBranches();
-  iconLoadedDeferred = getIconDataUrl(repoSelect.value, branchSelect.value).then(url => { if (url) currentIconDataUrl = url; });
+  updateIcon();
+  iconLoadedDeferred = getIconDataUrl(repoSelect.value, "main").then(url => { if (url) currentIconDataUrl = url; });
   syncVersionFields(true);
 });
 cancelBtn.addEventListener("click", () => modal.classList.add("hidden"));
@@ -983,7 +960,7 @@ renderSkeletons();
 
 (async () => {
   await loadReleases();
-  updateBranches();
+  updateIcon();
   loadBuilds();
   loadConfigs();
   setInterval(loadBuilds, 15000);
@@ -995,17 +972,4 @@ function renderSkeletons() {
   buildsContainer.innerHTML = '<div class="skeleton-card"></div>'.repeat(20);
 }
 
-// Copy ZeyWin API key ("copy symbols")
-(function attachCopyApiKey() {
-  const btn = document.getElementById("copy-api-key");
-  if (!btn) return;
-  btn.addEventListener("click", () => {
-    const input = document.getElementById("f-zeywin-key");
-    const value = input?.value?.trim();
-    if (!value) return;
-    navigator.clipboard?.writeText(value).then(
-      () => { btn.classList.add("is-copied"); setTimeout(() => btn.classList.remove("is-copied"), 1500); },
-      () => {}
-    );
-  });
-})();
+

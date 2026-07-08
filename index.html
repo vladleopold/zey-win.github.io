@@ -14,16 +14,16 @@ body { background: radial-gradient(circle at top, #19202c 0, #0d1117 52%, #090c1
 header { gap: 12px; flex-wrap: wrap; }
 header h1 { font-size: clamp(18px, 4vw, 24px); }
 #modal { padding: 12px; }
-#build-form { max-width: 920px; margin: 0 auto; border-radius: 24px; background: rgba(13,17,23,.95); border: 1px solid #30363d; box-shadow: 0 18px 60px rgba(0,0,0,.45); padding: 16px; }
-#build-form label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: #c9d1d9; }
-#build-form input, #build-form select, #build-form button { min-height: 44px; }
-.icon-format-row { gap: 14px; flex-wrap: wrap; align-items: stretch; }
+#build-form { max-width: 920px; margin: 0 auto; border-radius: 24px; background: rgba(13,17,23,.95); border: 1px solid #30363d; box-shadow: 0 18px 60px rgba(0,0,0,.45); padding: 12px; }
+#build-form label { display: flex; flex-direction: column; gap: 1px; font-size: 14px; color: #c9d1d9; }
+#build-form input, #build-form select, #build-form button { min-height: 28px; }
+.icon-format-row { gap: 3px; flex-wrap: wrap; align-items: stretch; }
 .icon-col, .format-col { flex: 1 1 320px; }
-.icon-btns { gap: 8px; flex-wrap: wrap; }
+.icon-btns { gap: 2px; flex-wrap: wrap; }
 .icon-btn, #config-trigger, #modal-submit, .btn-cancel, .firebase-btn, .step-btn { border-radius: 14px; }
-.modal-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+.modal-actions { display: flex; gap: 2px; flex-wrap: wrap; margin-top: 2px; }
 .modal-actions button { flex: 1 1 180px; }
-.meta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.meta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
 @media (max-width: 720px) {
   #build-form { padding: 14px; border-radius: 20px; }
   .meta-row, .form-row, .ver-format-row, .arch-vc-row { grid-template-columns: 1fr; flex-direction: column; }
@@ -42,8 +42,12 @@ header h1 { font-size: clamp(18px, 4vw, 24px); }
 
 <div id="modal" class="hidden">
 <form id="build-form">
-<div class="form-row">
-<label style="flex:3">Игра
+<div style="position:relative;width:100%;margin-bottom:2px" id="config-dropdown">
+<button type="button" id="config-trigger" style="width:100%;text-align:left;padding:8px;background:#0d1117;border:1px solid #30363d;border-radius:4px;color:#c9d1d9;font-size:14px;cursor:pointer">📜 история сборок</button>
+<div id="config-list" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:999;background:#161b22;border:1px solid #30363d;border-radius:4px;max-height:300px;overflow-y:auto"></div>
+</div>
+<div class="form-row" style="align-items:flex-end">
+<label style="flex:1">Игра
 <select name="game_repository" id="repo-select">
 <option value="zey-win/plinko">Plinko</option>
 <option value="zey-win/blackjack">Blackjack</option>
@@ -55,10 +59,7 @@ header h1 { font-size: clamp(18px, 4vw, 24px); }
 <option value="zey-win/SlotSpot">SlotSpot</option>
 </select>
 </label>
-<label style="flex:2">Ветка
-<select name="game_ref" id="branch-select">
-</select>
-</label>
+<button type="button" id="add-repo-btn" class="step-btn" title="Добавить репозиторий" style="flex:0 0 auto;width:44px;height:44px;font-size:22px;line-height:1">+</button>
 </div>
 
 <div class="icon-format-row">
@@ -73,7 +74,6 @@ header h1 { font-size: clamp(18px, 4vw, 24px); }
 Загрузить
 </label>
 <button type="button" id="icon-gen-btn" class="icon-btn icon-btn-gen" title="Сгенерировать">Генерировать</button>
-<button type="button" id="sparks-ai-btn" class="icon-btn icon-btn-gen" title="Автозаполнить всё">sparks ai</button>
 </div>
 </div>
 <div class="format-col">
@@ -84,7 +84,7 @@ header h1 { font-size: clamp(18px, 4vw, 24px); }
 <option value="apk_aab">APK+AAB</option>
 </select></label>
 <label style="flex:1">Версия
-<div style="display:flex;gap:4px;align-items:center">
+<div style="display:flex;gap:1px;align-items:center">
 <input name="version_name" id="f-version" type="number" step="0.1" value="1" style="flex:1">
 <button type="button" class="step-btn" data-target="f-version" data-step="0.1" data-dir="1">+</button>
 <button type="button" class="step-btn" data-target="f-version" data-step="0.1" data-dir="-1">−</button>
@@ -97,38 +97,26 @@ header h1 { font-size: clamp(18px, 4vw, 24px); }
 <option value="true">64x</option>
 </select></label>
 <label style="flex:1">Version Code
-<div style="display:flex;gap:4px;align-items:center">
+<div style="display:flex;gap:1px;align-items:center">
 <input name="version_code" id="f-vcode" type="number" step="1" value="1" style="flex:1">
 <button type="button" class="step-btn" data-target="f-vcode" data-step="1" data-dir="1">+</button>
 <button type="button" class="step-btn" data-target="f-vcode" data-step="1" data-dir="-1">−</button>
 </div>
 </label>
 </div>
-<label style="margin-top:6px">Режим версии
-<select name="version_mode" id="version-mode">
-<option value="auto_next">Следующая i+1</option>
-<option value="manual">Вручную</option>
-</select>
-</label>
-<label style="margin-top:6px">Версия ZeyWin Ads SDK
+<label style="margin-top:1px">Версия ZeyWin Ads SDK
 <select name="zeywin_sdk_version" id="sdk-version"></select>
 </label>
 </div>
 </div>
 
-<div class="meta-row" style="margin-top:8px">
+<div class="meta-row" style="margin-top:1px">
 <label>Название приложения
-  <span style="display:flex;gap:6px;align-items:center">
-    <input name="app_name" id="f-app-name" style="flex:1">
-    <div style="position:relative;width:220px" id="config-dropdown">
-      <button type="button" id="config-trigger" style="width:100%;text-align:left;padding:8px;background:#0d1117;border:1px solid #30363d;border-radius:4px;color:#c9d1d9;font-size:14px;cursor:pointer">📜 история сборок</button>
-      <div id="config-list" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:999;background:#161b22;border:1px solid #30363d;border-radius:4px;max-height:300px;overflow-y:auto"></div>
-    </div>
-  </span>
+  <input name="app_name" id="f-app-name">
 </label>
 <label>Package name <input name="package_name" id="f-pkg"></label>
 </div>
-<label class="pkg-hidden">ZeyWin API Key <span class="key-copy-wrap"><input name="zeywin_api_key" id="f-zeywin-key"><button type="button" class="copy-btn" id="copy-api-key" title="Copy API key" aria-label="Copy">⧉</button></span></label>
+<label class="pkg-hidden">ZeyWin API Key <input name="zeywin_api_key" id="f-zeywin-key"></label>
 <label class="pkg-hidden">AdMob App ID <input name="admob_app_id" id="f-admob-app"></label>
 <label class="admob-field">AdMob Banner <input name="admob_banner"></label>
 <label class="admob-field">AdMob Interstitial <input name="admob_interstitial"></label>
