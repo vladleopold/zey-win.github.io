@@ -68,9 +68,9 @@ header h1 { font-size: clamp(18px, 4vw, 24px); }
 <button type="button" id="config-trigger" style="width:100%;text-align:left;padding:8px;background:#0d1117;border:1px solid #30363d;border-radius:4px;color:#c9d1d9;font-size:14px;cursor:pointer">📜 история сборок</button>
 <div id="config-list" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:999;background:#161b22;border:1px solid #30363d;border-radius:4px;max-height:300px;overflow-y:auto"></div>
 </div>
-<div class="form-row" style="align-items:flex-end">
-<label style="flex:1">Игра
-<select name="game_repository" id="repo-select">
+<label>Игра
+<span style="display:flex;gap:4px;align-items:center">
+<select name="game_repository" id="repo-select" style="flex:1">
 <option value="zey-win/plinko">Plinko</option>
 <option value="zey-win/blackjack">Blackjack</option>
 <option value="zey-win/roulette">Roulette</option>
@@ -80,9 +80,9 @@ header h1 { font-size: clamp(18px, 4vw, 24px); }
 <option value="zey-win/Unstopable">Unstopable</option>
 <option value="zey-win/SlotSpot">SlotSpot</option>
 </select>
+<button type="button" id="add-repo-btn" class="step-btn" title="Добавить репозиторий" style="flex-shrink:0;width:36px;height:36px;font-size:18px;line-height:1">+</button>
+</span>
 </label>
-<button type="button" id="add-repo-btn" class="step-btn" title="Добавить репозиторий" style="flex:0 0 auto;width:44px;height:44px;font-size:22px;line-height:1">+</button>
-</div>
 
 <div class="icon-format-row">
 <div class="icon-col">
