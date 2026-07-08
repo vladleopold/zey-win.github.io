@@ -43,6 +43,12 @@ input[name="zeywin_api_key"]{text-align:right;direction:rtl}
 .format-col{display:flex;flex-direction:column;gap:10px;min-width:0}
 .ver-format-row{display:flex;gap:10px}
 .arch-vc-row{display:flex;gap:10px;margin-top:-10px}
+#build-form .format-col{gap:5px}
+#build-form .format-col label{margin-bottom:6px;font-size:14px;font-weight:600}
+#build-form .format-col input,#build-form .format-col select{margin-top:2px;padding:3px 8px;min-height:22px}
+#build-form .format-col .step-btn{width:22px;height:22px;font-size:13px}
+#build-form .ver-format-row,#build-form .arch-vc-row{gap:8px}
+#build-form .arch-vc-row{margin-top:-6px}
 @keyframes fadeSlideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .fade-in{animation:fadeSlideUp .5s ease-out}
 .fade-in-delayed{animation:fadeSlideUp .5s ease-out .6s both}
