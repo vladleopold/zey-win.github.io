@@ -29,7 +29,7 @@ header h1 { font-size: clamp(18px, 4vw, 24px); }
 }
 @media (max-width: 720px) {
   #build-form { padding: 8px; border-radius: 16px; }
-  .ver-format-row, .arch-vc-row { grid-template-columns: 1fr; flex-direction: column; }
+
   .icon-col, .format-col { flex-basis: 100%; }
   #config-dropdown { width: 100% !important; }
   #config-trigger { font-size: 12px; padding: 6px; }
@@ -103,7 +103,7 @@ header h1 { font-size: clamp(18px, 4vw, 24px); }
 </div>
 </div>
 <div class="format-col">
-<div class="ver-format-row">
+<div style="display:flex;flex-direction:column;gap:2px">
 <label class="il" style="flex:1">
 <span class="fw">
 <span class="fp">ФОРМАТ:</span>
@@ -123,7 +123,7 @@ header h1 { font-size: clamp(18px, 4vw, 24px); }
 </span>
 </label>
 </div>
-<div class="arch-vc-row">
+<div style="display:flex;flex-direction:column;gap:2px">
 <label class="il" style="flex:1">
 <span class="fw">
 <span class="fp">БИТ:</span>
