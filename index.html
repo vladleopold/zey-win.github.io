@@ -12,46 +12,52 @@
 <style>
 body { background: radial-gradient(circle at top, #19202c 0, #0d1117 52%, #090c10 100%); overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none; }
 body::-webkit-scrollbar { display: none; }
-header { gap: 12px; flex-wrap: wrap; }
-header h1 { font-size: clamp(18px, 4vw, 24px); }
-#modal { padding: 12px; }
-#build-form { max-width: 920px; margin: 0 auto; border-radius: 24px; background: rgba(13,17,23,.95); border: 1px solid #30363d; box-shadow: 0 18px 60px rgba(0,0,0,.45); padding: 12px; }
-#build-form label { display: flex; flex-direction: column; gap: 1px; font-size: 14px; color: #c9d1d9; }
-#build-form input, #build-form select, #build-form button { min-height: 28px; }
-.icon-format-row { gap: 3px; flex-wrap: wrap; align-items: stretch; }
-.icon-col, .format-col { flex: 1 1 320px; }
+header { gap: 8px; flex-wrap: wrap; padding: 8px 12px; }
+header h1 { font-size: clamp(20px, 4vw, 28px); font-weight: 700; }
+#modal { padding: 8px; }
+#build-form { max-width: 920px; margin: 0 auto; border-radius: 20px; background: rgba(13,17,23,.95); border: 1px solid #30363d; box-shadow: 0 18px 60px rgba(0,0,0,.45); padding: 10px; }
+#build-form label { display: flex; flex-direction: column; gap: 1px; font-size: 13px; color: #c9d1d9; }
+#build-form input, #build-form select, #build-form button { min-height: 26px; }
+.icon-format-row { gap: 2px; flex-wrap: wrap; align-items: stretch; }
+.icon-col, .format-col { flex: 1 1 300px; }
 .icon-btns { gap: 2px; flex-wrap: wrap; }
-.icon-btn, #config-trigger, #modal-submit, .btn-cancel, .firebase-btn, .step-btn { border-radius: 14px; }
+.icon-btn, #config-trigger, #modal-submit, .btn-cancel, .firebase-btn, .step-btn { border-radius: 12px; }
 .modal-actions { display: flex; gap: 2px; flex-wrap: wrap; margin-top: 2px; }
-.modal-actions button { flex: 1 1 180px; }
+.modal-actions button { flex: 1 1 160px; }
+#icon-wrapper { width: 96px; height: 96px; border-radius: 14px; }
+#game-icon { width: 96px !important; height: 96px !important; border-radius: 14px; }
+#f-app-name { font-size: 16px; font-weight: 600; }
+.build-card { gap: 12px; padding: 12px; }
+.card-icon { width: 80px; height: 80px; border-radius: 16px; }
+.build-card .app-name { font-size: 22px; font-weight: 800; margin-bottom: 2px; }
+.build-card .meta { font-size: 13px; }
 @media (max-width: 820px) {
-  #modal form { width: calc(100vw - 24px); max-width: calc(100vw - 24px); padding: 12px; }
+  #modal form { width: calc(100vw - 16px); max-width: calc(100vw - 16px); padding: 10px; }
 }
 @media (max-width: 720px) {
-  #build-form { padding: 8px; border-radius: 16px; }
-
+  #build-form { padding: 8px; border-radius: 14px; }
   .icon-col, .format-col { flex-basis: 100%; }
   #config-dropdown { width: 100% !important; }
   #config-trigger { font-size: 12px; padding: 6px; }
   #build-form input, #build-form select, #build-form button { min-height: 24px; font-size: 13px; }
-  #build-form label { font-size: 13px; }
+  #build-form label { font-size: 12px; }
   .modal-actions button { flex: 1; padding: 6px 12px; font-size: 13px; }
-  .il .fw { min-height: 26px; padding: 3px 6px; }
+  .il .fw { min-height: 24px; padding: 3px 6px; }
   .il .fp { font-size: 11px; }
   .il select, .il input { font-size: 12px; }
+  .il .step-btn { width: 18px; height: 18px; font-size: 10px; }
+  #icon-wrapper { width: 80px; height: 80px; border-radius: 12px; }
+  #game-icon { width: 80px !important; height: 80px !important; border-radius: 12px; }
+  .icon-btn { font-size: 10px; padding: 4px 6px; }
+  .firebase-btn { font-size: 10px; padding: 4px 8px; }
 }
 @media (max-width: 480px) {
-  #modal form { padding: 8px; }
-  #build-form { padding: 6px; border-radius: 12px; }
+  #modal form { padding: 6px; }
+  #build-form { padding: 6px; border-radius: 10px; }
   #build-form input, #build-form select, #build-form button { min-height: 22px; font-size: 12px; padding: 4px 6px; }
   #build-form label { font-size: 12px; gap: 0; }
   .icon-format-row { gap: 2px; }
-  .icon-col { margin-top: 60px; }
-  #icon-wrapper { width: 56px; height: 56px; }
-  #game-icon { width: 56px !important; height: 56px !important; }
-  .icon-btn { font-size: 10px; padding: 4px 6px; }
-  .firebase-btn { font-size: 10px; padding: 4px 8px; }
-  .il .fw { min-height: 22px; padding: 2px 4px; gap: 2px; }
+  .il .fw { min-height: 20px; padding: 2px 4px; gap: 2px; }
   .il .fp { font-size: 10px; }
   .il select, .il input { font-size: 11px; }
   .il .step-btn { width: 18px; height: 18px; font-size: 10px; }
@@ -59,8 +65,8 @@ header h1 { font-size: clamp(18px, 4vw, 24px); }
 </style>
 </head>
 <body>
-<header style="display:flex;align-items:center;padding:10px 16px;background:#161b22;position:relative">
-<h1 style="margin:0;font-size:24px;color:#f0f6fc;flex-shrink:0">CI / CD</h1>
+<header style="display:flex;align-items:center;background:#161b22;position:relative">
+<h1 style="margin:0;color:#f0f6fc;flex-shrink:0">CI / CD</h1>
 <div id="loading" class="spinner-inline" style="position:absolute;left:50%;transform:translateX(-50%)"><div class="spinner"></div></div>
 <button id="new-build" style="margin-left:auto;flex-shrink:0">сделать app</button>
 </header>
@@ -91,7 +97,7 @@ header h1 { font-size: clamp(18px, 4vw, 24px); }
 <div class="icon-format-row">
 <div class="icon-col">
 <div id="icon-wrapper">
-<img id="game-icon" src="" alt="" style="width:72px;height:72px;border-radius:10px;display:none">
+<img id="game-icon" src="" alt="" style="width:96px;height:96px;border-radius:14px;display:none">
 <div id="icon-spinner" class="icon-spinner" style="display:none"></div>
 </div>
 <div class="icon-btns">
@@ -160,7 +166,7 @@ header h1 { font-size: clamp(18px, 4vw, 24px); }
 </label>
 <label class="il" style="flex:1">
 <span class="fw">
-<span class="fp">PKG:</span>
+<span class="fp">PACKAGE NAME:</span>
 <input name="package_name" id="f-pkg">
 </span>
 </label>
