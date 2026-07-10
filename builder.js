@@ -411,7 +411,7 @@ iconFile.addEventListener("change", e => {
   const f = e.target.files[0]; if (!f) return;
   if (f.type !== "image/png") { alert("Только PNG"); return; }
   const r = new FileReader();
-  r.onload = () => { currentIconDataUrl = r.result; gameIcon.src = r.result; gameIcon.style.display = "block"; };
+  r.onload = () => { currentIconDataUrl = r.result; gameIcon.src = r.result; gameIcon.style.display = "block"; hidePlaceholder(); };
   r.readAsDataURL(f);
 });
 $("icon-gen-btn").addEventListener("click", async () => {
