@@ -264,8 +264,8 @@ function buildCardHTML(r, idx) {
   const verStr = (meta?.ver) || String(r.runNumber || "");
   const codeStr = (meta?.code) || String(r.runAttempt || "1");
   const versionInfo = verStr ? `<span class="version-line">${esc(app)} v${esc(verStr)}</span>` : `<span class="version-line">${esc(app)}</span>`;
-  const createdAt = r.createdAt ? new Date(r.createdAt) : null;
-  const dateStr = createdAt ? createdAt.toLocaleDateString("ru-RU", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "";
+  const buildNum = r.runNumber || "";
+  const versionMeta = `${esc(verStr || "")}${codeStr ? " · код "+esc(codeStr) : ""}${buildNum ? " · сборка #"+esc(String(buildNum)) : ""}`;
   let downloads = { apk: null, aab: null };
   if (concl === "success") {
     if (meta?.apk || meta?.aab) downloads = { apk: meta.apk || null, aab: meta.aab || null };
@@ -288,7 +288,7 @@ function buildCardHTML(r, idx) {
   const iconBlock = iconUrl ? `<div class="card-icon-wrap"><img class="card-icon" src="${iconUrl}" alt="" loading="lazy" onerror="this.onerror=null;this.alt='🎮'"></div>` : `<div class="card-icon-wrap card-icon-placeholder">🎮</div>`;
   const timerId = `t-${r.id}`;
   const timerHtml = `<span class="timer" id="${timerId}" data-run="${r.id}" style="display:${st!=='completed'&&timers[r.id]?'inline':'none'};color:#ffd700;font-size:11px;font-weight:700">⏱ </span>`;
-  return `<div class="build-card${isProgress?' in-progress':''}" style="${bgStyle}" data-id="${r.id}">${iconBlock}<div class="card-body"><div class="card-text"><div class="app-name">${versionInfo}</div>${pkg?`<div class="meta">${esc(pkg)}</div>`:""}${dateStr?`<div class="meta">${esc(dateStr)}</div>`:""}</div><div class="btn-group">${concl==="success"&&downloads.apk?`<a class="dl-btn dl-btn-apk" href="${downloads.apk}" download>APK</a>`:""}${concl==="success"&&downloads.aab?`<a class="dl-btn dl-btn-aab" href="${downloads.aab}" download>AAB</a>`:""}${concl!=="success"?`<a href="${esc(url)}" target="_blank" class="log-btn" style="font-size:11px;padding:3px 6px">Логи</a>`:""}<div class="status-row">${timerHtml}<span class="status ${cls} status-small">${label}</span></div><button class="del-btn" onclick="deleteRun(${r.id},event)" title="Удалить">✕</button></div></div></div>`;
+  return `<div class="build-card${isProgress?' in-progress':''}" style="${bgStyle}" data-id="${r.id}">${iconBlock}<div class="card-body"><div class="card-text"><div class="app-name">${versionInfo}</div>${pkg?`<div class="meta">${esc(pkg)}</div>`:""}${versionMeta?`<div class="meta">${versionMeta}</div>`:""}</div><div class="btn-group">${concl==="success"&&downloads.apk?`<a class="dl-btn dl-btn-apk" href="${downloads.apk}" download>APK</a>`:""}${concl==="success"&&downloads.aab?`<a class="dl-btn dl-btn-aab" href="${downloads.aab}" download>AAB</a>`:""}${concl!=="success"?`<a href="${esc(url)}" target="_blank" class="log-btn" style="font-size:11px;padding:3px 6px">Логи</a>`:""}<div class="status-row">${timerHtml}<span class="status ${cls} status-small">${label}</span></div><button class="del-btn" onclick="deleteRun(${r.id},event)" title="Удалить">✕</button></div></div></div>`;
 }
 
 function updateTimers() {
