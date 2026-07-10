@@ -16,19 +16,19 @@
       "firebase_cfg": "com.playsocialgames.plinkofun.json"
     },
     {
-      "id": "plinko-real-game",
-      "label": "Plinko Real Game",
+      "id": "Plinko",
+      "label": "Plinko",
       "game_repository": "zey-win/plinko",
-      "app_name": "Plinko Real Game",
-      "package_name": "com.gaming.plinko",
-      "version_name": "1.2.6",
-      "version_code": "10",
-      "zeywin_api_key": "zw_a74ece6ca27889017b4e7f31ca3575abb2337d281bd8d32d",
-      "admob_app_id": "ca-app-pub-1585565865476548~2207294967",
-      "admob_banner": "ca-app-pub-1585565865476548/1949732876",
-      "admob_interstitial": "ca-app-pub-1585565865476548/3620083367",
-      "admob_rewarded": "ca-app-pub-1585565865476548/8194496114",
-      "firebase_cfg": "PlinkoRealGame.json"
+      "app_name": "Plinko",
+      "package_name": "com.socialapps.plinko",
+      "version_name": "15",
+      "version_code": "15",
+      "zeywin_api_key": "zw_8d59f9c3003702276e42bd69f07ea8988c77be6ecf5f953f",
+      "admob_app_id": "ca-app-pub-6988952582458184~4804049392",
+      "admob_banner": "ca-app-pub-6988952582458184/3882465916",
+      "admob_interstitial": "ca-app-pub-6988952582458184/4771360386",
+      "admob_rewarded": "ca-app-pub-6988952582458184/9789398710",
+      "firebase_cfg": "google-services(com-socialapps-plinko).json"
     },
     {
       "id": "unstopable",

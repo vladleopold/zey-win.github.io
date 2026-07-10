@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "100695377798",
+    "project_id": "com-socialapps-plinko",
+    "storage_bucket": "com-socialapps-plinko.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:100695377798:android:d6aa015936b2845f550e07",
+        "android_client_info": {
+          "package_name": "com.socialapps.plinko"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjPbJpQidOawXJD7h4feFkrTE0ZoKEGdQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
