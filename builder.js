@@ -47,9 +47,12 @@ function repoFromTitle(t) { const s = (t || "").toLowerCase().replace(/[^a-z0-9 
 function parseTitle(title) { if (!title) return { app: "Build", pkg: "" }; const parts = title.replace(/^Android:\s*/i, "").split(" / ").map(p => p.trim()); return { app: parts[0] || "Build", pkg: parts[1] || "" }; }
 function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
 
-function showIconSpinner() { gameIcon.style.display = "none"; iconSpinner.style.display = "block"; }
+const iconPlaceholder = document.getElementById("icon-placeholder");
+function showPlaceholder() { if (iconPlaceholder) iconPlaceholder.style.display = ""; }
+function hidePlaceholder() { if (iconPlaceholder) iconPlaceholder.style.display = "none"; }
+function showIconSpinner() { gameIcon.style.display = "none"; iconSpinner.style.display = "block"; hidePlaceholder(); }
 function hideIconSpinner() { iconSpinner.style.display = "none"; }
-function setIcon(src) { if (src) { gameIcon.src = src; gameIcon.style.display = "block"; } else gameIcon.style.display = "none"; hideIconSpinner(); }
+function setIcon(src) { if (src) { gameIcon.src = src; gameIcon.style.display = "block"; hidePlaceholder(); } else { gameIcon.style.display = "none"; showPlaceholder(); } hideIconSpinner(); }
 
 async function getIconDataUrl(repo, ref) {
   const refStr = ref || "main"; showIconSpinner();
