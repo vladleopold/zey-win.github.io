@@ -263,7 +263,7 @@ function buildCardHTML(r, idx) {
   const iconUrl = resolveIcon(r);
   const verStr = (meta?.ver) || String(r.runNumber || "");
   const codeStr = (meta?.code) || String(r.runAttempt || "1");
-  const versionInfo = verStr ? `<span class="version-line">${esc(app)} v${esc(verStr)}</span>` : `<span class="version-line">${esc(app)}</span>`;
+  const versionInfo = `<span class="version-line">${esc(app)}</span>`;
   const buildNum = r.runNumber || "";
   const versionMeta = `${esc(verStr || "")}${codeStr ? " · код "+esc(codeStr) : ""}${buildNum ? " · сборка #"+esc(String(buildNum)) : ""}`;
   let downloads = { apk: null, aab: null };
