@@ -1066,6 +1066,7 @@ function fillConfig(configId) {
 async function autoSaveConfig(fd) {
   const label = fd.get("app_name") || "Без имени";
   const id = label.toLowerCase().replace(/\s+/g, "-");
+  const iconPath = fd.get("icon_png_path") || "";
   const cfg = {
     id: id,
     label: label,
@@ -1081,8 +1082,10 @@ async function autoSaveConfig(fd) {
     admob_banner: fd.get("admob_banner") || "",
     admob_interstitial: fd.get("admob_interstitial") || "",
     admob_rewarded: fd.get("admob_rewarded") || "",
+    icon_path: iconPath || "",
     icon_data_url: currentIconDataUrl || "",
-    firebase_cfg: null
+    firebase_cfg: firebaseJson || "",
+    firebase_json_base64: firebaseJson || ""
   };
   if (!savedConfigs.some(c => c.id === id)) savedConfigs.push(cfg);
   // Persist to localStorage (per-device fallback)
