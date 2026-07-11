@@ -557,7 +557,7 @@ async function runBatchBuilds() {
       line.textContent = `▶ ${cfg.label}`;
       steps?.appendChild(line);
       try {
-        await buildFromConfig(cfg, { useNextVersion: true, buildFormat: "apk_aab" });
+        await buildFromConfig({ ...cfg, zeywin_sdk_version: "v3.9.37" }, { useNextVersion: true, buildFormat: "apk_aab" });
         line.textContent = `✅ ${cfg.label}`;
       } catch (error) {
         line.textContent = `❌ ${cfg.label}: ${error.message}`;
