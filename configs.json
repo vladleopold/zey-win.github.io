@@ -92,6 +92,22 @@
       "admob_interstitial": "ca-app-pub-6988952582458184/8952176419",
       "admob_rewarded": "ca-app-pub-6988952582458184/9223639151",
       "firebase_cfg": null
+    },
+    {
+      "id": "unstopable:-real-money",
+      "label": "Unstopable: Real Money",
+      "game_repository": "zey-win/Unstopable",
+      "app_name": "Unstopable: Real Money",
+      "package_name": "com.playsocialgames.chicken.road",
+      "version_name": "2",
+      "version_code": "2",
+      "version_mode": "auto_next",
+      "zeywin_api_key": "zw_f392b95e529f0f76d9d5df2baf18b6572607dfa30f19334d",
+      "admob_app_id": "ca-app-pub-1585565865476548~2207294967",
+      "admob_banner": "ca-app-pub-1585565865476548/1949732876",
+      "admob_interstitial": "ca-app-pub-1585565865476548/3620083367",
+      "admob_rewarded": "ca-app-pub-1585565865476548/8194496114",
+      "firebase_cfg": null
     }
   ]
 }
