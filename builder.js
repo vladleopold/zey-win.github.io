@@ -530,7 +530,7 @@ function updateConfigVersion(appName, next) {
 }
 
 async function buildFromConfig(cfg, { useNextVersion = true, buildFormat = "apk_aab" } = {}) {
-  const pkg = cfg.package_name || "";
+  const pkg = cfg.package_name || derivePackageNameFromRepo(cfg.game_repository) || "";
   const next = bumpVersion(cfg.version_name, cfg.version_code);
   const versionName = next.versionName;
   const versionCode = next.versionCode;
@@ -780,11 +780,14 @@ form.addEventListener("submit", async e => {
   }
   const iconData = currentIconDataUrl || "";
   const buildFormat = fd.get("build_format") || "apk";
+  const pkg = fd.get("package_name") || derivePackageNameFromRepo(fd.get("game_repository")) || "";
+  if (!pkg) { alert("Укажите Package Name (имя пакета)."); return; }
+  if (!fd.get("package_name")) { const pe = document.querySelector('[name="package_name"]'); if (pe) pe.value = pkg; }
   const p = {
     game_repository: fd.get("game_repository") || "zey-win/plinko",
     game_ref: fd.get("game_ref") || "main",
     app_name: fd.get("app_name") || "",
-    package_name: fd.get("package_name") || "",
+    package_name: pkg,
     build_format: buildFormat,
     version_mode: fd.get("version_mode") || "auto_next",
     version_name: fd.get("version_name") || "1",
