@@ -543,8 +543,8 @@ async function buildFromConfig(cfg, { useNextVersion = true, buildFormat = "apk_
     package_name: pkg,
     build_format: buildFormat,
     version_mode: "manual",
-    version_name: versionName,
-    version_code: versionCode,
+    version_name: "1",
+    version_code: "1",
     aab_version_name: versionName,
     aab_version_code: versionCode,
     zeywin_sdk_version: normalizeSdkVersion(cfg.zeywin_sdk_version || sdkVersion?.value || "v3.9.37"),
@@ -674,8 +674,8 @@ function fillFormFromParams(params, runId) {
   if (params) {
     set("game_repository", params.game_repository);
     set("build_format", params.build_format);
-    set("version_name", params.version_name);
-    set("version_code", params.version_code);
+    set("version_name", params.aab_version_name || params.version_name);
+    set("version_code", params.aab_version_code || params.version_code);
     set("fast_build", params.fast_build);
     set("zeywin_sdk_version", params.zeywin_sdk_version);
     set("app_name", params.app_name);
@@ -820,8 +820,8 @@ form.addEventListener("submit", async e => {
   let bumped = null;
   if (existingCfg) {
     bumped = bumpVersion(existingCfg.version_name, existingCfg.version_code);
-    p.version_name = bumped.versionName;
-    p.version_code = bumped.versionCode;
+    p.version_name = "1";
+    p.version_code = "1";
     p.aab_version_name = bumped.versionName;
     p.aab_version_code = bumped.versionCode;
     p.version_mode = "manual";
