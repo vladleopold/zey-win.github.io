@@ -65,6 +65,25 @@ async function getIconDataUrl(repo, ref) {
   } catch { setIcon(null); return null; }
 }
 
+// Resolve the icon for a saved config (history). Multiple configs can share the
+// same game repository (e.g. several Plinko apps), so we ask the API for the
+// per-app icon first, keyed by package name / app name.
+async function resolveConfigIconDataUrl(cfg) {
+  if (cfg.icon_data_url) return cfg.icon_data_url;
+  const params = new URLSearchParams({ game_repository: cfg.game_repository || "", game_ref: "main" });
+  if (cfg.package_name) params.set("package_name", cfg.package_name);
+  if (cfg.app_name) params.set("app_name", cfg.app_name);
+  if (cfg.icon_url) params.set("icon_url", cfg.icon_url);
+  try {
+    const res = await fetch(`${apiBase}/api/icon?${params.toString()}`, { headers: op() });
+    if (res.ok) {
+      const d = await res.json();
+      if (d.ok && d.icon?.dataUrl) return d.icon.dataUrl;
+    }
+  } catch {}
+  return null;
+}
+
 let audioCtx = null;
 function getAudioCtx() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); return audioCtx; }
 function playFanfare() { try { const ctx = getAudioCtx(); [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => { const o = ctx.createOscillator(); const g = ctx.createGain(); o.type = "sine"; o.frequency.value = f; g.gain.setValueAtTime(0.15, ctx.currentTime + i * 0.15); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.15 + 2.5); o.connect(g); g.connect(ctx.destination); o.start(ctx.currentTime + i * 0.15); o.stop(ctx.currentTime + i * 0.15 + 2.5); }); } catch {} }
@@ -531,10 +550,13 @@ function updateConfigVersion(appName, next) {
 
 async function buildFromConfig(cfg, { useNextVersion = true, buildFormat = "apk_aab" } = {}) {
   const pkg = cfg.package_name || derivePackageNameFromRepo(cfg.game_repository) || "";
+  if (!pkg) {
+    throw new Error(`У конфига «${cfg.label || cfg.app_name || cfg.id || "?"}» не указан Package Name`);
+  }
   const next = bumpVersion(cfg.version_name, cfg.version_code);
   const versionName = next.versionName;
   const versionCode = next.versionCode;
-  const iconData = cfg.icon_data_url || await getIconDataUrl(cfg.game_repository, "main");
+  const iconData = cfg.icon_data_url || await resolveConfigIconDataUrl(cfg) || await getIconDataUrl(cfg.game_repository, "main");
   const firebaseBase64 = await loadFirebaseConfigBase64(cfg.firebase_cfg);
   const d = await submitBuildPayload({
     game_repository: cfg.game_repository || "zey-win/plinko",
@@ -1027,7 +1049,10 @@ function fillConfig(configId) {
     currentIconDataUrl = cfg.icon_data_url;
     setIcon(cfg.icon_data_url);
   } else {
-    getIconDataUrl(cfg.game_repository, "main").then(url => { if (url) currentIconDataUrl = url; });
+    resolveConfigIconDataUrl(cfg).then(url => {
+      if (url) { currentIconDataUrl = url; setIcon(url); }
+      else getIconDataUrl(cfg.game_repository, "main").then(u => { if (u) currentIconDataUrl = u; });
+    });
   }
   syncVersionFields(true);
   syncSdkVersionField(true).then(() => {
