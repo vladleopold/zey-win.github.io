@@ -877,40 +877,41 @@ function toggleDropdown() {
 }
 
 async function loadConfigs() {
+  // Read device-local configs FIRST (before any overwrite) so we can re-sync them
+  let local = [];
+  try { local = JSON.parse(localStorage.getItem("savedConfigs") || "[]"); } catch {}
+
   // Load shared configs from backend (synced across devices)
   let backendConfigs = null;
   try {
     const res = await fetch(`${apiBase}/api/configs`, { headers: op() });
     if (res.ok) {
       const data = await res.json();
-      if (Array.isArray(data.configs)) {
-        backendConfigs = data.configs;
-        savedConfigs = data.configs;
-        try { localStorage.setItem("savedConfigs", JSON.stringify(data.configs)); } catch {}
-      }
+      if (Array.isArray(data.configs)) backendConfigs = data.configs;
     }
   } catch {}
-  // Fallback to static file (might be cached)
-  if (!savedConfigs.length) {
+
+  if (backendConfigs) {
+    savedConfigs = backendConfigs;
+  } else {
+    // Fallback to static file (might be cached)
     try {
       const res = await fetch("./configs.json?" + Date.now());
-      if (res.ok) {
-        const data = await res.json();
-        savedConfigs = data.configs || [];
-      }
+      if (res.ok) { const data = await res.json(); savedConfigs = data.configs || []; }
     } catch {}
   }
+
   // Merge locally-saved configs (per-device fallback)
   let localOnly = [];
-  try {
-    const local = JSON.parse(localStorage.getItem("savedConfigs") || "[]");
-    for (const lc of local) {
-      if (!savedConfigs.some(c => c.id === lc.id)) {
-        savedConfigs.push(lc);
-        localOnly.push(lc);
-      }
+  for (const lc of local) {
+    if (!savedConfigs.some(c => c.id === lc.id)) {
+      savedConfigs.push(lc);
+      localOnly.push(lc);
     }
-  } catch {}
+  }
+  // Persist the merged set locally
+  try { localStorage.setItem("savedConfigs", JSON.stringify(savedConfigs)); } catch {}
+
   // Push device-local configs up to the backend so they appear on all devices
   if (backendConfigs && localOnly.length) {
     for (const cfg of localOnly) {
