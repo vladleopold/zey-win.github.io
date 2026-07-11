@@ -998,7 +998,7 @@ async function autoSaveConfig(fd) {
     admob_banner: fd.get("admob_banner") || "",
     admob_interstitial: fd.get("admob_interstitial") || "",
     admob_rewarded: fd.get("admob_rewarded") || "",
-    icon_data_url: currentIconDataUrl || "",
+    icon_data_url: "",
     firebase_cfg: null
   };
   if (!savedConfigs.some(c => c.id === id)) savedConfigs.push(cfg);
