@@ -73,6 +73,7 @@ header h1 { font-size: clamp(20px, 4vw, 28px); font-weight: 700; }
 
 <div id="modal" class="hidden">
 <form id="build-form">
+<div id="detail-banner" style="display:none;margin-bottom:6px;padding:6px 10px;background:#3d2a0a;border:1px solid #d4871a;border-radius:6px;color:#ffb347;font-size:12px;font-weight:600"></div>
 <div style="position:relative;width:100%;margin-bottom:2px" id="config-dropdown">
 <button type="button" id="config-trigger" style="width:100%;text-align:left;padding:8px;background:#0d1117;border:1px solid #30363d;border-radius:4px;color:#c9d1d9;font-size:14px;cursor:pointer">📜 история сборок</button>
 <div id="config-list" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:999;background:#161b22;border:1px solid #30363d;border-radius:4px;max-height:300px;overflow-y:auto"></div>
@@ -217,6 +218,7 @@ header h1 { font-size: clamp(20px, 4vw, 28px); font-weight: 700; }
 </div>
 </form>
 <div id="build-progress" class="hidden">
+<button type="button" id="bp-close" title="Закрыть">✕</button>
 <div id="bp-steps"></div>
 </div>
 </div>

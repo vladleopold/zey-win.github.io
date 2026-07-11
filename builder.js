@@ -99,22 +99,27 @@ function findDownloads(pkg) {
 async function loadArtifactVersions() {
   const pkgs = new Set();
   for (const r of runs) {
-    if (r.conclusion === "success" && !runMeta[r.id]?.ver) {
+    const v = runMeta[r.id]?.ver;
+    if (r.conclusion === "success" && (!v || v === "1")) {
       const { pkg } = parseTitle(r.displayTitle || r.name || "");
       if (pkg) pkgs.add(pkg);
     }
   }
   for (const pkg of pkgs) {
     try {
-      const res = await fetch(`${apiBase}/api/artifacts?package_name=${encodeURIComponent(pkg)}`);
+      const res = await fetch(`${apiBase}/api/versions?package_name=${encodeURIComponent(pkg)}`, { headers: op() });
       if (!res.ok) continue;
       const d = await res.json();
-      if (d.versionName || d.versionCode) {
-        const run = runs.find(r => { const { pkg: rp } = parseTitle(r.displayTitle || r.name || ""); return rp === pkg; });
-        if (run) {
-          if (!runMeta[run.id]) runMeta[run.id] = {};
-          if (d.versionName) runMeta[run.id].ver = d.versionName;
-          if (d.versionCode) runMeta[run.id].code = d.versionCode;
+      const aab = d.aab || {};
+      if (aab.versionName || aab.versionCode) {
+        for (const r of runs) {
+          const v = runMeta[r.id]?.ver;
+          if (v && v !== "1") continue;
+          const { pkg: rp } = parseTitle(r.displayTitle || r.name || "");
+          if (rp !== pkg) continue;
+          if (!runMeta[r.id]) runMeta[r.id] = {};
+          if (aab.versionName) runMeta[r.id].ver = aab.versionName;
+          if (aab.versionCode) runMeta[r.id].code = aab.versionCode;
         }
       }
     } catch {}
@@ -264,11 +269,16 @@ function buildCardHTML(r, idx) {
   const url = r.htmlUrl || "#";
   const meta = runMeta[r.id];
   const iconUrl = resolveIcon(r);
-  const verStr = (meta?.ver) || String(r.runNumber || "");
-  const codeStr = (meta?.code) || String(r.runAttempt || "1");
+  const verStr = (meta?.ver) || "";
+  const codeStr = (meta?.code) || "";
   const versionInfo = esc(app);
   const buildNum = r.runNumber || "";
-  const versionMeta = `${esc(verStr || "")}${codeStr ? " · код "+esc(codeStr) : ""}${buildNum ? " · сборка #"+esc(String(buildNum)) : ""}`;
+  const versionBlock = `
+    <div class="ver-block">
+      ${verStr ? `<div class="ver-row ver-row-name"><span class="ver-key">версия:</span> <span class="ver-val">${esc(verStr)}</span></div>` : ""}
+      ${codeStr ? `<div class="ver-row ver-row-code"><span class="ver-key">версия код [revision]:</span> <span class="ver-val-code">${esc(codeStr)}</span></div>` : ""}
+      ${buildNum ? `<div class="ver-row ver-row-build"><span class="ver-key">номер сборки:</span> <span class="ver-val-build">#${esc(String(buildNum))}</span></div>` : ""}
+    </div>`;
   let downloads = { apk: null, aab: null };
   if (concl === "success") {
     if (meta?.apk || meta?.aab) downloads = { apk: meta.apk || null, aab: meta.aab || null };
@@ -291,7 +301,7 @@ function buildCardHTML(r, idx) {
   const iconBlock = iconUrl ? `<div class="card-icon-wrap"><img class="card-icon" src="${iconUrl}" alt="" loading="lazy" onerror="this.onerror=null;this.alt='🎮'"></div>` : `<div class="card-icon-wrap card-icon-placeholder">🎮</div>`;
   const timerId = `t-${r.id}`;
   const timerHtml = `<span class="timer" id="${timerId}" data-run="${r.id}" style="display:${st!=='completed'&&timers[r.id]?'inline':'none'};color:#ffd700;font-size:11px;font-weight:700">⏱ </span>`;
-  return `<div class="build-card${isProgress?' in-progress':''}" style="${bgStyle}" data-id="${r.id}">${iconBlock}<div class="card-body"><div class="card-text"><div class="app-name">${versionInfo}</div>${pkg?`<div class="meta">${esc(pkg)}</div>`:""}${versionMeta?`<div class="meta">${versionMeta}</div>`:""}</div><div class="btn-group">${concl==="success"&&downloads.apk?`<a class="dl-btn dl-btn-apk" href="${downloads.apk}" download>APK</a>`:""}${concl==="success"&&downloads.aab?`<a class="dl-btn dl-btn-aab" href="${downloads.aab}" download>AAB</a>`:""}${concl!=="success"?`<a href="${esc(url)}" target="_blank" class="log-btn" style="font-size:11px;padding:3px 6px">Логи</a>`:""}<div class="status-row">${timerHtml}<span class="status ${cls} status-small">${label}</span></div><button class="del-btn" onclick="deleteRun(${r.id},event)" title="Удалить">✕</button></div></div></div>`;
+  return `<div class="build-card${isProgress?' in-progress':''}" style="${bgStyle}" data-id="${r.id}">${iconBlock}<div class="card-body"><div class="card-text"><div class="app-name">${versionInfo}</div>${pkg?`<div class="meta">${esc(pkg)}</div>`:""}${versionBlock}</div><div class="btn-group">${concl==="success"&&downloads.apk?`<a class="dl-btn dl-btn-apk" href="${downloads.apk}" download>APK</a>`:""}${concl==="success"&&downloads.aab?`<a class="dl-btn dl-btn-aab" href="${downloads.aab}" download>AAB</a>`:""}${concl!=="success"?`<a href="${esc(url)}" target="_blank" class="log-btn" style="font-size:11px;padding:3px 6px">Логи</a>`:""}<div class="status-row">${timerHtml}<span class="status ${cls} status-small">${label}</span></div><button class="del-btn" onclick="deleteRun(${r.id},event)" title="Удалить">✕</button></div></div></div>`;
 }
 
 function updateTimers() {
@@ -465,10 +475,10 @@ async function submitBuildPayload(payload) {
     if (d.run) {
       const serverIconPath = d.icon?.path;
       const serverIconUrl = serverIconPath ? `https://raw.githubusercontent.com/zey-win/ci-cd/main/${serverIconPath}` : (d.icon?.htmlUrl || null);
-      runMeta[d.run.id] = { icon: serverIconUrl || null, ver: payload.aab_version_name || payload.version_name || "", code: payload.aab_version_code || payload.version_code || "" };
+      runMeta[d.run.id] = { icon: serverIconUrl || null, ver: payload.aab_version_name || payload.version_name || "", code: payload.aab_version_code || payload.version_code || "", params: { ...requestPayload } };
       try {
         const sv = JSON.parse(localStorage.getItem('rv')||'{}');
-        sv[d.run.id] = { ver: payload.aab_version_name || payload.version_name || '', code: payload.aab_version_code || payload.version_code || '' };
+        sv[d.run.id] = { ver: payload.aab_version_name || payload.version_name || '', code: payload.aab_version_code || payload.version_code || '', params: { ...requestPayload } };
         if (d.latestArtifact?.apkDownloadUrl) { runMeta[d.run.id].apk = d.latestArtifact.apkDownloadUrl; sv[d.run.id].apk = d.latestArtifact.apkDownloadUrl; }
         if (d.latestArtifact?.aabDownloadUrl) { runMeta[d.run.id].aab = d.latestArtifact.aabDownloadUrl; sv[d.run.id].aab = d.latestArtifact.aabDownloadUrl; }
         localStorage.setItem('rv',JSON.stringify(sv));
@@ -529,6 +539,8 @@ async function runBatchBuilds() {
 
   batchBuildRunning = true;
   const progress = $("build-progress");
+  const bpClose = $("bp-close");
+  if (bpClose) bpClose.onclick = () => { progress?.classList.add("hidden"); };
   const steps = $("bp-steps");
   const formEl = $("build-form");
   const previousFormDisplay = formEl?.style.display || "";
@@ -555,6 +567,13 @@ async function runBatchBuilds() {
   } finally {
     batchBuildRunning = false;
     if (formEl) formEl.style.display = previousFormDisplay;
+    if (progress) {
+      const doneLine = document.createElement("div");
+      doneLine.style.cssText = "padding:10px 0;color:#3fb950;font-size:14px;font-weight:600";
+      doneLine.textContent = "✅ Все сборки завершены";
+      steps?.appendChild(doneLine);
+      progress.classList.add("hidden");
+    }
   }
 }
 
@@ -577,6 +596,7 @@ if (addRepoBtn) {
   });
 }
 newBuildBtn.addEventListener("click", () => {
+  closeDetail();
   currentIconDataUrl = null; firebaseJson = null;
   form.style.display = "";
   $("build-progress").classList.add("hidden");
@@ -588,8 +608,139 @@ newBuildBtn.addEventListener("click", () => {
   iconLoadedDeferred = getIconDataUrl(repoSelect.value, "main").then(url => { if (url) currentIconDataUrl = url; });
   syncVersionFields(true);
 });
-cancelBtn.addEventListener("click", () => modal.classList.add("hidden"));
-modal.addEventListener("click", e => { if (e.target === modal) modal.classList.add("hidden"); });
+cancelBtn.addEventListener("click", () => { modal.classList.add("hidden"); closeDetail(); });
+modal.addEventListener("click", e => { if (e.target === modal) { modal.classList.add("hidden"); closeDetail(); } });
+
+const bpCloseBtn = $("bp-close");
+if (bpCloseBtn) bpCloseBtn.addEventListener("click", () => $("build-progress").classList.add("hidden"));
+
+// ----- Build detail / restart -----
+let detailRunId = null;
+let detailOriginal = null;
+
+function snapshotFormParams() {
+  const fd = new FormData(form);
+  const get = n => fd.get(n) || "";
+  return {
+    game_repository: get("game_repository"),
+    build_format: get("build_format"),
+    version_name: get("version_name"),
+    version_code: get("version_code"),
+    fast_build: get("fast_build"),
+    zeywin_sdk_version: get("zeywin_sdk_version"),
+    app_name: get("app_name"),
+    package_name: get("package_name"),
+    zeywin_api_key: get("zeywin_api_key"),
+    admob_android_app_id: get("admob_app_id"),
+    admob_android_banner_id: get("admob_banner"),
+    admob_android_interstitial_id: get("admob_interstitial"),
+    admob_android_rewarded_id: get("admob_rewarded")
+  };
+}
+
+function fillFormFromParams(params, runId) {
+  const set = (name, val) => { const el = document.querySelector(`[name="${name}"]`); if (el && val != null) el.value = val; };
+  const run = runs.find(r => r.id === runId);
+  if (params) {
+    set("game_repository", params.game_repository);
+    set("build_format", params.build_format);
+    set("version_name", params.version_name);
+    set("version_code", params.version_code);
+    set("fast_build", params.fast_build);
+    set("zeywin_sdk_version", params.zeywin_sdk_version);
+    set("app_name", params.app_name);
+    set("package_name", params.package_name);
+    set("zeywin_api_key", params.zeywin_api_key);
+    set("admob_app_id", params.admob_android_app_id);
+    set("admob_banner", params.admob_android_banner_id);
+    set("admob_interstitial", params.admob_android_interstitial_id);
+    set("admob_rewarded", params.admob_android_rewarded_id);
+    const icon = params.iconDataUrl || params.icon_png_path || null;
+    if (icon && String(icon).startsWith("data:")) { currentIconDataUrl = icon; setIcon(icon); }
+    else if (params.game_repository) { getIconDataUrl(params.game_repository, "main").then(u => { if (u) currentIconDataUrl = u; }); }
+    firebaseJson = params.firebaseJsonBase64 || params.firebase_json_base64 || null;
+  } else {
+    const { app, pkg } = parseTitle(run?.displayTitle || run?.name || "");
+    set("app_name", app);
+    set("package_name", pkg);
+    set("build_format", "apk_aab");
+    set("version_name", runMeta[runId]?.ver || "1");
+    set("version_code", runMeta[runId]?.code || "1");
+    const ic = resolveIcon(run);
+    if (ic) setIcon(ic);
+    firebaseJson = null;
+  }
+  const st = $("firebase-status");
+  if (st) { st.textContent = firebaseJson ? "✅ Firebase загружен" : ""; st.style.display = firebaseJson ? "inline" : "none"; }
+  if ($("f-pkg")?.value) { $("f-pkg").dispatchEvent(new Event("input")); document.querySelectorAll(".pkg-hidden").forEach(el => el.classList.add("show")); }
+  if (($("f-admob-app")?.value) || params?.admob_android_app_id) showAdmobFields();
+  if (params?.game_repository) updateIcon();
+  syncVersionFields(false);
+  syncSdkVersionField(true).then(() => { const v = params?.zeywin_sdk_version; if (v && sdkVersion) sdkVersion.value = normalizeSdkVersion(v); });
+}
+
+function clearChangedFields() {
+  form.querySelectorAll(".changed").forEach(el => el.classList.remove("changed"));
+}
+
+function markChangedFields() {
+  if (!detailRunId || !detailOriginal) return;
+  const cur = snapshotFormParams();
+  const map = {
+    game_repository: "game_repository", build_format: "build_format", version_name: "version_name",
+    version_code: "version_code", fast_build: "fast_build", zeywin_sdk_version: "zeywin_sdk_version",
+    app_name: "app_name", package_name: "package_name", zeywin_api_key: "zeywin_api_key",
+    admob_android_app_id: "admob_app_id", admob_android_banner_id: "admob_banner",
+    admob_android_interstitial_id: "admob_interstitial", admob_android_rewarded_id: "admob_rewarded"
+  };
+  for (const [origKey, fieldName] of Object.entries(map)) {
+    const el = document.querySelector(`[name="${fieldName}"]`);
+    if (!el) continue;
+    const changed = String(cur[origKey] ?? "") !== String(detailOriginal[origKey] ?? "");
+    el.classList.toggle("changed", changed);
+  }
+}
+
+function openDetail(runId) {
+  const meta = runMeta[runId];
+  const params = meta?.params || null;
+  detailRunId = runId;
+  detailOriginal = params ? { ...params } : null;
+  fillFormFromParams(params, runId);
+  const banner = $("detail-banner");
+  if (banner) { banner.style.display = ""; banner.textContent = `Перезапуск сборки #${runId} — изменённые поля подсвечены оранжевым`; }
+  const submitBtn = $("modal-submit");
+  if (submitBtn) { submitBtn.textContent = "Перезапустить"; submitBtn.classList.add("btn-restart"); }
+  form.style.display = "";
+  $("build-progress")?.classList.add("hidden");
+  modal.classList.remove("hidden");
+  clearChangedFields();
+}
+
+function closeDetail() {
+  detailRunId = null;
+  detailOriginal = null;
+  const banner = $("detail-banner");
+  if (banner) banner.style.display = "none";
+  const submitBtn = $("modal-submit");
+  if (submitBtn) { submitBtn.textContent = "Собрать"; submitBtn.classList.remove("btn-restart"); }
+  clearChangedFields();
+}
+
+function restartBuild(runId) {
+  openDetail(runId);
+}
+
+
+document.addEventListener("click", e => {
+  const card = e.target.closest(".build-card");
+  if (!card) return;
+  if (e.target.closest("a, button, .del-btn")) return;
+  const id = Number(card.dataset.id);
+  if (id) openDetail(id);
+});
+
+form.addEventListener("input", markChangedFields);
 
 form.addEventListener("submit", async e => {
   e.preventDefault();
@@ -619,6 +770,20 @@ form.addEventListener("submit", async e => {
     iconDataUrl: iconData,
     firebaseJsonBase64: firebaseJson || ""
   };
+  const restarting = !!detailRunId;
+  if (restarting) {
+    const oldRun = runs.find(r => r.id === detailRunId);
+    if (oldRun && oldRun.status !== "completed") {
+      try { await fetch(`${apiBase}/api/cancel`, { method: "POST", headers: op(), body: JSON.stringify({ run_id: oldRun.id }) }); } catch {}
+    }
+    const original = runMeta[detailRunId]?.params || {};
+    p.game_repository = fd.get("game_repository") || original.game_repository || "zey-win/plinko";
+    p.game_ref = original.game_ref || "main";
+    p.version_mode = original.version_mode || "auto_next";
+    p.signing_profile = original.signing_profile || "playmax";
+    p.iconDataUrl = currentIconDataUrl || original.iconDataUrl || original.icon_png_path || "";
+    p.firebaseJsonBase64 = firebaseJson || original.firebaseJsonBase64 || original.firebase_json_base64 || "";
+  }
   try {
     const d = await submitBuildPayload(p);
     if (d.run) {
@@ -632,6 +797,7 @@ form.addEventListener("submit", async e => {
     form.style.display = "";
     $("build-progress")?.classList.add("hidden");
     form.querySelectorAll("label, .modal-actions, .form-row, .icon-format-row").forEach(el => { el.style.opacity = ""; el.style.transform = ""; });
+    closeDetail();
   } catch (err) { alert("Ошибка: " + err.message); }
 });
 

@@ -55,7 +55,9 @@ input[name="zeywin_api_key"]{text-align:right;direction:rtl}
 @keyframes btn-rainbow{0%,100%{background:#238636;box-shadow:0 0 8px rgba(35,134,54,0.5)}33%{background:#1f6feb;box-shadow:0 0 8px rgba(31,111,235,0.5)}66%{background:#d4871a;box-shadow:0 0 8px rgba(212,135,26,0.5)}}
 #build-progress{position:absolute;inset:0;background:#161b22;border-radius:8px;display:flex;align-items:center;justify-content:center;z-index:10;padding:24px}
 #build-progress.hidden{display:none}
-#bp-steps{font-size:13px;color:#58a6ff;text-align:center;line-height:1.8;max-height:100%;overflow:hidden;width:100%}
+#bp-steps{font-size:13px;color:#58a6ff;text-align:center;line-height:1.8;max-height:100%;overflow:auto;width:100%}
+#bp-close{position:absolute;top:8px;right:8px;width:30px;height:30px;border:none;border-radius:6px;background:#21262d;color:#c9d1d9;font-size:16px;line-height:1;cursor:pointer;z-index:11}
+#bp-close:hover{background:#30363d;color:#fff}
 .build-card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:12px;margin-bottom:12px;display:flex;align-items:center;gap:12px;position:relative;overflow:hidden}
 .build-card.in-progress::before{content:"";position:absolute;inset:0;background-image:url('animation.gif');background-size:auto;background-position:center;background-repeat:repeat;opacity:0.25;pointer-events:none;z-index:1;mix-blend-mode:plus-lighter}
 .build-card .right-col{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
@@ -72,6 +74,19 @@ input[name="zeywin_api_key"]{text-align:right;direction:rtl}
 .status-failure{background:#da363320;color:#f85149}
 .status-pending{background:#d2992220;color:#d29922}
 .version-line{font-size:12px;color:#8b949e}
+.ver-block{margin-top:3px;display:flex;flex-direction:column;gap:1px}
+.ver-row{display:flex;align-items:baseline;gap:5px;line-height:1.2}
+.ver-key{font-size:10px;color:#6e7681;font-family:system-ui,sans-serif;font-weight:400;white-space:nowrap}
+.ver-val{font-size:15px;font-weight:700;color:#58a6ff;font-family:"Segoe UI",system-ui,sans-serif;letter-spacing:.2px}
+.ver-val-code{font-size:14px;font-weight:600;color:#3fb950;font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace}
+.ver-val-build{font-size:11px;font-weight:500;color:#8b949e;font-family:Georgia,"Times New Roman",serif;font-style:italic}
+.ver-row-build{margin-top:1px}
+.build-card{cursor:pointer}
+.build-card input, .build-card a, .build-card button{cursor:auto}
+#detail-banner{font-family:system-ui,sans-serif}
+.btn-restart{background:#d4871a !important}
+#build-form .changed{outline:2px solid #d4871a;outline-offset:1px;background:#2a1d08;color:#ffd9a0}
+#build-form .changed:focus{outline-color:#ffb347}
 #builds-container,#active-container{padding:0 16px 16px}
 .spinner-overlay{position:fixed;top:24px;right:24px;width:24px;height:24px;pointer-events:none;z-index:10}
 .spinner-overlay .spinner{width:24px;height:24px;border:3px solid #30363d;border-top-color:#58a6ff;border-radius:50%;animation:spin .3s linear infinite}
