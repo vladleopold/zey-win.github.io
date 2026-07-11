@@ -155,6 +155,23 @@
       "admob_interstitial": "",
       "admob_rewarded": "ca-app-pub-7850961348081827/6758080070",
       "firebase_cfg": null
+    },
+    {
+      "id": "plinko",
+      "label": "Plinko",
+      "game_repository": "zey-win/plinko",
+      "app_name": "Plinko",
+      "package_name": "com.socialapps.plinko",
+      "version_name": "17",
+      "version_code": "38",
+      "version_mode": "auto_next",
+      "zeywin_sdk_version": "v3.9.37",
+      "zeywin_api_key": "zw_8d59f9c3003702276e42bd69f07ea8988c77be6ecf5f953f",
+      "admob_app_id": "ca-app-pub-6988952582458184~4804049392",
+      "admob_banner": "ca-app-pub-6988952582458184/3882465916",
+      "admob_interstitial": "ca-app-pub-6988952582458184/4771360386",
+      "admob_rewarded": "ca-app-pub-6988952582458184/9789398710",
+      "firebase_cfg": null
     }
   ]
 }
