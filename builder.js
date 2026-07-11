@@ -877,6 +877,7 @@ function renderConfigDropdown() {
     label.onclick = (e) => { e.stopPropagation(); fillConfig(c.id); closeDropdown(); };
     item.appendChild(label);
     const del = document.createElement("button");
+    del.type = "button";
     del.textContent = "✕";
     del.title = "Удалить";
     del.style.cssText = "background:none;border:none;color:#ff4444;cursor:pointer;font-size:14px;padding:2px 6px;border-radius:3px";
@@ -1055,7 +1056,7 @@ async function autoSaveConfig(fd) {
     admob_banner: fd.get("admob_banner") || "",
     admob_interstitial: fd.get("admob_interstitial") || "",
     admob_rewarded: fd.get("admob_rewarded") || "",
-    icon_data_url: "",
+    icon_data_url: currentIconDataUrl || "",
     firebase_cfg: null
   };
   if (!savedConfigs.some(c => c.id === id)) savedConfigs.push(cfg);
