@@ -926,11 +926,13 @@ async function loadConfigs() {
 
   // Load shared configs from backend (synced across devices)
   let backendConfigs = null;
+  let backendDeleted = [];
   try {
     const res = await fetch(`${apiBase}/api/configs`, { headers: op() });
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data.configs)) backendConfigs = data.configs;
+      if (Array.isArray(data.deleted)) backendDeleted = data.deleted;
     }
   } catch {}
 
@@ -944,10 +946,19 @@ async function loadConfigs() {
     } catch {}
   }
 
+  const deletedSet = new Set(backendDeleted);
   // Merge locally-saved configs (per-device fallback)
   let localOnly = [];
   for (const lc of local) {
-    if (!savedConfigs.some(c => c.id === lc.id)) {
+    // A config deleted on another device must NOT be re-pushed; purge it locally
+    if (deletedSet.has(lc.id)) {
+      try {
+        const lst = JSON.parse(localStorage.getItem("savedConfigs") || "[]").filter((x) => x.id !== lc.id);
+        localStorage.setItem("savedConfigs", JSON.stringify(lst));
+      } catch {}
+      continue;
+    }
+    if (!savedConfigs.some((c) => c.id === lc.id)) {
       savedConfigs.push(lc);
       localOnly.push(lc);
     }
