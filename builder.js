@@ -500,25 +500,53 @@ async function submitBuildPayload(payload) {
   }
 }
 
+// i+1.0 algorithm: increment the leading integer of the version and reset to .0,
+// and increment the version code by 1.
+function bumpVersion(versionName, versionCode) {
+  const s = String(versionName || "");
+  const m = s.match(/(\d+)/);
+  const n = m ? parseInt(m[1], 10) : 0;
+  return {
+    versionName: (n + 1) + ".0",
+    versionCode: String((parseInt(versionCode, 10) || 0) + 1)
+  };
+}
+
+function updateConfigVersion(appName, next) {
+  const id = String(appName || "").toLowerCase().replace(/\s+/g, "-");
+  const cfg = savedConfigs.find(c => c.id === id);
+  if (!cfg) return;
+  cfg.version_name = next.versionName;
+  cfg.version_code = next.versionCode;
+  try {
+    const local = JSON.parse(localStorage.getItem("savedConfigs") || "[]");
+    const lc = local.find(x => x.id === id);
+    if (lc) { lc.version_name = next.versionName; lc.version_code = next.versionCode; }
+    localStorage.setItem("savedConfigs", JSON.stringify(local));
+  } catch {}
+  try {
+    fetch(`${apiBase}/api/configs`, { method: "POST", headers: op(), body: JSON.stringify({ config: cfg }) });
+  } catch {}
+}
+
 async function buildFromConfig(cfg, { useNextVersion = true, buildFormat = "apk_aab" } = {}) {
   const pkg = cfg.package_name || "";
-  const versionData = useNextVersion ? await loadVersionSuggestion(pkg, true) : null;
-  const suggested = versionData?.aab || {};
-  const versionName = useNextVersion ? (suggested.versionName || versionData?.latest?.versionName || cfg.version_name || "1") : (cfg.version_name || "1");
-  const versionCode = useNextVersion ? String(suggested.versionCode || versionData?.latest?.versionCode || cfg.version_code || "1") : String(cfg.version_code || "1");
+  const next = bumpVersion(cfg.version_name, cfg.version_code);
+  const versionName = next.versionName;
+  const versionCode = next.versionCode;
   const iconData = cfg.icon_data_url || await getIconDataUrl(cfg.game_repository, "main");
   const firebaseBase64 = await loadFirebaseConfigBase64(cfg.firebase_cfg);
-  return submitBuildPayload({
+  const d = await submitBuildPayload({
     game_repository: cfg.game_repository || "zey-win/plinko",
     game_ref: "main",
     app_name: cfg.app_name || cfg.label || "",
     package_name: pkg,
     build_format: buildFormat,
-    version_mode: "auto_next",
+    version_mode: "manual",
     version_name: versionName,
     version_code: versionCode,
-    aab_version_name: "",
-    aab_version_code: "",
+    aab_version_name: versionName,
+    aab_version_code: versionCode,
     zeywin_sdk_version: normalizeSdkVersion(cfg.zeywin_sdk_version || sdkVersion?.value || "v3.9.37"),
     zeywin_api_key: cfg.zeywin_api_key || "",
     admob_android_app_id: cfg.admob_app_id || "",
@@ -528,6 +556,8 @@ async function buildFromConfig(cfg, { useNextVersion = true, buildFormat = "apk_
     iconDataUrl: iconData || "",
     firebaseJsonBase64: firebaseBase64 || ""
   }, { autoSave: false });
+  updateConfigVersion(cfg.app_name || cfg.label, next);
+  return d;
 }
 
 async function runBatchBuilds() {
@@ -784,6 +814,18 @@ form.addEventListener("submit", async e => {
     p.iconDataUrl = currentIconDataUrl || original.iconDataUrl || original.icon_png_path || "";
     p.firebaseJsonBase64 = firebaseJson || original.firebaseJsonBase64 || original.firebase_json_base64 || "";
   }
+  // Bump the matching saved config's version using the i+1.0 algorithm
+  const buildId = (p.app_name || "").toLowerCase().replace(/\s+/g, "-");
+  const existingCfg = savedConfigs.find(c => c.id === buildId);
+  let bumped = null;
+  if (existingCfg) {
+    bumped = bumpVersion(existingCfg.version_name, existingCfg.version_code);
+    p.version_name = bumped.versionName;
+    p.version_code = bumped.versionCode;
+    p.aab_version_name = bumped.versionName;
+    p.aab_version_code = bumped.versionCode;
+    p.version_mode = "manual";
+  }
   try {
     const d = await submitBuildPayload(p);
     if (d.run) {
@@ -792,6 +834,7 @@ form.addEventListener("submit", async e => {
       runMeta[d.run.id] = { ...(runMeta[d.run.id] || {}), ver: latestVersion, code: latestCode };
     }
     autoSaveConfig(fd);
+    if (bumped) updateConfigVersion(p.app_name, bumped);
     iconLoadedDeferred = null;
     modal.classList.add("hidden");
     form.style.display = "";
