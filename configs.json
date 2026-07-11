@@ -95,6 +95,21 @@
       "admob_interstitial": "ca-app-pub-6988952582458184/4178841785",
       "admob_rewarded": "ca-app-pub-6988952582458184/3557071433",
       "firebase_cfg": null
+    },
+    {
+      "id": "roulette",
+      "label": "Roulette",
+      "game_repository": "zey-win/roulette",
+      "app_name": "Roulette",
+      "package_name": "com.playsocialgames.roulette",
+      "version_name": "6.7",
+      "version_code": "6",
+      "zeywin_api_key": "zw_183a2bdbf64b64dc54e4a8bc81c577fd39358117e7a5aea6",
+      "admob_app_id": "ca-app-pub-6988952582458184~7106011191",
+      "admob_banner": "",
+      "admob_interstitial": "",
+      "admob_rewarded": "",
+      "firebase_cfg": null
     }
   ]
 }
