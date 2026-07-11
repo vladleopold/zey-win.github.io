@@ -811,7 +811,7 @@ function renderConfigDropdown() {
   toolbar.style.cssText = "display:flex;gap:6px;align-items:center;padding:8px 10px;border-bottom:1px solid #21262d;background:#0d1117;position:sticky;top:0;z-index:1";
   const batchBtn = document.createElement("button");
   batchBtn.type = "button";
-  batchBtn.textContent = "Собрать всё";
+  batchBtn.textContent = "Собрать и Обновить Всё";
   batchBtn.style.cssText = "flex:1;padding:7px 8px;background:#238636;border:none;border-radius:4px;color:#fff;font-size:13px;cursor:pointer";
   batchBtn.onclick = async (e) => { e.stopPropagation(); closeDropdown(); await runBatchBuilds(); };
   toolbar.appendChild(batchBtn);
