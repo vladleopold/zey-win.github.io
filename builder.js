@@ -845,22 +845,13 @@ function renderConfigDropdown() {
         const local = JSON.parse(localStorage.getItem("savedConfigs") || "[]");
         localStorage.setItem("savedConfigs", JSON.stringify(local.filter(x => x.id !== id)));
       } catch {}
-      // Delete from repo (configs.json) via GitHub API
+      // Delete from backend (shared across devices)
       try {
-        const getRes = await fetch("https://api.github.com/repos/zey-win/zey-win.github.io/contents/configs.json", {
-          headers: { "Authorization": "token " + operatorKey, "Accept": "application/vnd.github.v3+json" }
+        await fetch(`${apiBase}/api/configs`, {
+          method: "DELETE",
+          headers: op(),
+          body: JSON.stringify({ id })
         });
-        if (getRes.ok) {
-          const meta = await getRes.json();
-          const content = JSON.parse(atob(meta.content));
-          content.configs = content.configs.filter(x => x.id !== id);
-          const updated = btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2))));
-          await fetch("https://api.github.com/repos/zey-win/zey-win.github.io/contents/configs.json", {
-            method: "PUT",
-            headers: { "Authorization": "token " + operatorKey, "Accept": "application/vnd.github.v3+json", "Content-Type": "application/json" },
-            body: JSON.stringify({ message: "delete config: " + id, content: updated, sha: meta.sha })
-          });
-        }
       } catch {}
       if (selectedConfigId === id) { selectedConfigId = null; }
       renderConfigDropdown();
@@ -886,21 +877,21 @@ function toggleDropdown() {
 }
 
 async function loadConfigs() {
-  let loaded = false;
-  // Try GitHub API first (always up-to-date)
+  // Load shared configs from backend (synced across devices)
+  let backendConfigs = null;
   try {
-    const res = await fetch("https://api.github.com/repos/zey-win/zey-win.github.io/contents/configs.json", {
-      headers: { "Authorization": "token " + operatorKey, "Accept": "application/vnd.github.v3+json" }
-    });
+    const res = await fetch(`${apiBase}/api/configs`, { headers: op() });
     if (res.ok) {
-      const meta = await res.json();
-      const data = JSON.parse(atob(meta.content));
-      savedConfigs = data.configs || [];
-      loaded = true;
+      const data = await res.json();
+      if (Array.isArray(data.configs)) {
+        backendConfigs = data.configs;
+        savedConfigs = data.configs;
+        try { localStorage.setItem("savedConfigs", JSON.stringify(data.configs)); } catch {}
+      }
     }
   } catch {}
-  // Fallback to raw CDN (might be cached)
-  if (!loaded) {
+  // Fallback to static file (might be cached)
+  if (!savedConfigs.length) {
     try {
       const res = await fetch("./configs.json?" + Date.now());
       if (res.ok) {
@@ -909,13 +900,25 @@ async function loadConfigs() {
       }
     } catch {}
   }
-  // Merge locally-saved configs from auto-save
+  // Merge locally-saved configs (per-device fallback)
+  let localOnly = [];
   try {
     const local = JSON.parse(localStorage.getItem("savedConfigs") || "[]");
     for (const lc of local) {
-      if (!savedConfigs.some(c => c.id === lc.id)) savedConfigs.push(lc);
+      if (!savedConfigs.some(c => c.id === lc.id)) {
+        savedConfigs.push(lc);
+        localOnly.push(lc);
+      }
     }
   } catch {}
+  // Push device-local configs up to the backend so they appear on all devices
+  if (backendConfigs && localOnly.length) {
+    for (const cfg of localOnly) {
+      try {
+        await fetch(`${apiBase}/api/configs`, { method: "POST", headers: op(), body: JSON.stringify({ config: cfg }) });
+      } catch {}
+    }
+  }
 }
 
 function fillConfig(configId) {
@@ -979,7 +982,6 @@ function fillConfig(configId) {
 async function autoSaveConfig(fd) {
   const label = fd.get("app_name") || "Без имени";
   const id = label.toLowerCase().replace(/\s+/g, "-");
-  if (savedConfigs.some(c => c.id === id)) return;
   const cfg = {
     id: id,
     label: label,
@@ -998,31 +1000,22 @@ async function autoSaveConfig(fd) {
     icon_data_url: currentIconDataUrl || "",
     firebase_cfg: null
   };
-  savedConfigs.push(cfg);
-  // Persist to localStorage
+  if (!savedConfigs.some(c => c.id === id)) savedConfigs.push(cfg);
+  // Persist to localStorage (per-device fallback)
   try {
     const local = JSON.parse(localStorage.getItem("savedConfigs") || "[]");
-    local.push(cfg);
-    localStorage.setItem("savedConfigs", JSON.stringify(local));
-  } catch {}
-  // Save to repo (configs.json) via GitHub API
-  try {
-    const getRes = await fetch("https://api.github.com/repos/zey-win/zey-win.github.io/contents/configs.json", {
-      headers: { "Authorization": "token " + operatorKey, "Accept": "application/vnd.github.v3+json" }
-    });
-    if (getRes.ok) {
-      const meta = await getRes.json();
-      const content = JSON.parse(atob(meta.content));
-      if (!content.configs.some(x => x.id === cfg.id)) {
-        content.configs.push(cfg);
-        const updated = btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2))));
-        await fetch("https://api.github.com/repos/zey-win/zey-win.github.io/contents/configs.json", {
-          method: "PUT",
-          headers: { "Authorization": "token " + operatorKey, "Accept": "application/vnd.github.v3+json", "Content-Type": "application/json" },
-          body: JSON.stringify({ message: "auto-save config: " + cfg.id, content: updated, sha: meta.sha })
-        });
-      }
+    if (!local.some(x => x.id === id)) {
+      local.push(cfg);
+      localStorage.setItem("savedConfigs", JSON.stringify(local));
     }
+  } catch {}
+  // Persist to backend so configs are shared across devices
+  try {
+    await fetch(`${apiBase}/api/configs`, {
+      method: "POST",
+      headers: op(),
+      body: JSON.stringify({ config: cfg })
+    });
   } catch {}
 }
 
