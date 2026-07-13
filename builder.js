@@ -266,6 +266,7 @@ async function loadFirebaseConfigBase64(firebaseCfg) {
 function resolveIcon(r) {
   const meta = runMeta[r.id];
   if (meta?.icon) return meta.icon;
+  if (meta?.params?.iconDataUrl && String(meta.params.iconDataUrl).startsWith("data:")) return meta.params.iconDataUrl;
   const raw = r.displayTitle || r.name || "";
   const { app } = parseTitle(raw);
   const repo = repoFromTitle(raw);
@@ -380,14 +381,17 @@ async function loadBuilds() {
     const oldRuns = runs;
     runs = Array.isArray(d.runs) ? d.runs : [];
     for (const r of runs) {
-      let icon = r.iconUrl;
-      if (!icon) {
-        const title = `${r.displayTitle || ""} ${r.name || ""}`;
-        const m = title.match(/builder-([a-z0-9]+)/);
-        if (m) icon = `https://raw.githubusercontent.com/zey-win/ci-cd/main/builds/icons/${m[0]}.png`;
-      }
       if (!runMeta[r.id]) runMeta[r.id] = {};
-      if (icon) runMeta[r.id].icon = icon;
+      if (!runMeta[r.id].icon) {
+        let icon = r.iconUrl;
+        if (!icon) {
+          const meta = runMeta[r.id];
+          if (meta?.params?.iconDataUrl && String(meta.params.iconDataUrl).startsWith("data:")) {
+            icon = meta.params.iconDataUrl;
+          }
+        }
+        if (icon) runMeta[r.id].icon = icon;
+      }
     }
     try {
       const sv = JSON.parse(localStorage.getItem('rv')||'{}');
