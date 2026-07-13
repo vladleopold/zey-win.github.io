@@ -16,7 +16,7 @@
       "admob_interstitial": "ca-app-pub-6988952582458184/4771360386",
       "admob_rewarded": "ca-app-pub-6988952582458184/9789398710",
       "icon_path": "",
-      "firebase_cfg": "data:application/json;base64,ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiMTAwNjk1Mzc3Nzk4IiwKICAgICJwcm9qZWN0X2lkIjogImNvbS1zb2NpYWxhcHBzLXBsaW5rbyIsCiAgICAic3RvcmFnZV9idWNrZXQiOiAiY29tLXNvY2lhbGFwcHMtcGxpbmtvLmZpcmViYXNlc3RvcmFnZS5hcHAiCiAgfSwKICAiY2xpZW50IjogWwogICAgewogICAgICAiY2xpZW50X2luZm8iOiB7CiAgICAgICAgIm1vYmlsZXNka19hcHBfaWQiOiAiMToxMDA2OTUzNzc3OTg6YW5kcm9pZDpkNmFhMDE1OTM2YjI4NDVmNTUwZTA3IiwKICAgICAgICAiYW5kcm9pZF9jbGllbnRfaW5mbyI6IHsKICAgICAgICAgICJwYWNrYWdlX25hbWUiOiAiY29tLnNvY2lhbGFwcHMucGxpbmtvIgogICAgICAgIH0KICAgICAgfSwKICAgICAgIm9hdXRoX2NsaWVudCI6IFtdLAogICAgICAiYXBpX2tleSI6IFsKICAgICAgICB7CiAgICAgICAgICAiY3VycmVudF9rZXkiOiAiQUl6YVN5QmpQYkpwUWlkT2F3WEpEN2g0ZmVGa3JURTBab0tFR2RRIgogICAgICAgIH0KICAgICAgXSwKICAgICAgInNlcnZpY2VzIjogewogICAgICAgICJhcHBpbnZpdGVfc2VydmljZSI6IHsKICAgICAgICAgICJvdGhlcl9wbGF0Zm9ybV9vYXV0aF9jbGllbnQiOiBbXQogICAgICAgIH0KICAgICAgfQogICAgfQogIF0sCiAgImNvbmZpZ3VyYXRpb25fdmVyc2lvbiI6ICIxIgp9",
+      "firebase_cfg": "com.socialapps.plinko.json",
       "firebase_json_base64": "data:application/json;base64,ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiMTAwNjk1Mzc3Nzk4IiwKICAgICJwcm9qZWN0X2lkIjogImNvbS1zb2NpYWxhcHBzLXBsaW5rbyIsCiAgICAic3RvcmFnZV9idWNrZXQiOiAiY29tLXNvY2lhbGFwcHMtcGxpbmtvLmZpcmViYXNlc3RvcmFnZS5hcHAiCiAgfSwKICAiY2xpZW50IjogWwogICAgewogICAgICAiY2xpZW50X2luZm8iOiB7CiAgICAgICAgIm1vYmlsZXNka19hcHBfaWQiOiAiMToxMDA2OTUzNzc3OTg6YW5kcm9pZDpkNmFhMDE1OTM2YjI4NDVmNTUwZTA3IiwKICAgICAgICAiYW5kcm9pZF9jbGllbnRfaW5mbyI6IHsKICAgICAgICAgICJwYWNrYWdlX25hbWUiOiAiY29tLnNvY2lhbGFwcHMucGxpbmtvIgogICAgICAgIH0KICAgICAgfSwKICAgICAgIm9hdXRoX2NsaWVudCI6IFtdLAogICAgICAiYXBpX2tleSI6IFsKICAgICAgICB7CiAgICAgICAgICAiY3VycmVudF9rZXkiOiAiQUl6YVN5QmpQYkpwUWlkT2F3WEpEN2g0ZmVGa3JURTBab0tFR2RRIgogICAgICAgIH0KICAgICAgXSwKICAgICAgInNlcnZpY2VzIjogewogICAgICAgICJhcHBpbnZpdGVfc2VydmljZSI6IHsKICAgICAgICAgICJvdGhlcl9wbGF0Zm9ybV9vYXV0aF9jbGllbnQiOiBbXQogICAgICAgIH0KICAgICAgfQogICAgfQogIF0sCiAgImNvbmZpZ3VyYXRpb25fdmVyc2lvbiI6ICIxIgp9"
     },
     {
@@ -34,7 +34,7 @@
       "admob_banner": "ca-app-pub-6988952582458184/4530693980",
       "admob_interstitial": "ca-app-pub-6988952582458184/9211185343",
       "admob_rewarded": "ca-app-pub-6988952582458184/7061184633",
-      "firebase_cfg": null
+      "firebase_cfg": "com.playsocialgames.plinkofun.json"
     },
     {
       "id": "plinko-falling-balls",
@@ -51,7 +51,7 @@
       "admob_banner": "ca-app-pub-1585565865476548/1949732876",
       "admob_interstitial": "ca-app-pub-1585565865476548/3620083367",
       "admob_rewarded": "ca-app-pub-1585565865476548/8194496114",
-      "firebase_cfg": null
+      "firebase_cfg": "plinko-falling-balls.json"
     },
     {
       "id": "slotspot",
@@ -68,7 +68,7 @@
       "admob_banner": "ca-app-pub-1585565865476548/2893595529",
       "admob_interstitial": "ca-app-pub-1585565865476548/2521834122",
       "admob_rewarded": "ca-app-pub-1585565865476548/7091315351",
-      "firebase_cfg": null
+      "firebase_cfg": "com.playmaxsolutions.slotspot.json"
     },
     {
       "id": "unstopable:-real-money",
@@ -85,7 +85,7 @@
       "admob_banner": "ca-app-pub-1585565865476548/1949732876",
       "admob_interstitial": "ca-app-pub-1585565865476548/3620083367",
       "admob_rewarded": "ca-app-pub-1585565865476548/8194496114",
-      "firebase_cfg": null
+      "firebase_cfg": "unstopablerealmoney.json"
     },
     {
       "id": "lucky-wheel",
