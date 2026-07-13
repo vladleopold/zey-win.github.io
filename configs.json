@@ -35,6 +35,23 @@
       "admob_interstitial": "ca-app-pub-6988952582458184/9211185343",
       "admob_rewarded": "ca-app-pub-6988952582458184/7061184633",
       "firebase_cfg": null
+    },
+    {
+      "id": "plinko-falling-balls",
+      "label": "Plinko Falling Balls",
+      "game_repository": "zey-win/plinko",
+      "app_name": "Plinko Falling Balls",
+      "package_name": "com.falling.plinko",
+      "version_name": "31.0",
+      "version_code": "31",
+      "version_mode": "auto_next",
+      "zeywin_sdk_version": "v3.9.37",
+      "zeywin_api_key": "zw_6398949883576fd4d1321be61dd08334d61a906e9b6cd0b6",
+      "admob_app_id": "ca-app-pub-1585565865476548~2207294967",
+      "admob_banner": "ca-app-pub-1585565865476548/1949732876",
+      "admob_interstitial": "ca-app-pub-1585565865476548/3620083367",
+      "admob_rewarded": "ca-app-pub-1585565865476548/8194496114",
+      "firebase_cfg": null
     }
   ],
   "deleted": []
