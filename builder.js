@@ -495,7 +495,7 @@ async function submitBuildPayload(payload) {
     const d = await res.json();
     if (d.run) {
       const serverIconPath = d.icon?.path;
-      const serverIconUrl = serverIconPath ? `https://raw.githubusercontent.com/zey-win/ci-cd/main/${serverIconPath}` : (d.icon?.htmlUrl || null);
+      const serverIconUrl = serverIconPath ? `https://raw.githubusercontent.com/zey-win/ci-cd/main/${serverIconPath}` : (d.icon?.htmlUrl || d.icon?.dataUrl || null);
       runMeta[d.run.id] = { icon: serverIconUrl || null, ver: payload.aab_version_name || payload.version_name || "", code: payload.aab_version_code || payload.version_code || "", params: { ...requestPayload } };
       try {
         const sv = JSON.parse(localStorage.getItem('rv')||'{}');
