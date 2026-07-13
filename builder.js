@@ -35,7 +35,7 @@ const REPO_ICONS = {
   "zey-win/SlotSpot": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__SlotSpot.png"
 };
 
-let runMeta = {}, releases = [], firebaseJson = null, currentIconDataUrl = null, iconLoadedDeferred = null;
+let runMeta = {}, releases = [], firebaseJson = null, currentIconDataUrl = null, iconLoadedDeferred = null, userIconSet = false;
 let savedConfigs = [], selectedConfigId = null;
 const versionCache = new Map();
 const sdkVersionCache = new Map();
@@ -438,9 +438,10 @@ function updateIcon() {
 
 iconFile.addEventListener("change", e => {
   const f = e.target.files[0]; if (!f) return;
-  if (f.type !== "image/png") { alert("Только PNG"); return; }
+  const isPng = f.type === "image/png" || /\.png$/i.test(f.name || "");
+  if (!isPng) { alert("Только PNG"); return; }
   const r = new FileReader();
-  r.onload = () => { currentIconDataUrl = r.result; gameIcon.src = r.result; gameIcon.style.display = "block"; hidePlaceholder(); };
+  r.onload = () => { currentIconDataUrl = r.result; userIconSet = true; gameIcon.src = r.result; gameIcon.style.display = "block"; hidePlaceholder(); };
   r.readAsDataURL(f);
 });
 $("icon-gen-btn").addEventListener("click", async () => {
@@ -448,6 +449,7 @@ $("icon-gen-btn").addEventListener("click", async () => {
   const url = await generateAiIcon(repoSelect.value, prompt);
   if (url) {
     currentIconDataUrl = url;
+    userIconSet = true;
     setIcon(url);
   }
 });
@@ -649,7 +651,7 @@ if (addRepoBtn) {
 }
 newBuildBtn.addEventListener("click", () => {
   closeDetail();
-  currentIconDataUrl = null; firebaseJson = null;
+  currentIconDataUrl = null; firebaseJson = null; userIconSet = false;
   form.style.display = "";
   $("build-progress").classList.add("hidden");
   if (sdkVersion) sdkVersion.value = sdkVersion.value || "v3.9.37";
@@ -657,7 +659,7 @@ newBuildBtn.addEventListener("click", () => {
   all.forEach(el => { el.style.opacity = ""; el.style.transform = ""; el.style.transition = ""; });
   modal.classList.remove("hidden");
   updateIcon();
-  iconLoadedDeferred = getIconDataUrl(repoSelect.value, "main").then(url => { if (url) currentIconDataUrl = url; });
+  iconLoadedDeferred = getIconDataUrl(repoSelect.value, "main").then(url => { if (url && !userIconSet) currentIconDataUrl = url; });
   syncVersionFields(true);
 });
 cancelBtn.addEventListener("click", () => { modal.classList.add("hidden"); closeDetail(); });
@@ -708,8 +710,8 @@ function fillFormFromParams(params, runId) {
     set("admob_interstitial", params.admob_android_interstitial_id);
     set("admob_rewarded", params.admob_android_rewarded_id);
     const icon = params.iconDataUrl || params.icon_png_path || null;
-    if (icon && String(icon).startsWith("data:")) { currentIconDataUrl = icon; setIcon(icon); }
-    else if (params.game_repository) { getIconDataUrl(params.game_repository, "main").then(u => { if (u) currentIconDataUrl = u; }); }
+    if (icon && String(icon).startsWith("data:")) { currentIconDataUrl = icon; userIconSet = true; setIcon(icon); }
+    else if (params.game_repository) { getIconDataUrl(params.game_repository, "main").then(u => { if (u && !userIconSet) currentIconDataUrl = u; }); }
     firebaseJson = params.firebaseJsonBase64 || params.firebase_json_base64 || null;
   } else {
     const { app, pkg } = parseTitle(run?.displayTitle || run?.name || "");
