@@ -137,6 +137,21 @@
       "admob_interstitial": "ca-app-pub-6988952582458184/8952176419",
       "admob_rewarded": "ca-app-pub-6988952582458184/9223639151",
       "firebase_cfg": null
+    },
+    {
+      "id": "blackjack",
+      "label": "BlackJack",
+      "game_repository": "zey-win/blackjack",
+      "app_name": "BlackJack",
+      "package_name": "com.playsocialgames.blackjakck",
+      "version_name": "10.0",
+      "version_code": "10",
+      "zeywin_api_key": "zw_288d2cfb98b25dce71a596f34e56ce71463dc6941e13d80d",
+      "admob_app_id": "ca-app-pub-7850961348081827~9965206656",
+      "admob_banner": "ca-app-pub-6988952582458184/4870153107",
+      "admob_interstitial": "ca-app-pub-6988952582458184/4178841785",
+      "admob_rewarded": "ca-app-pub-6988952582458184/3557071433",
+      "firebase_cfg": null
     }
   ],
   "deleted": []
