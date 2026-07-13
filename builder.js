@@ -251,6 +251,12 @@ async function loadFirebaseConfigBase64(firebaseCfg) {
   if (!cfg) return "";
   if (firebaseCache.has(cfg)) return firebaseCache.get(cfg);
   try {
+    // Inline data URL (e.g. "data:application/json;base64,....") — decode directly.
+    if (cfg.startsWith("data:")) {
+      const base64 = cfg.includes(",") ? cfg.split(",").pop() : cfg;
+      firebaseCache.set(cfg, base64);
+      return base64;
+    }
     const res = await fetch(`./firebase-cfg/${encodeURIComponent(cfg)}`);
     if (!res.ok) return "";
     const text = await res.text();
@@ -1035,15 +1041,23 @@ function fillConfig(configId) {
   if (cfg.zeywin_api_key) document.querySelectorAll(".pkg-hidden").forEach(el => el.classList.add("show"));
   // Load google-services.json
   if (cfg.firebase_cfg) {
-    fetch(`./firebase-cfg/${cfg.firebase_cfg}`)
-      .then(r => r.ok ? r.text() : null)
-      .then(text => {
-        if (text) {
-          firebaseJson = btoa(unescape(encodeURIComponent(text)));
-          const st = $("firebase-status");
-          if (st) { st.textContent = "✅ Firebase загружен"; st.style.display = "inline"; }
-        }
-      }).catch(() => {});
+    const fc = cfg.firebase_cfg;
+    // Inline data URL — decode directly without fetching a file.
+    if (fc.startsWith("data:")) {
+      firebaseJson = fc.includes(",") ? fc.split(",").pop() : fc;
+      const st = $("firebase-status");
+      if (st) { st.textContent = "✅ Firebase загружен"; st.style.display = "inline"; }
+    } else {
+      fetch(`./firebase-cfg/${fc}`)
+        .then(r => r.ok ? r.text() : null)
+        .then(text => {
+          if (text) {
+            firebaseJson = btoa(unescape(encodeURIComponent(text)));
+            const st = $("firebase-status");
+            if (st) { st.textContent = "✅ Firebase загружен"; st.style.display = "inline"; }
+          }
+        }).catch(() => {});
+    }
   } else {
     firebaseJson = null;
     const st = $("firebase-status");
