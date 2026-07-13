@@ -6,8 +6,8 @@
       "game_repository": "zey-win/plinko",
       "app_name": "Plinko",
       "package_name": "com.socialapps.plinko",
-      "version_name": "22",
-      "version_code": "22",
+      "version_name": "26.0",
+      "version_code": "48",
       "version_mode": "auto_next",
       "zeywin_sdk_version": "v3.9.37",
       "zeywin_api_key": "zw_8d59f9c3003702276e42bd69f07ea8988c77be6ecf5f953f",
@@ -16,8 +16,8 @@
       "admob_interstitial": "ca-app-pub-6988952582458184/4771360386",
       "admob_rewarded": "ca-app-pub-6988952582458184/9789398710",
       "icon_path": "",
-      "firebase_cfg": "",
-      "firebase_json_base64": ""
+      "firebase_cfg": "data:application/json;base64,ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiMTAwNjk1Mzc3Nzk4IiwKICAgICJwcm9qZWN0X2lkIjogImNvbS1zb2NpYWxhcHBzLXBsaW5rbyIsCiAgICAic3RvcmFnZV9idWNrZXQiOiAiY29tLXNvY2lhbGFwcHMtcGxpbmtvLmZpcmViYXNlc3RvcmFnZS5hcHAiCiAgfSwKICAiY2xpZW50IjogWwogICAgewogICAgICAiY2xpZW50X2luZm8iOiB7CiAgICAgICAgIm1vYmlsZXNka19hcHBfaWQiOiAiMToxMDA2OTUzNzc3OTg6YW5kcm9pZDpkNmFhMDE1OTM2YjI4NDVmNTUwZTA3IiwKICAgICAgICAiYW5kcm9pZF9jbGllbnRfaW5mbyI6IHsKICAgICAgICAgICJwYWNrYWdlX25hbWUiOiAiY29tLnNvY2lhbGFwcHMucGxpbmtvIgogICAgICAgIH0KICAgICAgfSwKICAgICAgIm9hdXRoX2NsaWVudCI6IFtdLAogICAgICAiYXBpX2tleSI6IFsKICAgICAgICB7CiAgICAgICAgICAiY3VycmVudF9rZXkiOiAiQUl6YVN5QmpQYkpwUWlkT2F3WEpEN2g0ZmVGa3JURTBab0tFR2RRIgogICAgICAgIH0KICAgICAgXSwKICAgICAgInNlcnZpY2VzIjogewogICAgICAgICJhcHBpbnZpdGVfc2VydmljZSI6IHsKICAgICAgICAgICJvdGhlcl9wbGF0Zm9ybV9vYXV0aF9jbGllbnQiOiBbXQogICAgICAgIH0KICAgICAgfQogICAgfQogIF0sCiAgImNvbmZpZ3VyYXRpb25fdmVyc2lvbiI6ICIxIgp9",
+      "firebase_json_base64": "data:application/json;base64,ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiMTAwNjk1Mzc3Nzk4IiwKICAgICJwcm9qZWN0X2lkIjogImNvbS1zb2NpYWxhcHBzLXBsaW5rbyIsCiAgICAic3RvcmFnZV9idWNrZXQiOiAiY29tLXNvY2lhbGFwcHMtcGxpbmtvLmZpcmViYXNlc3RvcmFnZS5hcHAiCiAgfSwKICAiY2xpZW50IjogWwogICAgewogICAgICAiY2xpZW50X2luZm8iOiB7CiAgICAgICAgIm1vYmlsZXNka19hcHBfaWQiOiAiMToxMDA2OTUzNzc3OTg6YW5kcm9pZDpkNmFhMDE1OTM2YjI4NDVmNTUwZTA3IiwKICAgICAgICAiYW5kcm9pZF9jbGllbnRfaW5mbyI6IHsKICAgICAgICAgICJwYWNrYWdlX25hbWUiOiAiY29tLnNvY2lhbGFwcHMucGxpbmtvIgogICAgICAgIH0KICAgICAgfSwKICAgICAgIm9hdXRoX2NsaWVudCI6IFtdLAogICAgICAiYXBpX2tleSI6IFsKICAgICAgICB7CiAgICAgICAgICAiY3VycmVudF9rZXkiOiAiQUl6YVN5QmpQYkpwUWlkT2F3WEpEN2g0ZmVGa3JURTBab0tFR2RRIgogICAgICAgIH0KICAgICAgXSwKICAgICAgInNlcnZpY2VzIjogewogICAgICAgICJhcHBpbnZpdGVfc2VydmljZSI6IHsKICAgICAgICAgICJvdGhlcl9wbGF0Zm9ybV9vYXV0aF9jbGllbnQiOiBbXQogICAgICAgIH0KICAgICAgfQogICAgfQogIF0sCiAgImNvbmZpZ3VyYXRpb25fdmVyc2lvbiI6ICIxIgp9"
     },
     {
       "id": "plinko:-real-money",
