@@ -120,6 +120,23 @@
       "admob_interstitial": "",
       "admob_rewarded": "",
       "firebase_cfg": null
+    },
+    {
+      "id": "baccarat",
+      "label": "Baccarat",
+      "game_repository": "zey-win/baccarat-tiger",
+      "app_name": "Baccarat",
+      "package_name": "com.playsocialgames.bacarrattiger",
+      "version_name": "10.0",
+      "version_code": "10",
+      "version_mode": "auto_next",
+      "zeywin_sdk_version": "v3.9.37",
+      "zeywin_api_key": "zw_9503eadd84ee8db28d7153101305da2ffeb007c7286b2a51",
+      "admob_app_id": "ca-app-pub-6988952582458184~6792916934",
+      "admob_banner": "ca-app-pub-6988952582458184/3806931993",
+      "admob_interstitial": "ca-app-pub-6988952582458184/8952176419",
+      "admob_rewarded": "ca-app-pub-6988952582458184/9223639151",
+      "firebase_cfg": null
     }
   ],
   "deleted": []
