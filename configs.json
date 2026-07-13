@@ -86,6 +86,23 @@
       "admob_interstitial": "ca-app-pub-1585565865476548/3620083367",
       "admob_rewarded": "ca-app-pub-1585565865476548/8194496114",
       "firebase_cfg": null
+    },
+    {
+      "id": "lucky-wheel",
+      "label": "Lucky Wheel",
+      "game_repository": "zey-win/wheel-of-fortune",
+      "app_name": "Lucky Wheel",
+      "package_name": "com.playsocialgames.luckywheel",
+      "version_name": "10.0",
+      "version_code": "10",
+      "version_mode": "auto_next",
+      "zeywin_sdk_version": "v3.9.37",
+      "zeywin_api_key": "zw_183a2bdbf64b64dc54e4a8bc81c577fd39358117e7a5aea6",
+      "admob_app_id": "ca-app-pub-6988952582458184~4630479952",
+      "admob_banner": "ca-app-pub-6988952582458184/3285608694",
+      "admob_interstitial": "ca-app-pub-6988952582458184/7089122332",
+      "admob_rewarded": "ca-app-pub-6988952582458184/7968532690",
+      "firebase_cfg": null
     }
   ],
   "deleted": []
