@@ -169,25 +169,6 @@
       "admob_interstitial": "",
       "admob_rewarded": "ca-app-pub-7850961348081827/6758080070",
       "firebase_cfg": null
-    },
-    {
-      "id": "baccarat-social",
-      "label": "Baccarat Social",
-      "game_repository": "zey-win/dragon-tiger",
-      "app_name": "Baccarat Social",
-      "package_name": "com.PlayMaxSolutions.DragonTiger",
-      "version_name": "1",
-      "version_code": "1",
-      "version_mode": "auto_next",
-      "zeywin_sdk_version": "v3.9.37",
-      "zeywin_api_key": "",
-      "admob_app_id": "ca-app-pub-7850961348081827~8967093407",
-      "admob_banner": "",
-      "admob_interstitial": "",
-      "admob_rewarded": "ca-app-pub-7850961348081827/6758080070",
-      "icon_path": "",
-      "firebase_cfg": "",
-      "firebase_json_base64": ""
     }
   ],
   "deleted": []
