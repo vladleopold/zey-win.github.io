@@ -53,7 +53,20 @@
       "status": "queued",
       "created_at": "2026-07-17T16:38:41.338Z",
       "updated_at": "2026-07-17T16:38:41.338Z"
+    },
+    {
+      "run_id": 29597058236,
+      "request_id": "builder-mrp5yp3h",
+      "package_name": "com.playmaxsolutions.slotspot",
+      "app_name": "Slot Spot",
+      "game_repository": "zey-win/SlotSpot",
+      "build_format": "apk_aab",
+      "version_name": "14",
+      "version_code": "14",
+      "status": "queued",
+      "created_at": "2026-07-17T16:40:12.921Z",
+      "updated_at": "2026-07-17T16:40:12.921Z"
     }
   ],
-  "updated_at": "2026-07-17T16:38:44.410Z"
+  "updated_at": "2026-07-17T16:40:12.921Z"
 }
