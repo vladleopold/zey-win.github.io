@@ -21,18 +21,6 @@ const sparksBtn = null;
 const loading = $("loading");
 
 const REPO_NAMES = { "zey-win/plinko": "plinko", "zey-win/blackjack": "blackjack", "zey-win/roulette": "roulette", "zey-win/dragon-tiger": "dragon tiger", "zey-win/baccarat-tiger": "baccarat", "zey-win/wheel-of-fortune": "lucky wheel", "zey-win/Unstopable": "unstopable", "zey-win/SlotSpot": "slotspot" };
-const REPO_ICONS = {
-  "zey-win/plinko": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/plinko.png",
-  "zey-win/plinko@app/plinko-real-money": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__plinkorm.png",
-  "zey-win/plinko@app/plinko": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/plinko.png",
-  "zey-win/plinko@main": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__plinkofaling.png",
-  "zey-win/blackjack": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__blackjack.png",
-  "zey-win/roulette": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__roulette.png",
-  "zey-win/baccarat-tiger": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__baccarat-tiger.png",
-  "zey-win/wheel-of-fortune": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__wheel-of-fortune.png",
-  "zey-win/Unstopable": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__Unstopable.png",
-  "zey-win/SlotSpot": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__SlotSpot.png"
-};
 
 let runMeta = {}, releases = [], firebaseJson = null, currentIconDataUrl = null, iconLoadedDeferred = null, userIconSet = false;
 let savedConfigs = [], selectedConfigId = null;
@@ -53,34 +41,31 @@ function showIconSpinner() { gameIcon.style.display = "none"; iconSpinner.style.
 function hideIconSpinner() { iconSpinner.style.display = "none"; }
 function setIcon(src) { if (src) { gameIcon.src = src; gameIcon.style.display = "block"; hidePlaceholder(); } else { gameIcon.style.display = "none"; showPlaceholder(); } hideIconSpinner(); }
 
-async function getIconDataUrl(repo, ref) {
-  const refStr = ref || "main"; showIconSpinner();
-  try {
-    const res = await fetch(`${apiBase}/api/icon?game_repository=${encodeURIComponent(repo)}&game_ref=${encodeURIComponent(refStr)}`, { headers: op() });
-    if (!res.ok) { setIcon(null); return null; }
-    const d = await res.json();
-    if (d.ok && d.icon?.dataUrl) { setIcon(d.icon.dataUrl); return d.icon.dataUrl; }
-    setIcon(null); return null;
-  } catch { setIcon(null); return null; }
+// Single source of truth for an icon: the config's own icon_url / icon_data_url.
+// The same value is sent to the build (CI downloads icon_url), so the card and
+// the APK always show the identical image.
+function configIconUrl(cfg) {
+  if (!cfg) return null;
+  return cfg.icon_url || cfg.icon_data_url || null;
+}
+function configIconForRepo(repo) {
+  return configIconUrl(savedConfigs.find(c => c.game_repository === repo));
+}
+function configIconForPackage(pkg) {
+  if (!pkg) return null;
+  return configIconUrl(savedConfigs.find(c => c.package_name === pkg));
 }
 
-// Resolve the icon for a saved config (history). Multiple configs can share the
-// same game repository (e.g. several Plinko apps), so we ask the API for the
-// per-app icon first, keyed by package name / app name.
+// Preview in the build form: show the canonical config icon (no server guess).
+async function getIconDataUrl(repo) {
+  const url = configIconForRepo(repo);
+  if (url) { setIcon(url); return url; }
+  setIcon(null); return null;
+}
+
+// Resolve the icon for a saved config / history card.
 async function resolveConfigIconDataUrl(cfg) {
-  if (cfg.icon_data_url) return cfg.icon_data_url;
-  const params = new URLSearchParams({ game_repository: cfg.game_repository || "", game_ref: "main" });
-  if (cfg.package_name) params.set("package_name", cfg.package_name);
-  if (cfg.app_name) params.set("app_name", cfg.app_name);
-  if (cfg.icon_url) params.set("icon_url", cfg.icon_url);
-  try {
-    const res = await fetch(`${apiBase}/api/icon?${params.toString()}`, { headers: op() });
-    if (res.ok) {
-      const d = await res.json();
-      if (d.ok && d.icon?.dataUrl) return d.icon.dataUrl;
-    }
-  } catch {}
-  return null;
+  return configIconUrl(cfg);
 }
 
 let audioCtx = null;
@@ -270,20 +255,13 @@ async function loadFirebaseConfigBase64(firebaseCfg) {
 
 function resolveIcon(r) {
   const meta = runMeta[r.id];
+  // 1) Icon explicitly attached to this run (user override at build time).
   if (meta?.icon) return meta.icon;
   if (meta?.params?.iconDataUrl && String(meta.params.iconDataUrl).startsWith("data:")) return meta.params.iconDataUrl;
+  // 2) Canonical config icon for this package — the same one sent to the build.
   const raw = r.displayTitle || r.name || "";
-  const { app } = parseTitle(raw);
-  const repo = repoFromTitle(raw);
-  const appLower = (app || "").toLowerCase();
-  let iconUrl = REPO_ICONS[repo] || null;
-  if (repo === "zey-win/plinko") {
-    if (appLower.includes("real money")) iconUrl = REPO_ICONS["zey-win/plinko@app/plinko-real-money"] || iconUrl;
-    else if (appLower.includes("real game")) iconUrl = REPO_ICONS["zey-win/plinko@app/plinko"] || iconUrl;
-    else if (appLower.includes("plinko") && !appLower.includes("falling")) iconUrl = REPO_ICONS["zey-win/plinko@app/plinko"] || iconUrl;
-    else iconUrl = REPO_ICONS["zey-win/plinko@main"] || iconUrl;
-  }
-  return iconUrl;
+  const { pkg } = parseTitle(raw);
+  return configIconForPackage(pkg);
 }
 
 function buildCardHTML(r, idx) {
@@ -567,8 +545,9 @@ async function buildFromConfig(cfg, { useNextVersion = true, buildFormat = "apk_
   const next = bumpVersion(cfg.version_name, cfg.version_code);
   const versionName = next.versionName;
   const versionCode = next.versionCode;
-  const iconData = cfg.icon_data_url || await resolveConfigIconDataUrl(cfg) || await getIconDataUrl(cfg.game_repository, "main");
+  const iconData = cfg.icon_data_url || cfg.icon_url || await resolveConfigIconDataUrl(cfg) || await getIconDataUrl(cfg.game_repository, "main");
   const firebaseBase64 = await loadFirebaseConfigBase64(cfg.firebase_cfg);
+  const iconIsData = String(iconData || "").startsWith("data:");
   const d = await submitBuildPayload({
     game_repository: cfg.game_repository || "zey-win/plinko",
     game_ref: "main",
@@ -586,7 +565,8 @@ async function buildFromConfig(cfg, { useNextVersion = true, buildFormat = "apk_
     admob_android_banner_id: cfg.admob_banner || "",
     admob_android_interstitial_id: cfg.admob_interstitial || "",
     admob_android_rewarded_id: cfg.admob_rewarded || "",
-    iconDataUrl: iconData || "",
+    iconDataUrl: iconIsData ? iconData : "",
+    icon_png_path: iconIsData ? "" : (iconData || ""),
     firebaseJsonBase64: firebaseBase64 || ""
   }, { autoSave: false });
   updateConfigVersion(cfg.app_name || cfg.label, next);
@@ -811,7 +791,9 @@ form.addEventListener("submit", async e => {
   if (!currentIconDataUrl && iconLoadedDeferred) {
     try { const url = await iconLoadedDeferred; if (url) currentIconDataUrl = url; } catch {}
   }
-  const iconData = currentIconDataUrl || "";
+  const iconRaw = currentIconDataUrl || "";
+  if (!iconRaw) { alert("Загрузите иконку приложения (PNG). Без неё сборка невозможна."); return; }
+  const iconIsData = iconRaw.startsWith("data:");
   const buildFormat = fd.get("build_format") || "apk";
   const pkg = fd.get("package_name") || derivePackageNameFromRepo(fd.get("game_repository")) || "";
   if (!pkg) { alert("Укажите Package Name (имя пакета)."); return; }
@@ -833,7 +815,8 @@ form.addEventListener("submit", async e => {
     admob_android_banner_id: fd.get("admob_banner") || "",
     admob_android_interstitial_id: fd.get("admob_interstitial") || "",
     admob_android_rewarded_id: fd.get("admob_rewarded") || "",
-    iconDataUrl: iconData,
+    iconDataUrl: iconIsData ? iconRaw : "",
+    icon_png_path: iconIsData ? "" : iconRaw,
     firebaseJsonBase64: firebaseJson || ""
   };
   const restarting = !!detailRunId;
@@ -847,7 +830,9 @@ form.addEventListener("submit", async e => {
     p.game_ref = original.game_ref || "main";
     p.version_mode = original.version_mode || "auto_next";
     p.signing_profile = original.signing_profile || "playmax";
-    p.iconDataUrl = currentIconDataUrl || original.iconDataUrl || original.icon_png_path || "";
+    const restartIcon = currentIconDataUrl || original.iconDataUrl || original.icon_png_path || "";
+    p.iconDataUrl = restartIcon.startsWith("data:") ? restartIcon : "";
+    p.icon_png_path = restartIcon.startsWith("data:") ? "" : restartIcon;
     p.firebaseJsonBase64 = firebaseJson || original.firebaseJsonBase64 || original.firebase_json_base64 || "";
   }
   // Bump the matching saved config's version using the i+1.0 algorithm
@@ -1064,9 +1049,10 @@ function fillConfig(configId) {
     if (st) { st.textContent = ""; st.style.display = "none"; }
   }
   // Load icon
-  if (cfg.icon_data_url) {
-    currentIconDataUrl = cfg.icon_data_url;
-    setIcon(cfg.icon_data_url);
+  const cfgIcon = cfg.icon_url || cfg.icon_data_url;
+  if (cfgIcon) {
+    currentIconDataUrl = cfgIcon;
+    setIcon(cfgIcon);
   } else {
     resolveConfigIconDataUrl(cfg).then(url => {
       if (url) { currentIconDataUrl = url; setIcon(url); }
@@ -1102,7 +1088,8 @@ async function autoSaveConfig(fd) {
     admob_interstitial: fd.get("admob_interstitial") || "",
     admob_rewarded: fd.get("admob_rewarded") || "",
     icon_path: iconPath || "",
-    icon_data_url: currentIconDataUrl || "",
+    icon_url: currentIconDataUrl && currentIconDataUrl.startsWith("http") ? currentIconDataUrl : "",
+    icon_data_url: currentIconDataUrl && currentIconDataUrl.startsWith("data:") ? currentIconDataUrl : "",
     firebase_cfg: firebaseJson || "",
     firebase_json_base64: firebaseJson || ""
   };
