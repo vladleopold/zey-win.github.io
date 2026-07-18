@@ -1014,7 +1014,20 @@
       "status": "queued",
       "created_at": "2026-07-18T15:24:32.220Z",
       "updated_at": "2026-07-18T15:24:32.220Z"
+    },
+    {
+      "run_id": 29649925317,
+      "request_id": "builder-mrqiphf1",
+      "package_name": "com.playsocialgames.plinkofun",
+      "app_name": "Plinko Real Money",
+      "game_repository": "zey-win/plinko",
+      "build_format": "apk_aab",
+      "version_name": "1",
+      "version_code": "1",
+      "status": "queued",
+      "created_at": "2026-07-18T15:24:41.641Z",
+      "updated_at": "2026-07-18T15:24:41.641Z"
     }
   ],
-  "updated_at": "2026-07-18T15:24:34.646Z"
+  "updated_at": "2026-07-18T15:24:41.641Z"
 }
