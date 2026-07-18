@@ -520,7 +520,20 @@
       "status": "queued",
       "created_at": "2026-07-18T06:56:13.485Z",
       "updated_at": "2026-07-18T06:56:13.485Z"
+    },
+    {
+      "run_id": 29634888186,
+      "request_id": "builder-mrq0kwdy",
+      "package_name": "com.socialapps.plinko",
+      "app_name": "Plinko",
+      "game_repository": "zey-win/plinko",
+      "build_format": "apk_aab",
+      "version_name": "1",
+      "version_code": "1",
+      "status": "queued",
+      "created_at": "2026-07-18T06:57:14.674Z",
+      "updated_at": "2026-07-18T06:57:14.674Z"
     }
   ],
-  "updated_at": "2026-07-18T06:56:17.931Z"
+  "updated_at": "2026-07-18T06:57:14.674Z"
 }
