@@ -65,8 +65,11 @@ input[name="zeywin_api_key"]{text-align:right;direction:rtl}
 .btn-cancel:hover{background:#30363d;color:#c9d1d9}
 @keyframes btn-rainbow{0%,100%{background:#238636;box-shadow:0 0 8px rgba(35,134,54,0.5)}33%{background:#1f6feb;box-shadow:0 0 8px rgba(31,111,235,0.5)}66%{background:#d4871a;box-shadow:0 0 8px rgba(212,135,26,0.5)}}
 .modal-actions button[type=submit]{background:#238636;color:#fff;animation:btn-rainbow 7.5s ease-in-out infinite;font-weight:700}
-#build-progress{position:absolute;inset:0;background:#161b22;border-radius:8px;display:flex;align-items:center;justify-content:center;z-index:10;padding:24px}
+#build-progress{position:absolute;inset:0;background:#161b22;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;padding:24px}
 #build-progress.hidden{display:none}
+#bp-spinner{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:14px}
+#bp-spinner .spinner{width:48px;height:48px;border:4px solid #30363d;border-top-color:#a855f7;border-radius:50%;animation:spin 1s linear infinite}
+.bp-caption{font-size:14px;color:#c9d1d9;letter-spacing:.02em}
 #bp-steps{font-size:13px;color:#58a6ff;text-align:center;line-height:1.8;max-height:100%;overflow:auto;width:100%}
 #bp-close{position:absolute;top:8px;right:8px;width:30px;height:30px;border:none;border-radius:6px;background:#21262d;color:#c9d1d9;font-size:16px;line-height:1;cursor:pointer;z-index:11}
 #bp-close:hover{background:#30363d;color:#fff}
@@ -82,7 +85,7 @@ input[name="zeywin_api_key"]{text-align:right;direction:rtl}
 .build-card .status{padding:3px 8px;border-radius:6px;font-size:13px;font-weight:600;white-space:nowrap;display:inline-flex;align-items:center}
 .status-small{padding:2px 6px;font-size:12px}
 .status-row{display:flex;align-items:center;gap:4px}
-.build-card .btn-group{display:flex;gap:4px;align-items:center;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
+.build-card .btn-group{display:flex;flex-direction:column;gap:4px;align-items:stretch;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
 .build-card .btn-group a,.dl-btn,.del-btn,.log-btn{padding:5px 10px;border-radius:6px;font-size:12px;text-decoration:none;cursor:pointer;border:none;display:inline-block;line-height:1.3;white-space:nowrap}
 .dl-btn{text-align:center;font-weight:600;min-width:44px;padding:5px 10px;border-radius:6px;font-size:12px;text-decoration:none;cursor:pointer;border:none;display:inline-block;line-height:1.3;white-space:nowrap}
 .del-btn{padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600}
@@ -112,7 +115,7 @@ input[name="zeywin_api_key"]{text-align:right;direction:rtl}
 .spinner-overlay{position:fixed;top:24px;right:24px;width:24px;height:24px;pointer-events:none;z-index:10}
 .spinner-overlay .spinner{width:24px;height:24px;border:3px solid #30363d;border-top-color:#58a6ff;border-radius:50%;animation:spin .3s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.build-card .btn-group{display:flex;gap:4px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.build-card .btn-group{display:flex;flex-direction:column;gap:4px;align-items:stretch;flex-wrap:wrap;justify-content:flex-end}
 .build-card .btn-group a,.dl-btn,.del-btn,.log-btn{padding:4px 8px;border-radius:6px;font-size:11px;text-decoration:none;cursor:pointer;border:none;display:inline-block;line-height:1.3;white-space:nowrap}
 .dl-btn{text-align:center;font-weight:600;min-width:40px;padding:4px 8px;border-radius:6px;font-size:11px}
 .dl-btn-apk{background:#238636;color:#fff}

@@ -217,12 +217,31 @@ header h1 { font-size: clamp(20px, 4vw, 28px); font-weight: 700; }
 <button type="submit" id="modal-submit">Собрать</button>
 </div>
 </form>
-<div id="build-progress" class="hidden">
-<button type="button" id="bp-close" title="Закрыть">✕</button>
-<div id="bp-steps"></div>
-</div>
-</div>
+    <div id="build-progress" class="hidden">
+      <button type="button" id="bp-close" title="Закрыть">✕</button>
+      <div id="bp-spinner">
+        <div class="spinner" id="bp-spinner-icon"></div>
+        <div class="bp-caption">минуточку...</div>
+      </div>
+      <div id="bp-steps"></div>
+    </div>
+  </div>
 
-<script src="builder.js?v4"></script>
+  <script src="builder.js?v4"></script>
+  <script>
+    (function () {
+      var sp = document.getElementById("bp-spinner-icon");
+      if (!sp) return;
+      function randomizeSpinner() {
+        var size = 28 + Math.floor(Math.random() * 40);   // random size 28–68 px
+        var dur = (0.4 + Math.random() * 2.4).toFixed(2);  // random spin speed 0.4–2.8 s
+        sp.style.width = size + "px";
+        sp.style.height = size + "px";
+        sp.style.animationDuration = dur + "s";
+      }
+      randomizeSpinner();
+      setInterval(randomizeSpinner, 3000);
+    })();
+  </script>
 </body>
 </html>
