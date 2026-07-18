@@ -1105,7 +1105,20 @@
       "status": "queued",
       "created_at": "2026-07-18T15:34:55.729Z",
       "updated_at": "2026-07-18T15:34:55.729Z"
+    },
+    {
+      "run_id": 29650271860,
+      "request_id": "builder-mrqj2u8u",
+      "package_name": "com.playsocialgames.roulette",
+      "app_name": "Roulette",
+      "game_repository": "zey-win/roulette",
+      "build_format": "apk_aab",
+      "version_name": "1",
+      "version_code": "1",
+      "status": "queued",
+      "created_at": "2026-07-18T15:35:02.393Z",
+      "updated_at": "2026-07-18T15:35:02.393Z"
     }
   ],
-  "updated_at": "2026-07-18T15:34:57.912Z"
+  "updated_at": "2026-07-18T15:35:02.393Z"
 }
