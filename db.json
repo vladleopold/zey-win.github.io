@@ -988,7 +988,20 @@
       "status": "queued",
       "created_at": "2026-07-18T15:24:18.093Z",
       "updated_at": "2026-07-18T15:24:18.093Z"
+    },
+    {
+      "run_id": 29649917099,
+      "request_id": "builder-mrqip6gh",
+      "package_name": "com.PlayMaxSolutions.DragonTiger",
+      "app_name": "Baccarat Social",
+      "game_repository": "zey-win/dragon-tiger",
+      "build_format": "apk_aab",
+      "version_name": "1",
+      "version_code": "1",
+      "status": "queued",
+      "created_at": "2026-07-18T15:24:25.119Z",
+      "updated_at": "2026-07-18T15:24:25.119Z"
     }
   ],
-  "updated_at": "2026-07-18T15:24:20.563Z"
+  "updated_at": "2026-07-18T15:24:25.119Z"
 }
