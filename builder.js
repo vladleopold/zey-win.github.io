@@ -68,6 +68,28 @@ async function resolveConfigIconDataUrl(cfg) {
   return configIconUrl(cfg);
 }
 
+// Race a promise against a timeout so a hung request can't block the batch forever.
+function withTimeout(promise, ms, msg) {
+  return new Promise((resolve, reject) => {
+    const t = setTimeout(() => reject(new Error(msg || "таймаут операции")), ms);
+    Promise.resolve(promise).then(
+      v => { clearTimeout(t); resolve(v); },
+      e => { clearTimeout(t); reject(e); }
+    );
+  });
+}
+
+// fetch with an AbortController-based timeout (default 90s).
+async function fetchWithTimeout(url, opts = {}, ms = 90000) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), ms);
+  try {
+    return await fetch(url, { ...opts, signal: ctrl.signal });
+  } finally {
+    clearTimeout(t);
+  }
+}
+
 let audioCtx = null;
 function getAudioCtx() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); return audioCtx; }
 function playFanfare() { try { const ctx = getAudioCtx(); [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => { const o = ctx.createOscillator(); const g = ctx.createGain(); o.type = "sine"; o.frequency.value = f; g.gain.setValueAtTime(0.15, ctx.currentTime + i * 0.15); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.15 + 2.5); o.connect(g); g.connect(ctx.destination); o.start(ctx.currentTime + i * 0.15); o.stop(ctx.currentTime + i * 0.15 + 2.5); }); } catch {} }
@@ -475,7 +497,7 @@ async function submitBuildPayload(payload) {
     }
     requestPayload.zeywin_sdk_version = normalizeSdkVersion(requestPayload.zeywin_sdk_version || sdkVersion?.value || "v3.9.37");
 
-    const res = await fetch(`${apiBase}/api/build`, { method: "POST", headers: op(), body: JSON.stringify(requestPayload) });
+    const res = await fetchWithTimeout(`${apiBase}/api/build`, { method: "POST", headers: op(), body: JSON.stringify(requestPayload) }, 90000);
     if (!res.ok) {
       throw new Error(await res.text().catch(() => ""));
     }
@@ -593,22 +615,46 @@ async function runBatchBuilds() {
   }
   if (formEl) formEl.style.display = "none";
 
+  // Auto-close the popup after 60s even if builds are still running.
+  const autoCloseTimer = setTimeout(() => { progress?.classList.add("hidden"); }, 60000);
+
   try {
     for (const cfg of savedConfigs) {
+      // Active build card: large icon UNDER the bold 2x label.
       const line = document.createElement("div");
-      line.style.cssText = "padding:6px 0;border-bottom:1px solid #21262d;color:#c9d1d9;font-size:13px";
-      line.textContent = `▶ ${cfg.label}`;
+      line.className = "bp-active";
+
+      const label = document.createElement("div");
+      label.className = "bp-active-label";
+      label.textContent = `▶ ${cfg.label}`;
+
+      const icon = document.createElement("img");
+      icon.className = "bp-active-icon";
+      const iconUrl = configIconUrl(cfg) || (cfg.package_name ? `icons/${cfg.package_name}.png` : "");
+      if (iconUrl) { icon.src = iconUrl; icon.alt = cfg.label || ""; }
+      else { icon.style.display = "none"; }
+
+      line.appendChild(label);
+      line.appendChild(icon);
       steps?.appendChild(line);
+
       try {
-        await buildFromConfig({ ...cfg, zeywin_sdk_version: "v3.9.37" }, { useNextVersion: true, buildFormat: "apk_aab" });
-        line.textContent = `✅ ${cfg.label}`;
+        await withTimeout(
+          buildFromConfig({ ...cfg, zeywin_sdk_version: "v3.9.37" }, { useNextVersion: true, buildFormat: "apk_aab" }),
+          120000,
+          `таймаут сборки «${cfg.label}»`
+        );
+        label.textContent = `✅ ${cfg.label}`;
       } catch (error) {
-        line.textContent = `❌ ${cfg.label}: ${error.message}`;
+        label.textContent = `❌ ${cfg.label}: ${error.message}`;
       }
+      line.classList.remove("bp-active");
+      line.classList.add("bp-done");
       await new Promise(resolve => setTimeout(resolve, 1200));
     }
   } finally {
     batchBuildRunning = false;
+    clearTimeout(autoCloseTimer);
     if (formEl) formEl.style.display = previousFormDisplay;
     if (progress) {
       const doneLine = document.createElement("div");
