@@ -192,11 +192,11 @@
       "id": "zeywin-verify-temp",
       "label": "Verify Temp",
       "package_name": "com.zeywin.verify.temp",
-      "version_name": "1.0",
-      "version_code": "1",
-      "admob_app_id": "ca-app-pub-1",
+      "version_name": "2.0",
+      "version_code": "2",
+      "admob_app_id": "ca-app-pub-999",
       "icon_data_url": "data:image/png;base64,iVBORw0KGgo=",
-      "updated_at": "2026-07-19T12:32:57.037Z"
+      "updated_at": "2026-07-19T12:33:12.322Z"
     }
   ],
   "icons": [
@@ -213,7 +213,7 @@
     {
       "package_name": "com.zeywin.verify.temp",
       "icon_data_url": "data:image/png;base64,iVBORw0KGgo=",
-      "updated_at": "2026-07-19T12:32:57.037Z"
+      "updated_at": "2026-07-19T12:33:12.322Z"
     }
   ],
   "builds": [
@@ -1271,5 +1271,5 @@
       "updated_at": "2026-07-19T11:51:34.996Z"
     }
   ],
-  "updated_at": "2026-07-19T12:32:57.037Z"
+  "updated_at": "2026-07-19T12:33:12.322Z"
 }
