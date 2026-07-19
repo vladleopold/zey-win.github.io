@@ -171,13 +171,13 @@
       "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__blackjack.png"
     },
     {
-      "id": "dragon-tiger",
-      "label": "Baccarat Social (Dragon Tiger)",
+      "id": "baccarat-social",
+      "label": "Baccarat Social",
       "game_repository": "zey-win/dragon-tiger",
       "app_name": "Baccarat Social",
       "package_name": "com.PlayMaxSolutions.DragonTiger",
-      "version_name": "6.4",
-      "version_code": "6",
+      "version_name": "8.0",
+      "version_code": "8",
       "version_mode": "auto_next",
       "zeywin_sdk_version": "v3.9.37",
       "zeywin_api_key": "",
@@ -185,11 +185,11 @@
       "admob_banner": "",
       "admob_interstitial": "",
       "admob_rewarded": "ca-app-pub-7850961348081827/6758080070",
-      "firebase_cfg": null,
+      "firebase_cfg": "",
       "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__dragon-tiger.png",
       "icon_path": "",
       "firebase_json_base64": "",
-      "updated_at": "2026-07-19T13:19:07.162Z",
+      "updated_at": "2026-07-19T13:12:23.986Z",
       "icon_data_url": ""
     },
     {
@@ -224,7 +224,7 @@
     {
       "package_name": "com.PlayMaxSolutions.DragonTiger",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__dragon-tiger.png",
-      "updated_at": "2026-07-19T13:19:07.162Z"
+      "updated_at": "2026-07-19T12:48:25.482Z"
     },
     {
       "package_name": "com.casino.game.socialfun",
@@ -1316,7 +1316,20 @@
       "status": "queued",
       "created_at": "2026-07-19T12:54:15.619Z",
       "updated_at": "2026-07-19T12:54:15.619Z"
+    },
+    {
+      "run_id": 29688735091,
+      "request_id": "builder-mrrtrkdg",
+      "package_name": "com.playsocialgames.plinkofun",
+      "app_name": "Plinko Real Money",
+      "game_repository": "zey-win/plinko",
+      "build_format": "apk_aab",
+      "version_name": "1",
+      "version_code": "1",
+      "status": "queued",
+      "created_at": "2026-07-19T13:22:01.803Z",
+      "updated_at": "2026-07-19T13:22:01.803Z"
     }
   ],
-  "updated_at": "2026-07-19T13:19:07.162Z"
+  "updated_at": "2026-07-19T13:22:01.804Z"
 }
