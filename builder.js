@@ -1069,15 +1069,18 @@ function fillConfig(configId) {
 
 // Auto-save current form data as a config after successful build
 async function autoSaveConfig(fd) {
-  const label = fd.get("app_name") || "Без имени";
-  const id = label.toLowerCase().replace(/\s+/g, "-");
+  const repo = fd.get("game_repository") || "";
+  const pkg = fd.get("package_name") || "";
+  const appLabel = fd.get("app_name") || "";
+  const label = appLabel || repo || "Без имени";
+  const id = label.toLowerCase().replace(/[^a-z0-9а-я._-]/gi, "-").replace(/-+/g, "-");
   const iconPath = fd.get("icon_png_path") || "";
   const cfg = {
     id: id,
     label: label,
-    game_repository: fd.get("game_repository") || "zey-win/plinko",
-    app_name: fd.get("app_name") || "",
-    package_name: fd.get("package_name") || "",
+    game_repository: repo || "zey-win/plinko",
+    app_name: appLabel,
+    package_name: pkg,
     version_name: fd.get("version_name") || "1",
     version_code: fd.get("version_code") || "1",
     version_mode: fd.get("version_mode") || "auto_next",
@@ -1109,6 +1112,16 @@ async function autoSaveConfig(fd) {
       headers: op(),
       body: JSON.stringify({ config: cfg })
     });
+    // Reload from server so UI shows canonical state immediately
+    const r = await fetch(`${apiBase}/api/configs`, { headers: op() });
+    if (r.ok) {
+      const data = await r.json();
+      if (Array.isArray(data.configs)) {
+        savedConfigs = data.configs;
+        try { localStorage.setItem("savedConfigs", JSON.stringify(savedConfigs)); } catch {}
+        renderConfigDropdown();
+      }
+    }
   } catch {}
 }
 
