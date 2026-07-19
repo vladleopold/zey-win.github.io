@@ -1349,7 +1349,20 @@
       "status": "queued",
       "created_at": "2026-07-19T13:24:02.616Z",
       "updated_at": "2026-07-19T13:24:02.616Z"
+    },
+    {
+      "run_id": 29692158792,
+      "request_id": "builder-mrrxhkpm",
+      "package_name": "com.playsocialgames.luckywheel",
+      "app_name": "Lucky Wheel",
+      "game_repository": "zey-win/wheel-of-fortune",
+      "build_format": "apk",
+      "version_name": "1",
+      "version_code": "1",
+      "status": "queued",
+      "created_at": "2026-07-19T15:06:14.266Z",
+      "updated_at": "2026-07-19T15:06:14.266Z"
     }
   ],
-  "updated_at": "2026-07-19T15:05:35.726Z"
+  "updated_at": "2026-07-19T15:06:14.266Z"
 }
