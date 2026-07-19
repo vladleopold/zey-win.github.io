@@ -112,6 +112,10 @@ function render(steps){
     if(i < steps.length-1) html += `<div class="arrow">→</div>`;
   });
   html += '</div>';
+  const hasInjected = steps.some(s => s.step === "injected");
+  if(!hasInjected){
+    html += '<div class="err" style="margin-top:14px">⚠ Трейс неполный: нет шага <b>injected</b>. Прогон, видимо, был отменён или упал до финальной инъекции иконки — перезапустите сборку целиком.</div>';
+  }
   out.innerHTML = html;
 }
 
