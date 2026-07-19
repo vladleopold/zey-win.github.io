@@ -28,8 +28,8 @@
       "game_repository": "zey-win/plinko",
       "app_name": "Plinko: Real Money",
       "package_name": "com.playsocialgames.plinkofun",
-      "version_name": "43.0",
-      "version_code": "43",
+      "version_name": "42.0",
+      "version_code": "42",
       "version_mode": "auto_next",
       "zeywin_sdk_version": "v3.9.37",
       "zeywin_api_key": "zw_5deabf1b2a9e7b450d9e9b5260a31374dcb6e62d20053c4b",
@@ -41,8 +41,8 @@
       "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.playsocialgames.plinkofun.png",
       "icon_path": "",
       "firebase_json_base64": "data:application/json;base64,ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiODI3NzMyMzA4ODMxIiwKICAgICJwcm9qZWN0X2lkIjogImNvbS1wbGF5c29jaWFsZ2FtZXMtcGxpbmtvZnVuIiwKICAgICJzdG9yYWdlX2J1Y2tldCI6ICJjb20tcGxheXNvY2lhbGdhbWVzLXBsaW5rb2Z1bi5maXJlYmFzZXN0b3JhZ2UuYXBwIgogIH0sCiAgImNsaWVudCI6IFsKICAgIHsKICAgICAgImNsaWVudF9pbmZvIjogewogICAgICAgICJtb2JpbGVzZGtfYXBwX2lkIjogIjE6ODI3NzMyMzA4ODMxOmFuZHJvaWQ6Yzc3MmM4NmRjMDQ2NThhMWVkM2NlYSIsCiAgICAgICAgImFuZHJvaWRfY2xpZW50X2luZm8iOiB7CiAgICAgICAgICAicGFja2FnZV9uYW1lIjogImNvbS5wbGF5c29jaWFsZ2FtZXMucGxpbmtvZnVuIgogICAgICAgIH0KICAgICAgfSwKICAgICAgIm9hdXRoX2NsaWVudCI6IFtdLAogICAgICAiYXBpX2tleSI6IFsKICAgICAgICB7CiAgICAgICAgICAiY3VycmVudF9rZXkiOiAiQUl6YVN5QmlpUlZDY21PZmJXQ00xWFpGenAySmt6a1ZNR2V0c3FZIgogICAgICAgIH0KICAgICAgXSwKICAgICAgInNlcnZpY2VzIjogewogICAgICAgICJhcHBpbnZpdGVfc2VydmljZSI6IHsKICAgICAgICAgICJvdGhlcl9wbGF0Zm9ybV9vYXV0aF9jbGllbnQiOiBbXQogICAgICAgIH0KICAgICAgfQogICAgfQogIF0sCiAgImNvbmZpZ3VyYXRpb25fdmVyc2lvbiI6ICIxIgp9",
-      "updated_at": "2026-07-19T19:47:26.014Z",
-      "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.playsocialgames.plinkofun.png"
+      "updated_at": "2026-07-19T15:00:44.284Z",
+      "icon_data_url": ""
     },
     {
       "id": "plinko-falling-balls",
@@ -231,7 +231,7 @@
     {
       "package_name": "com.playsocialgames.plinkofun",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.playsocialgames.plinkofun.png",
-      "updated_at": "2026-07-19T19:47:26.014Z"
+      "updated_at": "2026-07-19T15:00:44.284Z"
     },
     {
       "package_name": "com.PlayMaxSolutions.DragonTiger",
@@ -1369,7 +1369,20 @@
       "status": "queued",
       "created_at": "2026-07-19T15:11:10.216Z",
       "updated_at": "2026-07-19T15:11:10.216Z"
+    },
+    {
+      "run_id": 29701279196,
+      "request_id": "builder-mrs7jdci",
+      "package_name": "com.falling.plinko",
+      "app_name": "Plinko Falling Balls",
+      "game_repository": "zey-win/plinko",
+      "build_format": "apk_aab",
+      "version_name": "1",
+      "version_code": "1",
+      "status": "queued",
+      "created_at": "2026-07-19T19:47:31.231Z",
+      "updated_at": "2026-07-19T19:47:31.231Z"
     }
   ],
-  "updated_at": "2026-07-19T19:47:26.014Z"
+  "updated_at": "2026-07-19T19:47:31.231Z"
 }
