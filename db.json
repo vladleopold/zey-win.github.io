@@ -1384,18 +1384,18 @@
       "updated_at": "2026-07-19T19:48:17.500Z"
     },
     {
-      "run_id": 29706686057,
-      "request_id": "builder-mrsduqoi",
-      "package_name": "com.playsocialgames.blackjakck",
-      "app_name": "BlackJack",
-      "game_repository": "zey-win/blackjack",
+      "run_id": 29706689694,
+      "request_id": "builder-mrsduvkz",
+      "package_name": "com.PlayMaxSolutions.DragonTiger",
+      "app_name": "Baccarat Social",
+      "game_repository": "zey-win/dragon-tiger",
       "build_format": "apk_aab",
-      "version_name": "10.0",
-      "version_code": "10",
+      "version_name": "6.4",
+      "version_code": "6",
       "status": "queued",
-      "created_at": "2026-07-19T22:44:18.809Z",
-      "updated_at": "2026-07-19T22:44:18.809Z"
+      "created_at": "2026-07-19T22:44:26.883Z",
+      "updated_at": "2026-07-19T22:44:26.883Z"
     }
   ],
-  "updated_at": "2026-07-19T22:44:18.809Z"
+  "updated_at": "2026-07-19T22:44:26.883Z"
 }
