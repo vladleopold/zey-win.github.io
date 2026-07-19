@@ -623,15 +623,26 @@ async function runBatchBuilds() {
 repoSelect.addEventListener("change", () => { updateIcon(); syncVersionFields(true); });
 const addRepoBtn = $("add-repo-btn");
 if (addRepoBtn) {
-  addRepoBtn.addEventListener("click", () => {
+  addRepoBtn.addEventListener("click", async () => {
     const val = prompt("Введите репозиторий в формате owner/name");
     if (!val) return;
     const repo = val.trim();
     if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) { alert("Неверный формат. Используйте owner/name"); return; }
     if ([...repoSelect.options].some(o => o.value === repo)) { repoSelect.value = repo; updateIcon(); syncVersionFields(true); return; }
+    const defaultLabel = repo.split("/").pop().replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+    const label = prompt("Название игры:", defaultLabel);
+    if (!label) return;
+    const pkg = prompt("Package name (например: com.playsocialgames.game):");
+    if (!pkg) return;
+    const id = repo.replace(/[^a-z0-9]/gi, "-").toLowerCase();
+    const cfg = { id, label, game_repository: repo, app_name: label, package_name: pkg, version_mode: "auto_next" };
+    savedConfigs = savedConfigs.filter(c => c.id !== id);
+    savedConfigs.push(cfg);
+    try { localStorage.setItem("savedConfigs", JSON.stringify(savedConfigs)); } catch {}
+    try { await fetch(apiBase + "/api/configs", { method: "POST", headers: op(), body: JSON.stringify({ config: cfg }) }); } catch {}
     const opt = document.createElement("option");
     opt.value = repo;
-    opt.textContent = repo.split("/").pop();
+    opt.textContent = label;
     repoSelect.appendChild(opt);
     repoSelect.value = repo;
     updateIcon();
@@ -996,6 +1007,17 @@ async function loadConfigs() {
       } catch {}
     }
   }
+  // Sync repoSelect dropdown with savedConfigs (add dynamic options)
+  const currentVal = repoSelect.value;
+  for (const c of savedConfigs) {
+    if (c.game_repository && ![...repoSelect.options].some(o => o.value === c.game_repository)) {
+      const opt = document.createElement("option");
+      opt.value = c.game_repository;
+      opt.textContent = c.app_name || c.label || c.game_repository.split("/").pop();
+      repoSelect.appendChild(opt);
+    }
+  }
+  if (currentVal && [...repoSelect.options].some(o => o.value === currentVal)) repoSelect.value = currentVal;
 }
 
 function fillConfig(configId) {
