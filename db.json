@@ -1254,7 +1254,20 @@
       "status": "queued",
       "created_at": "2026-07-19T11:51:34.996Z",
       "updated_at": "2026-07-19T11:51:34.996Z"
+    },
+    {
+      "run_id": 29687507101,
+      "request_id": "builder-mrrsdjcz",
+      "package_name": "com.casino.game.socialfun",
+      "app_name": "888 Casino",
+      "game_repository": "zey-win/New-Slots",
+      "build_format": "apk",
+      "version_name": "1",
+      "version_code": "1",
+      "status": "queued",
+      "created_at": "2026-07-19T12:43:06.211Z",
+      "updated_at": "2026-07-19T12:43:06.211Z"
     }
   ],
-  "updated_at": "2026-07-19T12:37:20.945Z"
+  "updated_at": "2026-07-19T12:43:06.212Z"
 }
