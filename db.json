@@ -167,13 +167,13 @@
       "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__blackjack.png"
     },
     {
-      "id": "baccarat-social",
-      "label": "Baccarat Social",
+      "id": "dragon-tiger",
+      "label": "Baccarat Social (Dragon Tiger)",
       "game_repository": "zey-win/dragon-tiger",
       "app_name": "Baccarat Social",
       "package_name": "com.PlayMaxSolutions.DragonTiger",
-      "version_name": "8.0",
-      "version_code": "8",
+      "version_name": "6.4",
+      "version_code": "6",
       "version_mode": "auto_next",
       "zeywin_sdk_version": "v3.9.37",
       "zeywin_api_key": "",
@@ -181,11 +181,11 @@
       "admob_banner": "",
       "admob_interstitial": "",
       "admob_rewarded": "ca-app-pub-7850961348081827/6758080070",
-      "firebase_cfg": "",
+      "firebase_cfg": null,
       "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__dragon-tiger.png",
       "icon_path": "",
       "firebase_json_base64": "",
-      "updated_at": "2026-07-19T12:48:09.264Z",
+      "updated_at": "2026-07-19T12:48:25.482Z",
       "icon_data_url": ""
     },
     {
@@ -220,7 +220,7 @@
     {
       "package_name": "com.PlayMaxSolutions.DragonTiger",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__dragon-tiger.png",
-      "updated_at": "2026-07-19T12:37:11.232Z"
+      "updated_at": "2026-07-19T12:48:25.482Z"
     },
     {
       "package_name": "com.casino.game.socialfun",
@@ -1296,5 +1296,5 @@
       "updated_at": "2026-07-19T12:43:06.211Z"
     }
   ],
-  "updated_at": "2026-07-19T12:48:09.264Z"
+  "updated_at": "2026-07-19T12:48:25.482Z"
 }
