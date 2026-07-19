@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZeyWin Icons</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0d1117; color: #c9d1d9; padding: 20px; }
+    h1 { color: #58a6ff; margin-bottom: 20px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+    .card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px; text-align: center; }
+    .card img { width: 96px; height: 96px; border-radius: 16px; margin-bottom: 12px; }
+    .card .pkg { font-size: 12px; color: #8b949e; word-break: break-all; }
+    .card .btn { display: inline-block; margin-top: 8px; padding: 4px 12px; background: #238636; color: #fff; text-decoration: none; border-radius: 4px; font-size: 12px; }
+    .card .btn:hover { background: #2ea043; }
+  </style>
+</head>
+<body>
+  <h1>ZeyWin Launcher Icons</h1>
+  <p style="color:#8b949e;margin-bottom:20px">PNG icons for CI/CD builds. Step 45 fetches from here.</p>
+  <div id="icons" class="grid"></div>
+  <script>
+    const ICONS = [
+      'com.socialapps.plinko', 'com.playsocialgames.plinkofun', 'com.falling.plinko',
+      'com.playsocialgames.blackjakck', 'com.playsocialgames.bacarrattiger',
+      'com.PlayMaxSolutions.DragonTiger', 'com.playsocialgames.luckywheel',
+      'com.playsocialgames.chicken.road', 'com.playmaxsolutions.slotspot',
+      'com.casino.game.socialfun', 'com.playsocialgames.roulette'
+    ];
+    const grid = document.getElementById('icons');
+    ICONS.forEach(pkg => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <img src="${pkg}.png" alt="${pkg}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%2330363d%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%238b949e%22 font-size=%2214%22>🎮</text></svg>'">
+        <div class="pkg">${pkg}</div>
+        <a class="btn" href="${pkg}.png">PNG</a>
+      `;
+      grid.appendChild(card);
+    });
+  </script>
+</body>
+</html>
