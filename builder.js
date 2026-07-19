@@ -134,7 +134,9 @@ async function loadArtifactVersions() {
     try {
       const res = await fetch(`${apiBase}/api/versions?package_name=${encodeURIComponent(pkg)}`, { headers: op() });
       if (!res.ok) continue;
-      const d = await res.json();
+    const d = await res.json();
+    // eslint-disable-next-line no-console
+    console.log(`[builder] /api/build response: ok=${res.ok}, run=${d.run?.id || "none"}, icon=${d.icon?.path || d.icon?.dataUrl ? "set" : "none"}`);
       const aab = d.aab || {};
       if (aab.versionName || aab.versionCode) {
         for (const r of runs) {
@@ -491,6 +493,8 @@ async function submitBuildPayload(payload) {
 
   try {
     const requestPayload = { ...payload };
+    // eslint-disable-next-line no-console
+    console.log(`[builder] submitBuildPayload: iconDataUrl=${requestPayload.iconDataUrl ? "data:" + requestPayload.iconDataUrl.length + "B" : "(empty)"}, icon_png_path=${requestPayload.icon_png_path || "(empty)"}`);
     if (requestPayload.version_mode !== "manual") {
       requestPayload.aab_version_name = "";
       requestPayload.aab_version_code = "";
