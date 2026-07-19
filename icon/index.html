@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZeyWin · Icon build analyzer</title>
+<style>
+  :root{--bg:#0f1115;--card:#1b1f27;--line:#2a2f3a;--txt:#e6e6e6;--muted:#9aa0a6;--blue:#7fd1ff;--red:#ff8a9a;--green:#8ff0b0;--amber:#ffd479}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;padding:24px}
+  h1{font-size:19px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:18px}
+  .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+  input{background:#0c0e12;border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:8px 10px;font-size:13px;min-width:220px}
+  button{background:#2b6cff;border:0;color:#fff;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer}
+  button:hover{filter:brightness(1.1)}
+  .flow{display:flex;gap:0;align-items:stretch;overflow-x:auto;padding-bottom:10px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;min-width:220px;max-width:240px;flex:0 0 auto}
+  .card h3{margin:0 0 6px;font-size:12px}
+  .card .act{font-size:11px;color:var(--muted);min-height:46px}
+  .card img{width:84px;height:84px;border-radius:16px;display:block;margin:8px auto;background:#fff;object-fit:contain}
+  .card .path{font-size:10px;color:#9ff;word-break:break-all}
+  .card .md5{font-size:10px;color:var(--muted);margin-top:4px}
+  .arrow{display:flex;align-items:center;color:#5b6472;font-size:22px;padding:0 4px;flex:0 0 auto}
+  .badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:6px;margin-bottom:6px}
+  .b-fetch{background:#10314a;color:var(--blue)}
+  .b-baked{background:#4a1620;color:var(--red)}
+  .b-injected{background:#10331f;color:var(--green)}
+  .b-other{background:#2a2f3a;color:var(--muted)}
+  .err{color:var(--red);background:#2a1216;border:1px solid #5a1320;border-radius:10px;padding:12px;font-size:13px}
+  .ok{color:var(--green)}
+  .meta{font-size:12px;color:var(--muted);margin-bottom:14px}
+  .legend{font-size:11px;color:var(--muted);margin-top:16px}
+  .legend b{color:var(--txt)}
+</style>
+</head>
+<body>
+<h1>🔍 Icon build analyzer</h1>
+<div class="sub">Визуальный контроль пути иконки от загрузки до финального APK. Данные берутся из реального прогона GitHub Actions.</div>
+
+<div class="controls">
+  <input id="pkg" placeholder="package name, напр. com.***.roulette" value="">
+  <input id="run" placeholder="run id (необязательно → latest)" value="">
+  <button onclick="load()">Загрузить</button>
+</div>
+
+<div id="meta" class="meta"></div>
+<div id="out"></div>
+
+<div class="legend">
+  <b>fetch</b> — иконка скачана из репозитория в изолированный путь ·&nbsp;
+  <b style="color:var(--red)">unity_baked</b> — что сгенерил Unity ДО переҙаписи (тут виден красный фон/размытие) ·&nbsp;
+  <b style="color:var(--green)">injected</b> — итоговая иконка в собранном APK/AAB
+</div>
+
+<script>
+const CI_CDN = "https://raw.githubusercontent.com/zey-win/ci-cd/main";
+
+function badgeClass(step){
+  if(step==="fetch") return "b-fetch";
+  if(step==="unity_baked") return "b-baked";
+  if(step==="injected") return "b-injected";
+  return "b-other";
+}
+function label(step){ return step; }
+
+async function load(){
+  const pkg = document.getElementById("pkg").value.trim();
+  const run = document.getElementById("run").value.trim();
+  const meta = document.getElementById("meta");
+  const out = document.getElementById("out");
+  out.innerHTML = "";
+  if(!pkg){ meta.textContent = "Введите package name."; return; }
+  meta.textContent = "Загрузка трассировки для " + pkg + (run?(" · run "+run):" · latest") + " …";
+  const file = run ? `${run}.json` : `latest.json`;
+  const url = `${CI_CDN}/builds/${encodeURIComponent(pkg)}/icon-trace/${file}`;
+  let data;
+  try{
+    const r = await fetch(url);
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    data = await r.json();
+  }catch(e){
+    out.innerHTML = `<div class="err">Не удалось загрузить трассировку: ${e.message}.<br>Возможно, прогон ещё не публиковал трейс, или package/run указаны неверно.</div>`;
+    meta.textContent = "";
+    return;
+  }
+  meta.innerHTML = `run_id: <code>${data.run_id}</code> · package: <code>${data.package}</code> · шагов: ${data.steps.length} <span class="ok">✓</span>`;
+  render(data.steps);
+}
+
+function render(steps){
+  const out = document.getElementById("out");
+  let html = '<div class="flow">';
+  steps.forEach((s,i)=>{
+    const img = s.img ? `<img src="${s.img}">` : `<img style="background:#222">`;
+    html += `
+      <div class="card">
+        <span class="badge ${badgeClass(s.step)}">${label(s.step)}</span>
+        <h3>${s.action||""}</h3>
+        ${img}
+        <div class="path">${s.src||""} →<br>${s.dst||""}</div>
+        <div class="md5">md5: ${s.md5||"?"}</div>
+      </div>`;
+    if(i < steps.length-1) html += `<div class="arrow">→</div>`;
+  });
+  html += '</div>';
+  out.innerHTML = html;
+}
+
+// автозагрузка из URL ?pkg=...&run=...
+const p = new URLSearchParams(location.search);
+if(p.get("pkg")){ document.getElementById("pkg").value = p.get("pkg"); }
+if(p.get("run")){ document.getElementById("run").value = p.get("run"); }
+if(p.get("pkg")){ load(); }
+</script>
+</body>
+</html>
