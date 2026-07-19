@@ -6,8 +6,8 @@
       "game_repository": "zey-win/plinko",
       "app_name": "Plinko",
       "package_name": "com.socialapps.plinko",
-      "version_name": "29.0",
-      "version_code": "51",
+      "version_name": "30.0",
+      "version_code": "52",
       "version_mode": "auto_next",
       "zeywin_sdk_version": "v3.9.37",
       "zeywin_api_key": "zw_8d59f9c3003702276e42bd69f07ea8988c77be6ecf5f953f",
@@ -19,8 +19,8 @@
       "firebase_cfg": "com.socialapps.plinko.json",
       "firebase_json_base64": "data:application/json;base64,ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiMTAwNjk1Mzc3Nzk4IiwKICAgICJwcm9qZWN0X2lkIjogImNvbS1zb2NpYWxhcHBzLXBsaW5rbyIsCiAgICAic3RvcmFnZV9idWNrZXQiOiAiY29tLXNvY2lhbGFwcHMtcGxpbmtvLmZpcmViYXNlc3RvcmFnZS5hcHAiCiAgfSwKICAiY2xpZW50IjogWwogICAgewogICAgICAiY2xpZW50X2luZm8iOiB7CiAgICAgICAgIm1vYmlsZXNka19hcHBfaWQiOiAiMToxMDA2OTUzNzc3OTg6YW5kcm9pZDpkNmFhMDE1OTM2YjI4NDVmNTUwZTA3IiwKICAgICAgICAiYW5kcm9pZF9jbGllbnRfaW5mbyI6IHsKICAgICAgICAgICJwYWNrYWdlX25hbWUiOiAiY29tLnNvY2lhbGFwcHMucGxpbmtvIgogICAgICAgIH0KICAgICAgfSwKICAgICAgIm9hdXRoX2NsaWVudCI6IFtdLAogICAgICAiYXBpX2tleSI6IFsKICAgICAgICB7CiAgICAgICAgICAiY3VycmVudF9rZXkiOiAiQUl6YVN5QmpQYkpwUWlkT2F3WEpEN2g0ZmVGa3JURTBab0tFR2RRIgogICAgICAgIH0KICAgICAgXSwKICAgICAgInNlcnZpY2VzIjogewogICAgICAgICJhcHBpbnZpdGVfc2VydmljZSI6IHsKICAgICAgICAgICJvdGhlcl9wbGF0Zm9ybV9vYXV0aF9jbGllbnQiOiBbXQogICAgICAgIH0KICAgICAgfQogICAgfQogIF0sCiAgImNvbmZpZ3VyYXRpb25fdmVyc2lvbiI6ICIxIgp9",
       "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.socialapps.plinko.png",
-      "icon_data_url": "",
-      "updated_at": "2026-07-19T15:11:15.404Z"
+      "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.socialapps.plinko.png",
+      "updated_at": "2026-07-19T19:47:18.198Z"
     },
     {
       "id": "plinko:-real-money",
@@ -261,7 +261,7 @@
     {
       "package_name": "com.socialapps.plinko",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.socialapps.plinko.png",
-      "updated_at": "2026-07-19T15:11:15.404Z"
+      "updated_at": "2026-07-19T19:47:18.198Z"
     }
   ],
   "builds": [
@@ -1369,20 +1369,7 @@
       "status": "queued",
       "created_at": "2026-07-19T15:11:10.216Z",
       "updated_at": "2026-07-19T15:11:10.216Z"
-    },
-    {
-      "run_id": 29701269668,
-      "request_id": "builder-mrs7iyio",
-      "package_name": "com.socialapps.plinko",
-      "app_name": "Plinko",
-      "game_repository": "zey-win/plinko",
-      "build_format": "apk_aab",
-      "version_name": "1",
-      "version_code": "1",
-      "status": "queued",
-      "created_at": "2026-07-19T19:47:13.133Z",
-      "updated_at": "2026-07-19T19:47:13.133Z"
     }
   ],
-  "updated_at": "2026-07-19T19:47:13.134Z"
+  "updated_at": "2026-07-19T19:47:18.198Z"
 }
