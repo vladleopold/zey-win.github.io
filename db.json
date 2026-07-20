@@ -23,13 +23,13 @@
       "updated_at": "2026-07-19T15:11:15.404Z"
     },
     {
-      "id": "plinko:-real-money",
-      "label": "Plinko: Real Money",
+      "id": "plinko-real-money",
+      "label": "Plinko Real Money",
       "game_repository": "zey-win/plinko",
-      "app_name": "Plinko: Real Money",
+      "app_name": "Plinko Real Money",
       "package_name": "com.playsocialgames.plinkofun",
-      "version_name": "42.0",
-      "version_code": "42",
+      "version_name": "25.0",
+      "version_code": "25",
       "version_mode": "auto_next",
       "zeywin_sdk_version": "v3.9.37",
       "zeywin_api_key": "zw_5deabf1b2a9e7b450d9e9b5260a31374dcb6e62d20053c4b",
@@ -37,12 +37,12 @@
       "admob_banner": "ca-app-pub-6988952582458184/4530693980",
       "admob_interstitial": "ca-app-pub-6988952582458184/9211185343",
       "admob_rewarded": "ca-app-pub-6988952582458184/7061184633",
-      "firebase_cfg": "com.playsocialgames.plinkofun.json",
+      "firebase_cfg": "data:application/json;base64,ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiODI3NzMyMzA4ODMxIiwKICAgICJwcm9qZWN0X2lkIjogImNvbS1wbGF5c29jaWFsZ2FtZXMtcGxpbmtvZnVuIiwKICAgICJzdG9yYWdlX2J1Y2tldCI6ICJjb20tcGxheXNvY2lhbGdhbWVzLXBsaW5rb2Z1bi5maXJlYmFzZXN0b3JhZ2UuYXBwIgogIH0sCiAgImNsaWVudCI6IFsKICAgIHsKICAgICAgImNsaWVudF9pbmZvIjogewogICAgICAgICJtb2JpbGVzZGtfYXBwX2lkIjogIjE6ODI3NzMyMzA4ODMxOmFuZHJvaWQ6Yzc3MmM4NmRjMDQ2NThhMWVkM2NlYSIsCiAgICAgICAgImFuZHJvaWRfY2xpZW50X2luZm8iOiB7CiAgICAgICAgICAicGFja2FnZV9uYW1lIjogImNvbS5wbGF5c29jaWFsZ2FtZXMucGxpbmtvZnVuIgogICAgICAgIH0KICAgICAgfSwKICAgICAgIm9hdXRoX2NsaWVudCI6IFtdLAogICAgICAiYXBpX2tleSI6IFsKICAgICAgICB7CiAgICAgICAgICAiY3VycmVudF9rZXkiOiAiQUl6YVN5QmlpUlZDY21PZmJXQ00xWFpGenAySmt6a1ZNR2V0c3FZIgogICAgICAgIH0KICAgICAgXSwKICAgICAgInNlcnZpY2VzIjogewogICAgICAgICJhcHBpbnZpdGVfc2VydmljZSI6IHsKICAgICAgICAgICJvdGhlcl9wbGF0Zm9ybV9vYXV0aF9jbGllbnQiOiBbXQogICAgICAgIH0KICAgICAgfQogICAgfQogIF0sCiAgImNvbmZpZ3VyYXRpb25fdmVyc2lvbiI6ICIxIgp9",
       "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.playsocialgames.plinkofun.png",
       "icon_path": "",
       "firebase_json_base64": "data:application/json;base64,ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiODI3NzMyMzA4ODMxIiwKICAgICJwcm9qZWN0X2lkIjogImNvbS1wbGF5c29jaWFsZ2FtZXMtcGxpbmtvZnVuIiwKICAgICJzdG9yYWdlX2J1Y2tldCI6ICJjb20tcGxheXNvY2lhbGdhbWVzLXBsaW5rb2Z1bi5maXJlYmFzZXN0b3JhZ2UuYXBwIgogIH0sCiAgImNsaWVudCI6IFsKICAgIHsKICAgICAgImNsaWVudF9pbmZvIjogewogICAgICAgICJtb2JpbGVzZGtfYXBwX2lkIjogIjE6ODI3NzMyMzA4ODMxOmFuZHJvaWQ6Yzc3MmM4NmRjMDQ2NThhMWVkM2NlYSIsCiAgICAgICAgImFuZHJvaWRfY2xpZW50X2luZm8iOiB7CiAgICAgICAgICAicGFja2FnZV9uYW1lIjogImNvbS5wbGF5c29jaWFsZ2FtZXMucGxpbmtvZnVuIgogICAgICAgIH0KICAgICAgfSwKICAgICAgIm9hdXRoX2NsaWVudCI6IFtdLAogICAgICAiYXBpX2tleSI6IFsKICAgICAgICB7CiAgICAgICAgICAiY3VycmVudF9rZXkiOiAiQUl6YVN5QmlpUlZDY21PZmJXQ00xWFpGenAySmt6a1ZNR2V0c3FZIgogICAgICAgIH0KICAgICAgXSwKICAgICAgInNlcnZpY2VzIjogewogICAgICAgICJhcHBpbnZpdGVfc2VydmljZSI6IHsKICAgICAgICAgICJvdGhlcl9wbGF0Zm9ybV9vYXV0aF9jbGllbnQiOiBbXQogICAgICAgIH0KICAgICAgfQogICAgfQogIF0sCiAgImNvbmZpZ3VyYXRpb25fdmVyc2lvbiI6ICIxIgp9",
-      "updated_at": "2026-07-19T15:00:44.284Z",
-      "icon_data_url": ""
+      "updated_at": "2026-07-20T10:20:35.154Z",
+      "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.playsocialgames.plinkofun.png"
     },
     {
       "id": "plinko-falling-balls",
@@ -183,13 +183,13 @@
       "updated_at": "2026-07-19T14:49:42.936Z"
     },
     {
-      "id": "baccarat-social",
-      "label": "Baccarat Social",
+      "id": "dragon-tiger",
+      "label": "Baccarat Social (Dragon Tiger)",
       "game_repository": "zey-win/dragon-tiger",
       "app_name": "Baccarat Social",
       "package_name": "com.PlayMaxSolutions.DragonTiger",
-      "version_name": "8.0",
-      "version_code": "8",
+      "version_name": "6.4",
+      "version_code": "6",
       "version_mode": "auto_next",
       "zeywin_sdk_version": "v3.9.37",
       "zeywin_api_key": "",
@@ -197,12 +197,12 @@
       "admob_banner": "",
       "admob_interstitial": "",
       "admob_rewarded": "ca-app-pub-7850961348081827/6758080070",
-      "firebase_cfg": "",
+      "firebase_cfg": null,
       "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__dragon-tiger.png",
       "icon_path": "",
       "firebase_json_base64": "",
-      "updated_at": "2026-07-20T10:20:32.480Z",
-      "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__dragon-tiger.png"
+      "updated_at": "2026-07-20T09:56:45.711Z",
+      "icon_data_url": ""
     },
     {
       "id": "888-casino",
@@ -231,12 +231,12 @@
     {
       "package_name": "com.playsocialgames.plinkofun",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.playsocialgames.plinkofun.png",
-      "updated_at": "2026-07-19T15:00:44.284Z"
+      "updated_at": "2026-07-20T10:20:35.154Z"
     },
     {
       "package_name": "com.PlayMaxSolutions.DragonTiger",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__dragon-tiger.png",
-      "updated_at": "2026-07-20T10:20:32.480Z"
+      "updated_at": "2026-07-20T09:56:45.711Z"
     },
     {
       "package_name": "com.casino.game.socialfun",
@@ -1423,5 +1423,5 @@
       "updated_at": "2026-07-19T23:51:49.834Z"
     }
   ],
-  "updated_at": "2026-07-20T10:20:32.480Z"
+  "updated_at": "2026-07-20T10:20:35.154Z"
 }
