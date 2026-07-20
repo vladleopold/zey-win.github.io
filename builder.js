@@ -139,7 +139,7 @@ async function loadArtifactVersions() {
   const pkgs = new Set();
   for (const r of runs) {
     const v = runMeta[r.id]?.ver;
-    if (r.conclusion === "success" && (!v || v === "1")) {
+    if (!v || v === "1") {
       const { pkg } = parseTitle(r.displayTitle || r.name || "");
       if (pkg) pkgs.add(pkg);
     }
