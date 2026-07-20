@@ -1423,18 +1423,18 @@
       "updated_at": "2026-07-19T23:51:49.834Z"
     },
     {
-      "run_id": 29775243758,
-      "request_id": "builder-mrtnwyu3",
-      "package_name": "com.playsocialgames.roulette",
-      "app_name": "Roulette",
-      "game_repository": "zey-win/roulette",
+      "run_id": 29775388802,
+      "request_id": "builder-mrtnzl1i",
+      "package_name": "com.playsocialgames.bacarrattiger",
+      "app_name": "Baccarat",
+      "game_repository": "zey-win/baccarat-tiger",
       "build_format": "apk_aab",
       "version_name": "1",
       "version_code": "1",
       "status": "queued",
-      "created_at": "2026-07-20T20:13:49.304Z",
-      "updated_at": "2026-07-20T20:13:49.304Z"
+      "created_at": "2026-07-20T20:15:49.658Z",
+      "updated_at": "2026-07-20T20:15:49.658Z"
     }
   ],
-  "updated_at": "2026-07-20T20:13:49.304Z"
+  "updated_at": "2026-07-20T20:15:49.658Z"
 }
