@@ -893,90 +893,13 @@ function restartBuild(runId) {
   openDetail(runId);
 }
 
-let _logTimer = null;
-async function fetchJobLogs(runId) {
-  try {
-    const res = await fetch(`${apiBase}/api/logs?run_id=${runId}`, { headers: op() });
-    if (!res.ok) return null;
-    return await res.text();
-  } catch {
-    return null;
-  }
-}
-
-async function showBuildInfo(runId) {
-  const run = runs.find(r => r.id === runId);
-  if (!run) return;
-  const meta = runMeta[runId] || {};
-  const params = meta.params || {};
-  const iconUrl = meta.icon || resolveIcon(run) || "";
-  const url = run.htmlUrl || "";
-  const isActive = ["in_progress","pending","queued","waiting"].includes(run.status);
-  const fields = [
-    ["Игра", params.app_name || ""],
-    ["Package", params.package_name || ""],
-    ["Репозиторий", params.game_repository || ""],
-    ["Формат", params.build_format || ""],
-    ["Версия", params.aab_version_name || params.version_name || meta.ver || ""],
-    ["Версия код", params.aab_version_code || params.version_code || meta.code || ""],
-    ["SDK", params.zeywin_sdk_version || ""],
-    ["API Key", params.zeywin_api_key || ""],
-    ["AdMob App ID", params.admob_android_app_id || ""],
-    ["Статус", run.status || ""],
-    ["# сборки", String(run.runNumber || run.run_number || "")]
-  ];
-  let html = `<div style="display:flex;gap:12px;margin-bottom:12px">`;
-  if (iconUrl) html += `<img src="${iconUrl}" style="width:64px;height:64px;border-radius:12px;flex-shrink:0;object-fit:cover">`;
-  html += `<div style="flex:1;min-width:0">
-    <div style="font-size:18px;font-weight:700;color:#f0f6fc;margin-bottom:4px">${esc(params.app_name || run.displayTitle || "")}</div>
-    <div style="font-size:13px;color:#8b949e">${esc(params.package_name || "")}</div>
-  </div></div>`;
-  html += `<table style="width:100%;font-size:13px;border-collapse:collapse">`;
-  for (const [k, v] of fields) {
-    if (!v) continue;
-    html += `<tr><td style="padding:3px 8px 3px 0;color:#8b949e;white-space:nowrap;vertical-align:top">${k}</td><td style="padding:3px 0;color:#c9d1d9;word-break:break-all">${esc(v)}</td></tr>`;
-  }
-  html += `</table>`;
-  if (url) html += `<div style="margin-top:10px"><a href="${esc(url)}" target="_blank" style="color:#58a6ff;font-size:13px">Открыть на GitHub →</a></div>`;
-  html += `<div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">`;
-  html += `<button class="btn-restart" onclick="openDetail(${runId});document.getElementById('detail-modal').classList.add('hidden')" style="padding:6px 12px;background:#238636;border:none;border-radius:6px;color:#fff;cursor:pointer;font-size:13px">Перезапустить</button>`;
-  html += `<button onclick="document.getElementById('detail-modal').classList.add('hidden')" style="padding:6px 12px;background:#30363d;border:none;border-radius:6px;color:#c9d1d9;cursor:pointer;font-size:13px">Закрыть</button>`;
-  html += `</div>`;
-  if (isActive) {
-    html += `<div style="margin-top:12px"><div style="font-size:13px;font-weight:600;color:#ffd700;margin-bottom:4px">📋 Логи сборки:</div><pre id="dm-logs" style="background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:8px;font-size:11px;line-height:1.4;max-height:300px;overflow-y:auto;color:#c9d1d9;white-space:pre-wrap;word-break:break-all">Загрузка...</pre></div>`;
-  }
-  document.getElementById("dm-content").innerHTML = html;
-  document.getElementById("detail-modal").classList.remove("hidden");
-  if (isActive) {
-    clearInterval(_logTimer);
-    const logsEl = document.getElementById("dm-logs");
-    async function pollLogs() {
-      const text = await fetchJobLogs(runId);
-      if (text && logsEl) logsEl.textContent = text;
-    }
-    pollLogs();
-    _logTimer = setInterval(pollLogs, 7000);
-  }
-}
-
-document.getElementById("dm-close").addEventListener("click", () => {
-  document.getElementById("detail-modal").classList.add("hidden");
-  clearInterval(_logTimer);
-});
-document.getElementById("detail-modal").addEventListener("click", e => {
-  if (e.target === e.currentTarget) {
-    document.getElementById("detail-modal").classList.add("hidden");
-    clearInterval(_logTimer);
-  }
-});
-
 
 document.addEventListener("click", e => {
   const card = e.target.closest(".build-card");
   if (!card) return;
   if (e.target.closest("a, button, .del-btn")) return;
   const id = Number(card.dataset.id);
-  if (id) showBuildInfo(id);
+  if (id) openDetail(id);
 });
 
 form.addEventListener("input", markChangedFields);
