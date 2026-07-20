@@ -179,15 +179,26 @@ async function loadVersionSuggestion(packageName, force = false) {
   const pkg = (packageName || "").trim();
   if (!pkg) return null;
   if (!force && versionCache.has(pkg)) return versionCache.get(pkg);
+  let data = null;
   try {
     const res = await fetch(`${apiBase}/api/versions?package_name=${encodeURIComponent(pkg)}`, { headers: op() });
-    if (!res.ok) return null;
-    const data = await res.json();
-    versionCache.set(pkg, data);
-    return data;
-  } catch {
-    return null;
+    if (res.ok) {
+      data = await res.json();
+      if (data?.aab?.versionName || data?.aab?.versionCode) {
+        versionCache.set(pkg, data);
+        return data;
+      }
+    }
+  } catch {}
+  const cicd = await fetchVersionFromCiCd(pkg);
+  if (cicd && (cicd.versionName || cicd.versionCode)) {
+    const fallback = { ok: true, package_name: pkg, aab: {}, apk: {}, versionName: cicd.versionName, versionCode: cicd.versionCode, latest: { versionName: cicd.versionName, versionCode: cicd.versionCode } };
+    fallback.aab.versionName = cicd.versionName;
+    fallback.aab.versionCode = cicd.versionCode;
+    versionCache.set(pkg, fallback);
+    return fallback;
   }
+  return data;
 }
 
 async function loadSdkVersions(force = false) {
