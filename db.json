@@ -108,8 +108,8 @@
       "game_repository": "zey-win/wheel-of-fortune",
       "app_name": "Lucky Wheel",
       "package_name": "com.playsocialgames.luckywheel",
-      "version_name": "11.0",
-      "version_code": "11",
+      "version_name": "10.0",
+      "version_code": "10",
       "version_mode": "auto_next",
       "zeywin_sdk_version": "v3.9.37",
       "zeywin_api_key": "zw_183a2bdbf64b64dc54e4a8bc81c577fd39358117e7a5aea6",
@@ -118,9 +118,7 @@
       "admob_interstitial": "ca-app-pub-6988952582458184/7089122332",
       "admob_rewarded": "ca-app-pub-6988952582458184/7968532690",
       "firebase_cfg": null,
-      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__wheel-of-fortune.png",
-      "icon_data_url": "",
-      "updated_at": "2026-07-20T20:05:18.598Z"
+      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__wheel-of-fortune.png"
     },
     {
       "id": "roulette",
@@ -264,11 +262,6 @@
       "package_name": "com.socialapps.plinko",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.socialapps.plinko.png",
       "updated_at": "2026-07-19T15:11:15.404Z"
-    },
-    {
-      "package_name": "com.playsocialgames.luckywheel",
-      "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__wheel-of-fortune.png",
-      "updated_at": "2026-07-20T20:05:18.598Z"
     }
   ],
   "builds": [
@@ -1428,7 +1421,20 @@
       "status": "queued",
       "created_at": "2026-07-19T23:51:49.834Z",
       "updated_at": "2026-07-19T23:51:49.834Z"
+    },
+    {
+      "run_id": 29774661050,
+      "request_id": "builder-mrtnm7pp",
+      "package_name": "com.playsocialgames.roulette",
+      "app_name": "Roulette",
+      "game_repository": "zey-win/roulette",
+      "build_format": "apk_aab",
+      "version_name": "1",
+      "version_code": "1",
+      "status": "queued",
+      "created_at": "2026-07-20T20:05:27.411Z",
+      "updated_at": "2026-07-20T20:05:27.411Z"
     }
   ],
-  "updated_at": "2026-07-20T20:05:18.598Z"
+  "updated_at": "2026-07-20T20:05:27.411Z"
 }
