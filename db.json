@@ -68,8 +68,8 @@
       "game_repository": "zey-win/SlotSpot",
       "app_name": "SlotSpot",
       "package_name": "com.playmaxsolutions.slotspot",
-      "version_name": "14.0",
-      "version_code": "26",
+      "version_name": "13.0",
+      "version_code": "25",
       "version_mode": "auto_next",
       "zeywin_sdk_version": "v3.9.37",
       "zeywin_api_key": "zw_7b07dc24806408f6e655dcf0422e15c5e028d40d440b3e1a",
@@ -80,9 +80,9 @@
       "firebase_cfg": "com.playmaxsolutions.slotspot.json",
       "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__SlotSpot.png",
       "icon_path": "",
-      "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__SlotSpot.png",
+      "icon_data_url": "",
       "firebase_json_base64": "data:application/json;base64,ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiOTQxMTgzMDg1OTMxIiwKICAgICJwcm9qZWN0X2lkIjogInNsb3RzLXBvdCIsCiAgICAic3RvcmFnZV9idWNrZXQiOiAic2xvdHMtcG90LmZpcmViYXNlc3RvcmFnZS5hcHAiCiAgfSwKICAiY2xpZW50IjogWwogICAgewogICAgICAiY2xpZW50X2luZm8iOiB7CiAgICAgICAgIm1vYmlsZXNka19hcHBfaWQiOiAiMTo5NDExODMwODU5MzE6YW5kcm9pZDoxZTEyOTYwMmY3MmU5YTNkMTJmMDJlIiwKICAgICAgICAiYW5kcm9pZF9jbGllbnRfaW5mbyI6IHsKICAgICAgICAgICJwYWNrYWdlX25hbWUiOiAiY29tLnBsYXltYXhzb2x1dGlvbnMuc2xvdHNwb3QiCiAgICAgICAgfQogICAgICB9LAogICAgICAib2F1dGhfY2xpZW50IjogW10sCiAgICAgICJhcGlfa2V5IjogWwogICAgICAgIHsKICAgICAgICAgICJjdXJyZW50X2tleSI6ICJBSXphU3lDZTV4eF9mYWlhMkFIZVhqRC1yMGVlZUhRc0VvM2hZUjgiCiAgICAgICAgfQogICAgICBdLAogICAgICAic2VydmljZXMiOiB7CiAgICAgICAgImFwcGludml0ZV9zZXJ2aWNlIjogewogICAgICAgICAgIm90aGVyX3BsYXRmb3JtX29hdXRoX2NsaWVudCI6IFtdCiAgICAgICAgfQogICAgICB9CiAgICB9CiAgXSwKICAiY29uZmlndXJhdGlvbl92ZXJzaW9uIjogIjEiCn0=",
-      "updated_at": "2026-07-20T20:13:18.320Z"
+      "updated_at": "2026-07-20T16:11:47.081Z"
     },
     {
       "id": "unstopable:-real-money",
@@ -251,7 +251,7 @@
     {
       "package_name": "com.playmaxsolutions.slotspot",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__SlotSpot.png",
-      "updated_at": "2026-07-20T20:13:18.320Z"
+      "updated_at": "2026-07-20T16:11:47.081Z"
     },
     {
       "package_name": "com.playsocialgames.blackjakck",
@@ -1421,7 +1421,20 @@
       "status": "queued",
       "created_at": "2026-07-19T23:51:49.834Z",
       "updated_at": "2026-07-19T23:51:49.834Z"
+    },
+    {
+      "run_id": 29775213530,
+      "request_id": "builder-mrtnwhhd",
+      "package_name": "com.playsocialgames.chicken.road",
+      "app_name": "Unstopable: Real Money",
+      "game_repository": "zey-win/Unstopable",
+      "build_format": "apk_aab",
+      "version_name": "1",
+      "version_code": "1",
+      "status": "queued",
+      "created_at": "2026-07-20T20:13:25.630Z",
+      "updated_at": "2026-07-20T20:13:25.630Z"
     }
   ],
-  "updated_at": "2026-07-20T20:13:18.320Z"
+  "updated_at": "2026-07-20T20:13:25.630Z"
 }
