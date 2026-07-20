@@ -198,7 +198,7 @@ async function loadVersionSuggestion(packageName, force = false) {
     versionCache.set(pkg, fallback);
     return fallback;
   }
-  return data;
+  return null;
 }
 
 async function loadSdkVersions(force = false) {
@@ -274,18 +274,25 @@ async function syncSdkVersionField(force = false) {
   return sdkVersion.value || defaultVersion;
 }
 
+let _syncVersionTimer = null;
 async function syncVersionFields(force = false) {
   if (versionMode && versionMode.value === "manual") return;
   const pkg = $("f-pkg")?.value?.trim();
   if (!pkg) return;
   const data = await loadVersionSuggestion(pkg, force);
   const suggested = data?.aab || {};
-  const versionName = suggested.versionName || data?.latest?.versionName || "1";
-  const versionCode = suggested.versionCode || data?.latest?.versionCode || "1";
-  const versionInput = $("f-version");
-  const codeInput = $("f-vcode");
-  if (versionInput && versionName) versionInput.value = versionName;
-  if (codeInput && versionCode) codeInput.value = versionCode;
+  const versionName = suggested.versionName || data?.latest?.versionName;
+  const versionCode = suggested.versionCode || data?.latest?.versionCode;
+  if (versionName && versionCode) {
+    const versionInput = $("f-version");
+    const codeInput = $("f-vcode");
+    if (versionInput) versionInput.value = versionName;
+    if (codeInput) codeInput.value = versionCode;
+  }
+}
+function debouncedSyncVersionFields() {
+  clearTimeout(_syncVersionTimer);
+  _syncVersionTimer = setTimeout(() => syncVersionFields(false), 300);
 }
 
 async function loadFirebaseConfigBase64(firebaseCfg) {
@@ -1275,7 +1282,7 @@ function showAdmobFields() {
 // ----- Package name reveals extra fields -----
 $("f-pkg").addEventListener("input", function() {
   if (this.value) document.querySelectorAll(".pkg-hidden").forEach(el => el.classList.add("show"));
-  syncVersionFields(false);
+  debouncedSyncVersionFields();
 });
 
 // ----- all-txt-paste: parse entire data block into app_name field -----
