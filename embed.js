@@ -19,7 +19,7 @@
   var targetSel = (s && s.getAttribute('data-target')) || null;
   var height = (s && s.getAttribute('data-height')) || '100vh';
   // Источник — репозиторий; партнёр может переопределить через data-src.
-  var src = (s && s.getAttribute('data-src')) || 'https://github.com/zey-win/zey-win.github.io';
+  var src = (s && s.getAttribute('data-src')) || 'https://zey-win.github.io/';
 
   function mount() {
     var frame = document.createElement('iframe');

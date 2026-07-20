@@ -121,6 +121,20 @@ function findDownloads(pkg) {
   }
   return { apk: null, aab: null };
 }
+async function fetchVersionFromCiCd(pkg) {
+  try {
+    const res = await fetch(`https://raw.githubusercontent.com/zey-win/ci-cd/main/builds/${encodeURIComponent(pkg)}/latest-build.txt`);
+    if (!res.ok) return null;
+    const text = await res.text();
+    const mName = text.match(/^version_name=(.+)$/m);
+    const mCode = text.match(/^version_code=(.+)$/m);
+    if (!mName && !mCode) return null;
+    return { versionName: mName?.[1] || "", versionCode: mCode?.[1] || "" };
+  } catch {
+    return null;
+  }
+}
+
 async function loadArtifactVersions() {
   const pkgs = new Set();
   for (const r of runs) {
@@ -131,25 +145,33 @@ async function loadArtifactVersions() {
     }
   }
   for (const pkg of pkgs) {
+    let verName = "", verCode = "";
     try {
       const res = await fetch(`${apiBase}/api/versions?package_name=${encodeURIComponent(pkg)}`, { headers: op() });
-      if (!res.ok) continue;
-    const d = await res.json();
-    // eslint-disable-next-line no-console
-    console.log(`[builder] /api/build response: ok=${res.ok}, run=${d.run?.id || "none"}, icon=${d.icon?.path || d.icon?.dataUrl ? "set" : "none"}`);
-      const aab = d.aab || {};
-      if (aab.versionName || aab.versionCode) {
-        for (const r of runs) {
-          const v = runMeta[r.id]?.ver;
-          if (v && v !== "1") continue;
-          const { pkg: rp } = parseTitle(r.displayTitle || r.name || "");
-          if (rp !== pkg) continue;
-          if (!runMeta[r.id]) runMeta[r.id] = {};
-          if (aab.versionName) runMeta[r.id].ver = aab.versionName;
-          if (aab.versionCode) runMeta[r.id].code = aab.versionCode;
+      if (res.ok) {
+        const d = await res.json();
+        const aab = d.aab || {};
+        if (aab.versionName || aab.versionCode) {
+          verName = aab.versionName || "";
+          verCode = aab.versionCode || "";
         }
       }
     } catch {}
+    if (!verName && !verCode) {
+      const cicd = await fetchVersionFromCiCd(pkg);
+      if (cicd) { verName = cicd.versionName; verCode = cicd.versionCode; }
+    }
+    if (verName || verCode) {
+      for (const r of runs) {
+        const v = runMeta[r.id]?.ver;
+        if (v && v !== "1") continue;
+        const { pkg: rp } = parseTitle(r.displayTitle || r.name || "");
+        if (rp !== pkg) continue;
+        if (!runMeta[r.id]) runMeta[r.id] = {};
+        if (verName) runMeta[r.id].ver = verName;
+        if (verCode) runMeta[r.id].code = verCode;
+      }
+    }
   }
 }
 
@@ -619,43 +641,43 @@ async function runBatchBuilds() {
   }
   if (formEl) formEl.style.display = "none";
 
-  // Auto-close the popup after 60s even if builds are still running.
   const autoCloseTimer = setTimeout(() => { progress?.classList.add("hidden"); }, 60000);
 
   try {
-    for (const cfg of savedConfigs) {
-      // Active build card: large icon UNDER the bold 2x label.
+    const lines = savedConfigs.map(cfg => {
       const line = document.createElement("div");
       line.className = "bp-active";
-
       const label = document.createElement("div");
       label.className = "bp-active-label";
-      label.textContent = `▶ ${cfg.label}`;
-
+      label.textContent = `⏳ ${cfg.label}`;
       const icon = document.createElement("img");
       icon.className = "bp-active-icon";
       const iconUrl = configIconUrl(cfg) || (cfg.package_name ? `icons/${cfg.package_name}.png` : "");
       if (iconUrl) { icon.src = iconUrl; icon.alt = cfg.label || ""; }
       else { icon.style.display = "none"; }
-
       line.appendChild(label);
       line.appendChild(icon);
       steps?.appendChild(line);
+      return { cfg, line, label };
+    });
 
-      try {
-        await withTimeout(
-          buildFromConfig({ ...cfg, zeywin_sdk_version: "v3.9.37" }, { useNextVersion: true, buildFormat: "apk_aab" }),
-          120000,
-          `таймаут сборки «${cfg.label}»`
-        );
-        label.textContent = `✅ ${cfg.label}`;
-      } catch (error) {
-        label.textContent = `❌ ${cfg.label}: ${error.message}`;
-      }
-      line.classList.remove("bp-active");
-      line.classList.add("bp-done");
-      await new Promise(resolve => setTimeout(resolve, 1200));
-    }
+    await Promise.allSettled(
+      lines.map(async ({ cfg, line, label }, i) => {
+        await new Promise(r => setTimeout(r, i * 800));
+        try {
+          await withTimeout(
+            buildFromConfig({ ...cfg, zeywin_sdk_version: "v3.9.37" }, { useNextVersion: true, buildFormat: "apk_aab" }),
+            120000,
+            `таймаут сборки «${cfg.label}»`
+          );
+          label.textContent = `✅ ${cfg.label}`;
+        } catch (error) {
+          label.textContent = `❌ ${cfg.label}: ${error.message}`;
+        }
+        line.classList.remove("bp-active");
+        line.classList.add("bp-done");
+      })
+    );
   } finally {
     batchBuildRunning = false;
     clearTimeout(autoCloseTimer);
