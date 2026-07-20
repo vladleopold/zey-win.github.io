@@ -72,7 +72,7 @@
       "admob_interstitial": "ca-app-pub-1585565865476548/2521834122",
       "admob_rewarded": "ca-app-pub-1585565865476548/7091315351",
       "firebase_cfg": "com.playmaxsolutions.slotspot.json",
-      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.playmaxsolutions.slotspot.png"
+      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__SlotSpot.png"
     },
     {
       "id": "unstopable:-real-money",
@@ -90,7 +90,7 @@
       "admob_interstitial": "ca-app-pub-1585565865476548/3620083367",
       "admob_rewarded": "ca-app-pub-1585565865476548/8194496114",
       "firebase_cfg": "unstopablerealmoney.json",
-      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.playsocialgames.chicken.road.png"
+      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__Unstopable.png"
     },
     {
       "id": "lucky-wheel",
@@ -108,7 +108,7 @@
       "admob_interstitial": "ca-app-pub-6988952582458184/7089122332",
       "admob_rewarded": "ca-app-pub-6988952582458184/7968532690",
       "firebase_cfg": null,
-      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.playsocialgames.luckywheel.png"
+      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__wheel-of-fortune.png"
     },
     {
       "id": "roulette",
@@ -126,7 +126,7 @@
       "admob_interstitial": "",
       "admob_rewarded": "",
       "firebase_cfg": null,
-      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.playsocialgames.roulette.png"
+      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__roulette.png"
     },
     {
       "id": "baccarat",
@@ -144,7 +144,7 @@
       "admob_interstitial": "ca-app-pub-6988952582458184/8952176419",
       "admob_rewarded": "ca-app-pub-6988952582458184/9223639151",
       "firebase_cfg": null,
-      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.playsocialgames.bacarrattiger.png"
+      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__baccarat-tiger.png"
     },
     {
       "id": "blackjack",
@@ -160,7 +160,7 @@
       "admob_interstitial": "ca-app-pub-6988952582458184/4178841785",
       "admob_rewarded": "ca-app-pub-6988952582458184/3557071433",
       "firebase_cfg": null,
-      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.playsocialgames.blackjakck.png"
+      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__blackjack.png"
     },
     {
       "id": "dragon-tiger",
@@ -178,7 +178,7 @@
       "admob_interstitial": "",
       "admob_rewarded": "ca-app-pub-7850961348081827/6758080070",
       "firebase_cfg": null,
-      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.PlayMaxSolutions.DragonTiger.png"
+      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__dragon-tiger.png"
     }
   ],
   "deleted": []
