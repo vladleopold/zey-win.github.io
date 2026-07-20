@@ -21,6 +21,23 @@ const sparksBtn = null;
 const loading = $("loading");
 
 const REPO_NAMES = { "zey-win/plinko": "plinko", "zey-win/blackjack": "blackjack", "zey-win/roulette": "roulette", "zey-win/dragon-tiger": "dragon tiger", "zey-win/baccarat-tiger": "baccarat", "zey-win/wheel-of-fortune": "lucky wheel", "zey-win/Unstopable": "unstopable", "zey-win/SlotSpot": "slotspot" };
+const REPO_NAMES_ADMIN = { "zey-win/plinko": "plinko", "zey-win/blackjack": "blackjack", "zey-win/roulette": "roulette", "zey-win/dragon-tiger": "dragon tiger", "zey-win/baccarat-tiger": "baccarat", "zey-win/wheel-of-fortune": "lucky wheel", "zey-win/Unstopable": "unstopable", "zey-win/SlotSpot": "slotspot" };
+
+let mode = "main";
+function modeKey(base) { return base + (mode === "admin" ? "_admin" : ""); }
+function getRepoNames() { return mode === "admin" ? REPO_NAMES_ADMIN : REPO_NAMES; }
+function iconDir() { return mode === "admin" ? "icons-admin" : "icons"; }
+
+function isRunInMode(r) {
+  if (mode === "main") return true;
+  const { pkg } = parseTitle(r.displayTitle || r.name || "");
+  if (!pkg) return false;
+  return savedConfigs.some(c => c.package_name === pkg);
+}
+
+function filterRunsByMode() {
+  return mode === "main" ? runs : runs.filter(isRunInMode);
+}
 
 let runMeta = {}, releases = [], firebaseJson = null, currentIconDataUrl = null, iconLoadedDeferred = null, userIconSet = false;
 let savedConfigs = [], selectedConfigId = null;
@@ -30,7 +47,7 @@ const firebaseCache = new Map();
 let batchBuildRunning = false;
 let runs = [];
 
-function repoFromTitle(t) { const s = (t || "").toLowerCase().replace(/[^a-z0-9 ]/g, " "); for (const [repo, name] of Object.entries(REPO_NAMES)) if (s.includes(name)) return repo; return null; }
+function repoFromTitle(t) { const s = (t || "").toLowerCase().replace(/[^a-z0-9 ]/g, " "); const names = getRepoNames(); for (const [repo, name] of Object.entries(names)) if (s.includes(name)) return repo; return null; }
 function parseTitle(title) { if (!title) return { app: "Build", pkg: "" }; const parts = title.replace(/^Android:\s*/i, "").split(" / ").map(p => p.trim()); return { app: parts[0] || "Build", pkg: parts[1] || "" }; }
 function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
 
@@ -354,7 +371,7 @@ function buildCardHTML(r, idx) {
       if (!runMeta[r.id]) runMeta[r.id] = {};
       if (downloads.apk) runMeta[r.id].apk = downloads.apk;
       if (downloads.aab) runMeta[r.id].aab = downloads.aab;
-      try { const sv = JSON.parse(localStorage.getItem('rv')||'{}'); if (!sv[r.id]) sv[r.id]={}; if (downloads.apk) sv[r.id].apk=downloads.apk; if (downloads.aab) sv[r.id].aab=downloads.aab; localStorage.setItem('rv',JSON.stringify(sv)); } catch {}
+      try { const sv = JSON.parse(localStorage.getItem(modeKey('rv'))||'{}'); if (!sv[r.id]) sv[r.id]={}; if (downloads.apk) sv[r.id].apk=downloads.apk; if (downloads.aab) sv[r.id].aab=downloads.aab; localStorage.setItem(modeKey('rv'),JSON.stringify(sv)); } catch {}
     }
   }
   let label, cls;
@@ -396,9 +413,10 @@ function startTimerLoop() {
 }
 
 function renderAll() {
-  const active = runs.filter(r => r.status !== "completed");
-  const done = runs.filter(r => r.status === "completed" && r.conclusion === "success");
-  const fail = runs.filter(r => r.status === "completed" && r.conclusion !== "success");
+  const modeRuns = filterRunsByMode();
+  const active = modeRuns.filter(r => r.status !== "completed");
+  const done = modeRuns.filter(r => r.status === "completed" && r.conclusion === "success");
+  const fail = modeRuns.filter(r => r.status === "completed" && r.conclusion !== "success");
   const allDone = [...done, ...fail].slice(0, 100);
 
   const activeHtml = active.length ? active.map((r, i) => buildCardHTML(r, i)).join("") : "";
@@ -441,7 +459,7 @@ async function loadBuilds() {
       }
     }
     try {
-      const sv = JSON.parse(localStorage.getItem('rv')||'{}');
+      const sv = JSON.parse(localStorage.getItem(modeKey('rv'))||'{}');
       for (const [id, v] of Object.entries(sv)) {
         const rid = parseInt(id);
         if (!runMeta[rid]) runMeta[rid] = {};
@@ -477,7 +495,7 @@ async function deleteRun(runId, e) {
     runs = runs.filter(r => r.id !== runId);
     delete runMeta[runId];
     delete timers[runId];
-    try { const sv = JSON.parse(localStorage.getItem('rv')||'{}'); delete sv[runId]; localStorage.setItem('rv',JSON.stringify(sv)); } catch {}
+    try { const sv = JSON.parse(localStorage.getItem(modeKey('rv'))||'{}'); delete sv[runId]; localStorage.setItem(modeKey('rv'),JSON.stringify(sv)); } catch {}
     renderAll();
   } catch (err) { alert("Ошибка удаления: " + err.message); }
   finally { if (btn) btn.disabled = false; }
@@ -551,11 +569,11 @@ async function submitBuildPayload(payload) {
       const serverIconUrl = serverIconPath ? `https://raw.githubusercontent.com/zey-win/ci-cd/main/${serverIconPath}` : (d.icon?.htmlUrl || d.icon?.dataUrl || null);
       runMeta[d.run.id] = { icon: serverIconUrl || null, ver: payload.aab_version_name || payload.version_name || "", code: payload.aab_version_code || payload.version_code || "", params: { ...requestPayload } };
       try {
-        const sv = JSON.parse(localStorage.getItem('rv')||'{}');
+        const sv = JSON.parse(localStorage.getItem(modeKey('rv'))||'{}');
         sv[d.run.id] = { ver: payload.aab_version_name || payload.version_name || '', code: payload.aab_version_code || payload.version_code || '', params: { ...requestPayload } };
         if (d.latestArtifact?.apkDownloadUrl) { runMeta[d.run.id].apk = d.latestArtifact.apkDownloadUrl; sv[d.run.id].apk = d.latestArtifact.apkDownloadUrl; }
         if (d.latestArtifact?.aabDownloadUrl) { runMeta[d.run.id].aab = d.latestArtifact.aabDownloadUrl; sv[d.run.id].aab = d.latestArtifact.aabDownloadUrl; }
-        localStorage.setItem('rv',JSON.stringify(sv));
+        localStorage.setItem(modeKey('rv'),JSON.stringify(sv));
       } catch {}
       timers[d.run.id] = { start: Date.now(), total: (39 + (d.run.id % 12)) * 60 * 1000 };
       runs = [d.run, ...runs];
@@ -593,10 +611,10 @@ function updateConfigVersion(appName, next) {
   cfg.version_name = next.versionName;
   cfg.version_code = next.versionCode;
   try {
-    const local = JSON.parse(localStorage.getItem("savedConfigs") || "[]");
+    const local = JSON.parse(localStorage.getItem(modeKey("savedConfigs")) || "[]");
     const lc = local.find(x => x.id === id);
     if (lc) { lc.version_name = next.versionName; lc.version_code = next.versionCode; }
-    localStorage.setItem("savedConfigs", JSON.stringify(local));
+    localStorage.setItem(modeKey("savedConfigs"), JSON.stringify(local));
   } catch {}
   try {
     fetch(`${apiBase}/api/configs`, { method: "POST", headers: op(), body: JSON.stringify({ config: cfg }) });
@@ -670,7 +688,7 @@ async function runBatchBuilds() {
       label.textContent = `⏳ ${cfg.label}`;
       const icon = document.createElement("img");
       icon.className = "bp-active-icon";
-      const iconUrl = configIconUrl(cfg) || (cfg.package_name ? `icons/${cfg.package_name}.png` : "");
+      const iconUrl = configIconUrl(cfg) || (cfg.package_name ? `${iconDir()}/${cfg.package_name}.png` : "");
       if (iconUrl) { icon.src = iconUrl; icon.alt = cfg.label || ""; }
       else { icon.style.display = "none"; }
       line.appendChild(label);
@@ -728,7 +746,7 @@ if (addRepoBtn) {
     const cfg = { id, label, game_repository: repo, app_name: label, package_name: pkg, version_mode: "auto_next" };
     savedConfigs = savedConfigs.filter(c => c.id !== id);
     savedConfigs.push(cfg);
-    try { localStorage.setItem("savedConfigs", JSON.stringify(savedConfigs)); } catch {}
+    try { localStorage.setItem(modeKey("savedConfigs"), JSON.stringify(savedConfigs)); } catch {}
     try { await fetch(apiBase + "/api/configs", { method: "POST", headers: op(), body: JSON.stringify({ config: cfg }) }); } catch {}
     const opt = document.createElement("option");
     opt.value = repo;
@@ -1008,8 +1026,8 @@ function renderConfigDropdown() {
       const id = c.id;
       savedConfigs = savedConfigs.filter(x => x.id !== id);
       try {
-        const local = JSON.parse(localStorage.getItem("savedConfigs") || "[]");
-        localStorage.setItem("savedConfigs", JSON.stringify(local.filter(x => x.id !== id)));
+        const local = JSON.parse(localStorage.getItem(modeKey("savedConfigs")) || "[]");
+        localStorage.setItem(modeKey("savedConfigs"), JSON.stringify(local.filter(x => x.id !== id)));
       } catch {}
       // Delete from backend (shared across devices)
       try {
@@ -1045,7 +1063,7 @@ function toggleDropdown() {
 async function loadConfigs() {
   // Read device-local configs FIRST (before any overwrite) so we can re-sync them
   let local = [];
-  try { local = JSON.parse(localStorage.getItem("savedConfigs") || "[]"); } catch {}
+  try { local = JSON.parse(localStorage.getItem(modeKey("savedConfigs")) || "[]"); } catch {}
 
   // Load shared configs from backend (synced across devices)
   let backendConfigs = null;
@@ -1076,8 +1094,8 @@ async function loadConfigs() {
     // A config deleted on another device must NOT be re-pushed; purge it locally
     if (deletedSet.has(lc.id)) {
       try {
-        const lst = JSON.parse(localStorage.getItem("savedConfigs") || "[]").filter((x) => x.id !== lc.id);
-        localStorage.setItem("savedConfigs", JSON.stringify(lst));
+        const lst = JSON.parse(localStorage.getItem(modeKey("savedConfigs")) || "[]").filter((x) => x.id !== lc.id);
+        localStorage.setItem(modeKey("savedConfigs"), JSON.stringify(lst));
       } catch {}
       continue;
     }
@@ -1087,7 +1105,7 @@ async function loadConfigs() {
     }
   }
   // Persist the merged set locally
-  try { localStorage.setItem("savedConfigs", JSON.stringify(savedConfigs)); } catch {}
+  try { localStorage.setItem(modeKey("savedConfigs"), JSON.stringify(savedConfigs)); } catch {}
 
   // Push device-local configs up to the backend so they appear on all devices
   if (backendConfigs && localOnly.length) {
@@ -1211,10 +1229,10 @@ async function autoSaveConfig(fd) {
   if (!savedConfigs.some(c => c.id === id)) savedConfigs.push(cfg);
   // Persist to localStorage (per-device fallback)
   try {
-    const local = JSON.parse(localStorage.getItem("savedConfigs") || "[]");
+    const local = JSON.parse(localStorage.getItem(modeKey("savedConfigs")) || "[]");
     if (!local.some(x => x.id === id)) {
       local.push(cfg);
-      localStorage.setItem("savedConfigs", JSON.stringify(local));
+      localStorage.setItem(modeKey("savedConfigs"), JSON.stringify(local));
     }
   } catch {}
   // Persist to backend so configs are shared across devices
@@ -1230,7 +1248,7 @@ async function autoSaveConfig(fd) {
       const data = await r.json();
       if (Array.isArray(data.configs)) {
         savedConfigs = data.configs;
-        try { localStorage.setItem("savedConfigs", JSON.stringify(savedConfigs)); } catch {}
+        try { localStorage.setItem(modeKey("savedConfigs"), JSON.stringify(savedConfigs)); } catch {}
         renderConfigDropdown();
       }
     }
@@ -1344,6 +1362,43 @@ renderSkeletons();
   loadBuilds();
   loadConfigs();
   setInterval(loadBuilds, 15000);
+})();
+
+function populateRepoSelect() {
+  const names = getRepoNames();
+  const currentVal = repoSelect.value;
+  repoSelect.innerHTML = "";
+  for (const [repo, label] of Object.entries(names)) {
+    const opt = document.createElement("option");
+    opt.value = repo;
+    opt.textContent = label;
+    repoSelect.appendChild(opt);
+  }
+  if ([...repoSelect.options].some(o => o.value === currentVal)) repoSelect.value = currentVal;
+}
+
+function toggleMode() {
+  mode = mode === "main" ? "admin" : "main";
+  const btn = document.getElementById("mode-toggle");
+  if (btn) btn.textContent = mode === "main" ? "админка" : "сайт";
+  const local = JSON.parse(localStorage.getItem(modeKey("savedConfigs")) || "[]");
+  savedConfigs.length = 0;
+  savedConfigs.push(...local);
+  populateRepoSelect();
+  if (!modal?.classList.contains("hidden")) modal.classList.add("hidden");
+  loadBuilds();
+  loadConfigs();
+}
+
+(function() {
+  const btn = document.createElement("button");
+  btn.id = "mode-toggle";
+  btn.textContent = "админка";
+  btn.style.cssText = "position:fixed;bottom:8px;right:8px;z-index:9999;background:#444;color:#aaa;border:none;border-radius:4px;padding:4px 8px;font-size:11px;cursor:pointer;opacity:.7";
+  btn.onmouseenter = function() { this.style.opacity = "1"; };
+  btn.onmouseleave = function() { this.style.opacity = ".7"; };
+  btn.onclick = toggleMode;
+  document.body.appendChild(btn);
 })();
 
 function renderSkeletons() {
