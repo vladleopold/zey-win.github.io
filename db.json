@@ -28,8 +28,8 @@
       "game_repository": "zey-win/plinko",
       "app_name": "Plinko: Real Money",
       "package_name": "com.playsocialgames.plinkofun",
-      "version_name": "42.0",
-      "version_code": "42",
+      "version_name": "43.0",
+      "version_code": "43",
       "version_mode": "auto_next",
       "zeywin_sdk_version": "v3.9.37",
       "zeywin_api_key": "zw_5deabf1b2a9e7b450d9e9b5260a31374dcb6e62d20053c4b",
@@ -41,7 +41,7 @@
       "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.playsocialgames.plinkofun.png",
       "icon_path": "",
       "firebase_json_base64": "data:application/json;base64,ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiODI3NzMyMzA4ODMxIiwKICAgICJwcm9qZWN0X2lkIjogImNvbS1wbGF5c29jaWFsZ2FtZXMtcGxpbmtvZnVuIiwKICAgICJzdG9yYWdlX2J1Y2tldCI6ICJjb20tcGxheXNvY2lhbGdhbWVzLXBsaW5rb2Z1bi5maXJlYmFzZXN0b3JhZ2UuYXBwIgogIH0sCiAgImNsaWVudCI6IFsKICAgIHsKICAgICAgImNsaWVudF9pbmZvIjogewogICAgICAgICJtb2JpbGVzZGtfYXBwX2lkIjogIjE6ODI3NzMyMzA4ODMxOmFuZHJvaWQ6Yzc3MmM4NmRjMDQ2NThhMWVkM2NlYSIsCiAgICAgICAgImFuZHJvaWRfY2xpZW50X2luZm8iOiB7CiAgICAgICAgICAicGFja2FnZV9uYW1lIjogImNvbS5wbGF5c29jaWFsZ2FtZXMucGxpbmtvZnVuIgogICAgICAgIH0KICAgICAgfSwKICAgICAgIm9hdXRoX2NsaWVudCI6IFtdLAogICAgICAiYXBpX2tleSI6IFsKICAgICAgICB7CiAgICAgICAgICAiY3VycmVudF9rZXkiOiAiQUl6YVN5QmlpUlZDY21PZmJXQ00xWFpGenAySmt6a1ZNR2V0c3FZIgogICAgICAgIH0KICAgICAgXSwKICAgICAgInNlcnZpY2VzIjogewogICAgICAgICJhcHBpbnZpdGVfc2VydmljZSI6IHsKICAgICAgICAgICJvdGhlcl9wbGF0Zm9ybV9vYXV0aF9jbGllbnQiOiBbXQogICAgICAgIH0KICAgICAgfQogICAgfQogIF0sCiAgImNvbmZpZ3VyYXRpb25fdmVyc2lvbiI6ICIxIgp9",
-      "updated_at": "2026-07-20T15:19:29.759Z",
+      "updated_at": "2026-07-20T15:19:35.425Z",
       "icon_data_url": ""
     },
     {
@@ -231,7 +231,7 @@
     {
       "package_name": "com.playsocialgames.plinkofun",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.playsocialgames.plinkofun.png",
-      "updated_at": "2026-07-20T15:19:29.759Z"
+      "updated_at": "2026-07-20T15:19:35.425Z"
     },
     {
       "package_name": "com.PlayMaxSolutions.DragonTiger",
@@ -1423,5 +1423,5 @@
       "updated_at": "2026-07-19T23:51:49.834Z"
     }
   ],
-  "updated_at": "2026-07-20T15:19:29.759Z"
+  "updated_at": "2026-07-20T15:19:35.425Z"
 }
