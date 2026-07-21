@@ -1092,7 +1092,7 @@ form.addEventListener("submit", async e => {
 });
 
 // ----- Configs: hierarchical dropdown (grouped by game repository) -----
-let configTreeState = {}; // { groupId: boolean } for expanded/collapsed state
+configTreeState = {};
 
 function buildConfigTree() {
   const groups = new Map();
