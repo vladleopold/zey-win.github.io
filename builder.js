@@ -156,11 +156,8 @@ async function loadArtifactVersions() {
   const pkgs = new Set();
   for (const r of runs) {
     if (r.status !== "completed") continue;
-    const v = runMeta[r.id]?.ver;
-    if (!v || v === "1") {
-      const { pkg } = parseTitle(r.displayTitle || r.name || "");
-      if (pkg) pkgs.add(pkg);
-    }
+    const { pkg } = parseTitle(r.displayTitle || r.name || "");
+    if (pkg) pkgs.add(pkg);
   }
   for (const pkg of pkgs) {
     let verName = "", verCode = "";
@@ -182,8 +179,6 @@ async function loadArtifactVersions() {
     if (verName || verCode) {
       for (const r of runs) {
         if (r.status !== "completed") continue;
-        const v = runMeta[r.id]?.ver;
-        if (v && v !== "1") continue;
         const { pkg: rp } = parseTitle(r.displayTitle || r.name || "");
         if (rp !== pkg) continue;
         if (!runMeta[r.id]) runMeta[r.id] = {};
