@@ -467,6 +467,7 @@ async function loadBuilds() {
         if (v.code) runMeta[rid].code = v.code;
         if (v.apk) runMeta[rid].apk = v.apk;
         if (v.aab) runMeta[rid].aab = v.aab;
+        if (v.params) runMeta[rid].params = v.params;
       }
     } catch {}
     for (const r of runs) {
