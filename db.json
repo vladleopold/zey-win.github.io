@@ -50,8 +50,8 @@
       "game_repository": "zey-win/plinko",
       "app_name": "Plinko Falling Balls",
       "package_name": "com.falling.plinko",
-      "version_name": "31.0",
-      "version_code": "31",
+      "version_name": "32.0",
+      "version_code": "32",
       "version_mode": "auto_next",
       "zeywin_sdk_version": "v3.9.37",
       "zeywin_api_key": "zw_6398949883576fd4d1321be61dd08334d61a906e9b6cd0b6",
@@ -60,7 +60,9 @@
       "admob_interstitial": "ca-app-pub-1585565865476548/3620083367",
       "admob_rewarded": "ca-app-pub-1585565865476548/8194496114",
       "firebase_cfg": "plinko-falling-balls.json",
-      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.falling.plinko.png"
+      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.falling.plinko.png",
+      "icon_data_url": "",
+      "updated_at": "2026-07-21T20:24:18.917Z"
     },
     {
       "id": "slotspot",
@@ -68,8 +70,8 @@
       "game_repository": "zey-win/SlotSpot",
       "app_name": "SlotSpot",
       "package_name": "com.playmaxsolutions.slotspot",
-      "version_name": "14.0",
-      "version_code": "26",
+      "version_name": "13.0",
+      "version_code": "25",
       "version_mode": "auto_next",
       "zeywin_sdk_version": "v3.9.37",
       "zeywin_api_key": "zw_7b07dc24806408f6e655dcf0422e15c5e028d40d440b3e1a",
@@ -82,7 +84,7 @@
       "icon_path": "",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__SlotSpot.png",
       "firebase_json_base64": "data:application/json;base64,ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiOTQxMTgzMDg1OTMxIiwKICAgICJwcm9qZWN0X2lkIjogInNsb3RzLXBvdCIsCiAgICAic3RvcmFnZV9idWNrZXQiOiAic2xvdHMtcG90LmZpcmViYXNlc3RvcmFnZS5hcHAiCiAgfSwKICAiY2xpZW50IjogWwogICAgewogICAgICAiY2xpZW50X2luZm8iOiB7CiAgICAgICAgIm1vYmlsZXNka19hcHBfaWQiOiAiMTo5NDExODMwODU5MzE6YW5kcm9pZDoxZTEyOTYwMmY3MmU5YTNkMTJmMDJlIiwKICAgICAgICAiYW5kcm9pZF9jbGllbnRfaW5mbyI6IHsKICAgICAgICAgICJwYWNrYWdlX25hbWUiOiAiY29tLnBsYXltYXhzb2x1dGlvbnMuc2xvdHNwb3QiCiAgICAgICAgfQogICAgICB9LAogICAgICAib2F1dGhfY2xpZW50IjogW10sCiAgICAgICJhcGlfa2V5IjogWwogICAgICAgIHsKICAgICAgICAgICJjdXJyZW50X2tleSI6ICJBSXphU3lDZTV4eF9mYWlhMkFIZVhqRC1yMGVlZUhRc0VvM2hZUjgiCiAgICAgICAgfQogICAgICBdLAogICAgICAic2VydmljZXMiOiB7CiAgICAgICAgImFwcGludml0ZV9zZXJ2aWNlIjogewogICAgICAgICAgIm90aGVyX3BsYXRmb3JtX29hdXRoX2NsaWVudCI6IFtdCiAgICAgICAgfQogICAgICB9CiAgICB9CiAgXSwKICAiY29uZmlndXJhdGlvbl92ZXJzaW9uIjogIjEiCn0=",
-      "updated_at": "2026-07-21T20:24:15.288Z"
+      "updated_at": "2026-07-21T18:58:28.956Z"
     },
     {
       "id": "unstopable:-real-money",
@@ -251,7 +253,7 @@
     {
       "package_name": "com.playmaxsolutions.slotspot",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__SlotSpot.png",
-      "updated_at": "2026-07-21T20:24:15.288Z"
+      "updated_at": "2026-07-21T18:58:28.956Z"
     },
     {
       "package_name": "com.playsocialgames.blackjakck",
@@ -262,6 +264,11 @@
       "package_name": "com.socialapps.plinko",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.socialapps.plinko.png",
       "updated_at": "2026-07-21T08:32:46.892Z"
+    },
+    {
+      "package_name": "com.falling.plinko",
+      "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.falling.plinko.png",
+      "updated_at": "2026-07-21T20:24:18.917Z"
     }
   ],
   "builds": [
@@ -1449,5 +1456,5 @@
       "updated_at": "2026-07-20T20:20:01.102Z"
     }
   ],
-  "updated_at": "2026-07-21T20:24:18.729Z"
+  "updated_at": "2026-07-21T20:24:21.700Z"
 }
