@@ -183,13 +183,13 @@
       "updated_at": "2026-07-19T14:49:42.936Z"
     },
     {
-      "id": "baccarat-social",
-      "label": "Baccarat Social",
+      "id": "dragon-tiger",
+      "label": "Baccarat Social (Dragon Tiger)",
       "game_repository": "zey-win/dragon-tiger",
       "app_name": "Baccarat Social",
       "package_name": "com.PlayMaxSolutions.DragonTiger",
-      "version_name": "7.0",
-      "version_code": "7",
+      "version_name": "6.4",
+      "version_code": "6",
       "version_mode": "auto_next",
       "zeywin_sdk_version": "v3.9.37",
       "zeywin_api_key": "",
@@ -197,11 +197,11 @@
       "admob_banner": "",
       "admob_interstitial": "",
       "admob_rewarded": "ca-app-pub-7850961348081827/6758080070",
-      "firebase_cfg": "",
+      "firebase_cfg": null,
       "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__dragon-tiger.png",
       "icon_path": "",
       "firebase_json_base64": "",
-      "updated_at": "2026-07-21T08:32:05.697Z",
+      "updated_at": "2026-07-21T08:24:59.733Z",
       "icon_data_url": ""
     },
     {
@@ -1447,7 +1447,20 @@
       "status": "queued",
       "created_at": "2026-07-20T20:20:01.102Z",
       "updated_at": "2026-07-20T20:20:01.102Z"
+    },
+    {
+      "run_id": 29814699394,
+      "request_id": "builder-mrueb90p",
+      "package_name": "com.socialapps.plinko",
+      "app_name": "Plinko",
+      "game_repository": "zey-win/plinko",
+      "build_format": "apk",
+      "version_name": "1",
+      "version_code": "1",
+      "status": "queued",
+      "created_at": "2026-07-21T08:32:42.974Z",
+      "updated_at": "2026-07-21T08:32:42.974Z"
     }
   ],
-  "updated_at": "2026-07-21T08:32:05.697Z"
+  "updated_at": "2026-07-21T08:32:42.974Z"
 }
