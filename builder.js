@@ -153,37 +153,34 @@ async function fetchVersionFromCiCd(pkg) {
 }
 
 async function loadArtifactVersions() {
-  const pkgs = new Set();
   for (const r of runs) {
     if (r.status !== "completed") continue;
-    const { pkg } = parseTitle(r.displayTitle || r.name || "");
-    if (pkg) pkgs.add(pkg);
-  }
-  for (const pkg of pkgs) {
-    let verName = "", verCode = "";
+    const v = runMeta[r.id]?.ver;
+    if (v && v !== "1") continue;
     try {
-      const res = await fetch(`${apiBase}/api/versions?package_name=${encodeURIComponent(pkg)}`, { headers: op() });
+      const res = await fetch(`${apiBase}/api/builds/${r.id}`);
       if (res.ok) {
         const d = await res.json();
-        const aab = d.aab || {};
-        if (aab.versionName || aab.versionCode) {
-          verName = aab.versionName || "";
-          verCode = aab.versionCode || "";
+        if (d.ok && d.config) {
+          var verName = d.config.aab_version_name || d.config.version_name || "";
+          var verCode = d.config.aab_version_code || d.config.version_code || "";
+          if (verName || verCode) {
+            if (!runMeta[r.id]) runMeta[r.id] = {};
+            if (verName) runMeta[r.id].ver = verName;
+            if (verCode) runMeta[r.id].code = verCode;
+          }
         }
       }
     } catch {}
-    if (!verName && !verCode) {
-      const cicd = await fetchVersionFromCiCd(pkg);
-      if (cicd) { verName = cicd.versionName; verCode = cicd.versionCode; }
-    }
-    if (verName || verCode) {
-      for (const r of runs) {
-        if (r.status !== "completed") continue;
-        const { pkg: rp } = parseTitle(r.displayTitle || r.name || "");
-        if (rp !== pkg) continue;
-        if (!runMeta[r.id]) runMeta[r.id] = {};
-        if (verName) runMeta[r.id].ver = verName;
-        if (verCode) runMeta[r.id].code = verCode;
+    if (!runMeta[r.id]?.ver) {
+      const { pkg } = parseTitle(r.displayTitle || r.name || "");
+      if (pkg) {
+        const cicd = await fetchVersionFromCiCd(pkg);
+        if (cicd) {
+          if (!runMeta[r.id]) runMeta[r.id] = {};
+          if (cicd.versionName) runMeta[r.id].ver = cicd.versionName;
+          if (cicd.versionCode) runMeta[r.id].code = cicd.versionCode;
+        }
       }
     }
   }
