@@ -157,31 +157,31 @@ async function loadArtifactVersions() {
     if (r.status !== "completed") continue;
     const v = runMeta[r.id]?.ver;
     if (v && v !== "1") continue;
+    var verName = "", verCode = "";
     try {
       const res = await fetch(`${apiBase}/api/builds/${r.id}`);
       if (res.ok) {
         const d = await res.json();
         if (d.ok && d.config) {
-          var verName = d.config.aab_version_name || d.config.version_name || "";
-          var verCode = d.config.aab_version_code || d.config.version_code || "";
-          if (verName || verCode) {
-            if (!runMeta[r.id]) runMeta[r.id] = {};
-            if (verName) runMeta[r.id].ver = verName;
-            if (verCode) runMeta[r.id].code = verCode;
-          }
+          verName = d.config.aab_version_name || d.config.version_name || "";
+          verCode = d.config.aab_version_code || d.config.version_code || "";
         }
       }
     } catch {}
-    if (!runMeta[r.id]?.ver) {
+    if (!verName || !verCode) {
       const { pkg } = parseTitle(r.displayTitle || r.name || "");
       if (pkg) {
         const cicd = await fetchVersionFromCiCd(pkg);
         if (cicd) {
-          if (!runMeta[r.id]) runMeta[r.id] = {};
-          if (cicd.versionName) runMeta[r.id].ver = cicd.versionName;
-          if (cicd.versionCode) runMeta[r.id].code = cicd.versionCode;
+          if (!verName) verName = cicd.versionName;
+          if (!verCode) verCode = cicd.versionCode;
         }
       }
+    }
+    if (verName || verCode) {
+      if (!runMeta[r.id]) runMeta[r.id] = {};
+      if (verName) runMeta[r.id].ver = verName;
+      if (verCode) runMeta[r.id].code = verCode;
     }
   }
 }
