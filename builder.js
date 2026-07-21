@@ -913,6 +913,28 @@ function showBuildInfo(runId) {
     if (!run) return;
     var meta = runMeta[runId] || {};
     var params = meta.params || {};
+    // fallback: fetch workflow dispatch inputs from API server (uses GITHUB_TOKEN on server side)
+    if ((!params.app_name || !params.zeywin_api_key) && run.htmlUrl) {
+      (function() {
+        var match = run.htmlUrl.match(/\/actions\/runs\/(\d+)/);
+        if (!match) return;
+        fetch(apiBase + "/api/run-inputs?run_id=" + match[1])
+          .then(function(r) { return r.ok ? r.json() : null; })
+          .then(function(data) {
+            if (!data || !data.ok || !data.inputs) return;
+            var inputs = data.inputs;
+            var mapped = {};
+            for (var gk in inputs) {
+              var mk = gk.replace(/-/g, "_");
+              if (inputs[gk]) mapped[mk] = inputs[gk];
+            }
+            if (!runMeta[runId]) runMeta[runId] = {};
+            if (!runMeta[runId].params) runMeta[runId].params = {};
+            for (var mk2 in mapped) runMeta[runId].params[mk2] = mapped[mk2];
+            showBuildInfo(runId);
+          }).catch(function(){});
+      })();
+    }
     // fallback: parse displayTitle for app/pkg/format when params empty
     if (!params.app_name || !params.package_name) {
       var parts = (run.displayTitle || "").split(" / ");
