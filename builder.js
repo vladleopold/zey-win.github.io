@@ -918,7 +918,7 @@ function showBuildInfo(runId) {
       (function() {
         var match = run.htmlUrl.match(/\/actions\/runs\/(\d+)/);
         if (!match) return;
-        fetch(apiBase + "/api/run-inputs?run_id=" + match[1])
+        fetch(apiBase + "/api/runs?inputs=" + match[1])
           .then(function(r) { return r.ok ? r.json() : null; })
           .then(function(data) {
             if (!data || !data.ok || !data.inputs) return;
