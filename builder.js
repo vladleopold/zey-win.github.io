@@ -1362,7 +1362,7 @@ async function autoSaveConfig(fd) {
 }
 
 // Dropdown trigger click
-$("config-trigger").addEventListener("click", toggleDropdown);
+$("config-trigger").addEventListener("click", (e) => { e.stopPropagation(); toggleDropdown(); });
 // Close on outside click
 document.addEventListener("click", e => {
   const dd = $("config-dropdown");
