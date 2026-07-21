@@ -155,6 +155,7 @@ async function fetchVersionFromCiCd(pkg) {
 async function loadArtifactVersions() {
   const pkgs = new Set();
   for (const r of runs) {
+    if (r.status !== "completed") continue;
     const v = runMeta[r.id]?.ver;
     if (!v || v === "1") {
       const { pkg } = parseTitle(r.displayTitle || r.name || "");
@@ -180,6 +181,7 @@ async function loadArtifactVersions() {
     }
     if (verName || verCode) {
       for (const r of runs) {
+        if (r.status !== "completed") continue;
         const v = runMeta[r.id]?.ver;
         if (v && v !== "1") continue;
         const { pkg: rp } = parseTitle(r.displayTitle || r.name || "");
@@ -554,11 +556,10 @@ async function submitBuildPayload(payload) {
     const requestPayload = { ...payload };
     // eslint-disable-next-line no-console
     console.log(`[builder] submitBuildPayload: iconDataUrl=${requestPayload.iconDataUrl ? "data:" + requestPayload.iconDataUrl.length + "B" : "(empty)"}, icon_png_path=${requestPayload.icon_png_path || "(empty)"}`);
-    if (requestPayload.version_mode !== "manual") {
-      requestPayload.aab_version_name = "";
-      requestPayload.aab_version_code = "";
-    }
     requestPayload.zeywin_sdk_version = normalizeSdkVersion(requestPayload.zeywin_sdk_version || sdkVersion?.value || "v3.9.37");
+    // save version to runMeta BEFORE API call so loadArtifactVersions can't overwrite it
+    var pendingVer = requestPayload.aab_version_name || requestPayload.version_name || "";
+    var pendingCode = requestPayload.aab_version_code || requestPayload.version_code || "";
 
     const res = await fetchWithTimeout(`${apiBase}/api/build`, { method: "POST", headers: op(), body: JSON.stringify(requestPayload) }, 90000);
     if (!res.ok) {
@@ -568,15 +569,18 @@ async function submitBuildPayload(payload) {
     if (d.run) {
       const serverIconPath = d.icon?.path;
       const serverIconUrl = serverIconPath ? `https://raw.githubusercontent.com/zey-win/ci-cd/main/${serverIconPath}` : (d.icon?.htmlUrl || d.icon?.dataUrl || null);
-      runMeta[d.run.id] = { icon: serverIconUrl || null, ver: payload.aab_version_name || payload.version_name || "", code: payload.aab_version_code || payload.version_code || "", params: { ...requestPayload } };
+      runMeta[d.run.id] = { icon: serverIconUrl || null, ver: pendingVer, code: pendingCode, params: { ...requestPayload } };
       try {
         const sv = JSON.parse(localStorage.getItem(modeKey('rv'))||'{}');
-        sv[d.run.id] = { ver: payload.aab_version_name || payload.version_name || '', code: payload.aab_version_code || payload.version_code || '', params: { ...requestPayload } };
+        sv[d.run.id] = { ver: pendingVer, code: pendingCode, params: { ...requestPayload } };
         if (d.latestArtifact?.apkDownloadUrl) { runMeta[d.run.id].apk = d.latestArtifact.apkDownloadUrl; sv[d.run.id].apk = d.latestArtifact.apkDownloadUrl; }
         if (d.latestArtifact?.aabDownloadUrl) { runMeta[d.run.id].aab = d.latestArtifact.aabDownloadUrl; sv[d.run.id].aab = d.latestArtifact.aabDownloadUrl; }
         localStorage.setItem(modeKey('rv'),JSON.stringify(sv));
       } catch {}
       timers[d.run.id] = { start: Date.now(), total: (39 + (d.run.id % 12)) * 60 * 1000 };
+      // prevent duplicate run if loadBuilds already added it
+      var existing = runs.findIndex(function(r) { return r.id === d.run.id; });
+      if (existing !== -1) runs.splice(existing, 1);
       runs = [d.run, ...runs];
       renderAll();
     } else {
