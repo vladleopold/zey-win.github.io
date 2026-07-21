@@ -1449,18 +1449,18 @@
       "updated_at": "2026-07-20T20:20:01.102Z"
     },
     {
-      "run_id": 29829077083,
-      "request_id": "builder-mrum4g8u",
-      "package_name": "com.playsocialgames.plinkofun",
-      "app_name": "Plinko Real Money",
-      "game_repository": "zey-win/plinko",
+      "run_id": 29829078880,
+      "request_id": "builder-mrum4hc0",
+      "package_name": "com.playmaxsolutions.slotspot",
+      "app_name": "SlotSpot",
+      "game_repository": "zey-win/SlotSpot",
       "build_format": "apk_aab",
-      "version_name": "26.0",
+      "version_name": "14.0",
       "version_code": "26",
       "status": "queued",
-      "created_at": "2026-07-21T12:11:23.002Z",
-      "updated_at": "2026-07-21T12:11:23.002Z"
+      "created_at": "2026-07-21T12:11:24.401Z",
+      "updated_at": "2026-07-21T12:11:24.401Z"
     }
   ],
-  "updated_at": "2026-07-21T12:11:25.803Z"
+  "updated_at": "2026-07-21T12:11:28.767Z"
 }
