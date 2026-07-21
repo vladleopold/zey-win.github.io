@@ -385,7 +385,7 @@ function buildCardHTML(r, idx) {
   const iconBlock = iconUrl ? `<div class="card-icon-wrap"><img class="card-icon" src="${iconUrl}" alt="" loading="lazy" onerror="this.onerror=null;this.alt='🎮'"></div>` : `<div class="card-icon-wrap card-icon-placeholder">🎮</div>`;
   const timerId = `t-${r.id}`;
   const timerHtml = `<span class="timer" id="${timerId}" data-run="${r.id}" style="display:${st!=='completed'&&timers[r.id]?'inline':'none'};color:#ffd700;font-size:11px;font-weight:700">⏱ </span>`;
-  return `<div class="build-card${isProgress?' in-progress':''}" style="${bgStyle}" data-id="${r.id}">${iconBlock}<div class="card-body"><div class="card-text"><div class="app-name">${versionInfo}</div>${pkg?`<div class="meta">${esc(pkg)}</div>`:""}${versionBlock}</div><div class="btn-group">${concl==="success"&&downloads.apk?`<a class="dl-btn dl-btn-apk" href="${downloads.apk}" download>APK</a>`:""}${concl==="success"&&downloads.aab?`<a class="dl-btn dl-btn-aab" href="${downloads.aab}" download>AAB</a>`:""}${concl!=="success"?`<a href="${esc(url)}" target="_blank" class="log-btn" style="font-size:11px;padding:3px 6px">Логи</a>`:""}<div class="status-row">${timerHtml}<span class="status ${cls} status-small">${label}</span></div><div style="display:flex;gap:2px;margin-top:2px"><button class="info-btn" onclick="event.stopPropagation();showBuildInfo(${r.id})" title="Информация">i</button><button class="del-btn" onclick="deleteRun(${r.id},event)" title="Удалить">✕</button></div></div></div></div>`;
+  return `<div class="build-card${isProgress?' in-progress':''}" style="${bgStyle}" data-id="${r.id}">${iconBlock}<div class="card-body"><div class="card-text"><div class="app-name">${versionInfo}</div>${pkg?`<div class="meta">${esc(pkg)}</div>`:""}${versionBlock}</div><div class="btn-group">${concl==="success"&&downloads.apk?`<a class="dl-btn dl-btn-apk" href="${downloads.apk}" download>APK</a>`:""}${concl==="success"&&downloads.aab?`<a class="dl-btn dl-btn-aab" href="${downloads.aab}" download>AAB</a>`:""}${concl!=="success"?`<a href="${esc(url)}" target="_blank" class="log-btn" style="font-size:11px;padding:3px 6px">Логи</a>`:""}<div class="status-row">${timerHtml}<span class="status ${cls} status-small">${label}</span></div><button class="del-btn" onclick="deleteRun(${r.id},event)" title="Удалить">✕</button></div></div></div>`;
 }
 
 function updateTimers() {
@@ -975,9 +975,9 @@ document.getElementById("detail-modal").addEventListener("click", function(e) {
 document.addEventListener("click", function(e) {
   var card = e.target.closest(".build-card");
   if (!card) return;
-  if (e.target.closest("a, button, .del-btn, .info-btn")) return;
+  if (e.target.closest("a, button, .del-btn")) return;
   var id = Number(card.dataset.id);
-  if (id) openDetail(id);
+  if (id) showBuildInfo(id);
 });
 
 form.addEventListener("input", markChangedFields);
