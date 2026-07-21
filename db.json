@@ -1449,18 +1449,18 @@
       "updated_at": "2026-07-20T20:20:01.102Z"
     },
     {
-      "run_id": 29865585086,
-      "request_id": "builder-mrv3q2u3",
-      "package_name": "com.playsocialgames.bacarrattiger",
-      "app_name": "Baccarat",
-      "game_repository": "zey-win/baccarat-tiger",
+      "run_id": 29865581450,
+      "request_id": "builder-mrv3pzth",
+      "package_name": "com.playmaxsolutions.slotspot",
+      "app_name": "SlotSpot",
+      "game_repository": "zey-win/SlotSpot",
       "build_format": "apk_aab",
-      "version_name": "11.0",
-      "version_code": "11",
+      "version_name": "14.0",
+      "version_code": "26",
       "status": "queued",
-      "created_at": "2026-07-21T20:24:04.082Z",
-      "updated_at": "2026-07-21T20:24:04.082Z"
+      "created_at": "2026-07-21T20:24:01.088Z",
+      "updated_at": "2026-07-21T20:24:01.088Z"
     }
   ],
-  "updated_at": "2026-07-21T20:24:07.677Z"
+  "updated_at": "2026-07-21T20:24:10.356Z"
 }
