@@ -232,6 +232,14 @@
     .breakdown-value {
       color: #58a6ff;
     }
+    
+    .error-box {
+      background: rgba(248, 81, 73, 0.1);
+      border: 1px solid #f85149;
+      border-radius: 12px;
+      padding: 20px;
+      color: #f85149;
+    }
   </style>
 </head>
 <body>
@@ -244,10 +252,10 @@
     </div>
     
     <div class="stats-tabs">
-      <button class="stats-tab active" onclick="showStatsTab('overview')">Overview</button>
-      <button class="stats-tab" onclick="showStatsTab('visitors')">Visitors</button>
-      <button class="stats-tab" onclick="showStatsTab('pages')">Pages</button>
-      <button class="stats-tab" onclick="showStatsTab('devices-browsers')">Devices & Browsers</button>
+      <button class="stats-tab active" data-tab="overview">Overview</button>
+      <button class="stats-tab" data-tab="visitors">Visitors</button>
+      <button class="stats-tab" data-tab="pages">Pages</button>
+      <button class="stats-tab" data-tab="devices-browsers">Devices & Browsers</button>
     </div>
     
     <div id="overview" class="stats-section active">
@@ -360,76 +368,35 @@
   </div>
   
   <script>
-    // Load statistics
-    async function loadStats() {
-      try {
-        const [siteStats, recentVisitors, pageStats, breakdown] = await Promise.all([
-          fetch('/api/stats/visitor-counts').then(r => r.json()),
-          fetch('/api/stats/recent-visits?limit=20').then(r => r.json()),
-          fetch('/api/stats/page-stats').then(r => r.json()),
-          fetch('/api/stats').then(r => r.json())
-        ]);
-        
-        updateOverviewStats(siteStats);
-        updateRecentVisitors(recentVisitors);
-        updatePageStats(pageStats);
-        updateDeviceBrowserStats(breakdown);
-        initStatsTabs();
-        
-      } catch (error) {
-        console.error('Failed to load statistics:', error);
-        document.getElementById('overview').innerHTML = `
-          <div class="stats-card">
-            <h2>Error Loading Statistics</h2>
-            <p>Unable to load visitor statistics at this time.</p>
-            <p>Please try again later.</p>
-          </div>
-        `;
-      }
+    const API_BASE = 'https://zeywin-android-builder-api.vercel.app';
+    
+    function api(path) {
+      return `${API_BASE}${path}`;
     }
     
-    function updateOverviewStats(stats) {
-      if (!stats) return;
+    function showStatsTab(tabId) {
+      document.querySelectorAll('.stats-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.stats-section').forEach(s => s.classList.remove('active'));
       
-      document.getElementById('total-visitors').textContent = stats.totalVisitors || 0;
-      document.getElementById('unique-visitors').textContent = stats.uniqueVisitors || 0;
-      document.getElementById('page-views').textContent = stats.pageViews || 0;
-      
-      const dailyStats = stats.dailyStats || {};
-      const today = Object.keys(dailyStats)[0] || 'Today';
-      const todayData = dailyStats[today];
-      
-      document.getElementById('daily-visitors').textContent = todayData?.visitors || 0;
-      document.getElementById('daily-page-views').textContent = todayData?.pageViews || 0;
-      
-      // Find peak hour
-      const hourStats = [];
-      if (dailyStats) {
-        Object.values(dailyStats).forEach(hourData => {
-          if (hourData.hourStats) {
-            hourData.hourStats.forEach((views, hour) => {
-              if (views > 0) {
-                hourStats.push({ hour, views });
-              }
-            });
-          }
-        });
-      }
-      
-      if (hourStats.length > 0) {
-        const peakHour = hourStats.reduce((max, current) => current.views > max.views ? current : max);
-        document.getElementById('peak-hour').textContent = `${peakHour.hour}:00 - ${peakHour.views} views`;
-      }
-      
-      // Calculate active sessions (last 5 minutes)
+      const tabBtn = document.querySelector(`.stats-tab[data-tab="${tabId}"]`);
+      const section = document.getElementById(tabId);
+      if (tabBtn) tabBtn.classList.add('active');
+      if (section) section.classList.add('active');
+    }
+    
+    function formatTimeAgo(timestamp) {
       const now = new Date();
-      const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
-      const activeSessions = stats.recentVisits?.filter(v => 
-        new Date(v.timestamp) > fiveMinutesAgo
-      ).length || 0;
-      document.getElementById('active-sessions').textContent = activeSessions;
+      const visitTime = new Date(timestamp);
+      const diffMs = now - visitTime;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+      const diffDays = Math.floor(diffMs / 86400000);
       
-      updateTopPages(stats.topPages || {});
+      if (diffMins < 1) return 'Just now';
+      if (diffMins < 60) return `${diffMins} min ago`;
+      if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+      if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+      return visitTime.toLocaleDateString();
     }
     
     function updateTopPages(topPages) {
@@ -464,8 +431,8 @@
       });
     }
     
-    function updateRecentVisitors(visitors) {
-      const container = document.getElementById('recent-activity');
+    function updateRecentVisitors(visitors, containerId) {
+      const container = document.getElementById(containerId);
       if (!container) return;
       
       container.innerHTML = '';
@@ -494,45 +461,10 @@
       });
     }
     
-    function updatePageStats(pageStats) {
-      const tableBody = document.querySelector('#pages-table tbody');
-      if (!tableBody) return;
-      
-      tableBody.innerHTML = '';
-      
-      const topPages = pageStats.topPages || {};
-      const userAgentStats = pageStats.userAgentStats || {};
-      
-      let totalViews = 0;
-      Object.values(topPages).forEach(page => {
-        totalViews += page.views;
-      });
-      
-      Object.entries(topPages).forEach(([path, data]) => {
-        const percentage = ((data.views / totalViews) * 100).toFixed(1);
-        const uniqueCount = data.uniqueIPs?.size || 0;
-        
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${path}</td>
-          <td>${data.views}</td>
-          <td>${uniqueCount}</td>
-          <td>${percentage}%</td>
-        `;
-        tableBody.appendChild(row);
-      });
-      
-      // Update browser breakdown
-      updateBrowserBreakdown(userAgentStats);
-    }
-    
-    function updateDeviceBrowserStats(breakdown) {
-      if (!breakdown) return;
-      
+    function updateDeviceBrowserStats(stats) {
       const deviceContainer = document.getElementById('device-breakdown');
       const browserContainer = document.getElementById('browser-breakdown');
       
-      // Device types from user agents
       const deviceTypes = {
         'iOS': 0,
         'Android': 0,
@@ -541,7 +473,7 @@
         'Unknown': 0
       };
       
-      const uaStats = breakdown.userAgentStats || {};
+      const uaStats = stats.userAgentStats || {};
       Object.entries(uaStats).forEach(([ua, data]) => {
         if (/iPhone|iPad|iPod/.test(ua)) deviceTypes['iOS'] += data.views;
         else if (/Android/.test(ua)) deviceTypes['Android'] += data.views;
@@ -579,50 +511,118 @@
       }
     }
     
-    function updateBrowserBreakdown(userAgentStats) {
-      const container = document.getElementById('browser-breakdown');
-      if (!container) return;
-      
-      container.innerHTML = '';
-      
-      Object.entries(userAgentStats).forEach(([browser, data]) => {
-        const item = document.createElement('div');
-        item.className = 'breakdown-item';
-        item.innerHTML = `
-          <span class="breakdown-label">${browser}</span>
-          <span class="breakdown-value">${data.views} views (${data.visitors} visitors)</span>
+    async function loadStats() {
+      try {
+        const [allStats, recentVisits, pageStats] = await Promise.all([
+          fetch(api('/api/stats')).then(r => {
+            if (!r.ok) throw new Error(`HTTP ${r.status}`);
+            return r.json();
+          }),
+          fetch(api('/api/stats/recent-visits?limit=20')).then(r => {
+            if (!r.ok) throw new Error(`HTTP ${r.status}`);
+            return r.json();
+          }),
+          fetch(api('/api/stats/page-stats')).then(r => {
+            if (!r.ok) throw new Error(`HTTP ${r.status}`);
+            return r.json();
+          })
+        ]);
+        
+        // Overview
+        document.getElementById('total-visitors').textContent = allStats.totalVisitors || 0;
+        document.getElementById('unique-visitors').textContent = allStats.uniqueVisitors || 0;
+        document.getElementById('page-views').textContent = allStats.pageViews || 0;
+        
+        const dailyStats = allStats.dailyStats || {};
+        const today = Object.keys(dailyStats)[0] || 'Today';
+        const todayData = dailyStats[today];
+        
+        document.getElementById('daily-visitors').textContent = todayData?.visitors || 0;
+        document.getElementById('daily-page-views').textContent = todayData?.pageViews || 0;
+        
+        // Peak hour
+        const hourStats = [];
+        if (allStats.hourlyStats && Array.isArray(allStats.hourlyStats)) {
+          allStats.hourlyStats.forEach(h => {
+            if (h.views > 0) {
+              hourStats.push(h);
+            }
+          });
+        }
+        
+        if (hourStats.length > 0) {
+          const peakHour = hourStats.reduce((max, current) => current.views > max.views ? current : max);
+          document.getElementById('peak-hour').textContent = `${peakHour.hour}:00 - ${peakHour.views} views`;
+        }
+        
+        // Active sessions (last 5 minutes)
+        const now = new Date();
+        const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
+        const activeSessions = allStats.recentVisits?.filter(v => 
+          new Date(v.timestamp) > fiveMinutesAgo
+        ).length || 0;
+        document.getElementById('active-sessions').textContent = activeSessions;
+        
+        updateTopPages(allStats.topPages || {});
+        updateRecentVisitors(allStats.recentVisits || [], 'recent-activity');
+        
+        // Visitors tab
+        updateRecentVisitors(recentVisits, 'visitors-list');
+        
+        // Pages tab
+        updatePageStats(pageStats);
+        
+        // Devices & Browsers
+        updateDeviceBrowserStats(allStats);
+        
+        // Init tabs
+        initStatsTabs();
+        
+      } catch (error) {
+        console.error('Failed to load statistics:', error);
+        document.getElementById('overview').innerHTML = `
+          <div class="stats-card">
+            <h2>Error Loading Statistics</h2>
+            <p>Unable to load visitor statistics at this time.</p>
+            <p>Error: ${error.message}</p>
+            <p>Please try again later.</p>
+          </div>
         `;
-        container.appendChild(item);
-      });
+      }
     }
     
-    function updateRecentVisitors(visitors) {
-      const container = document.getElementById('visitors-list');
-      if (!container) return;
+    function updatePageStats(pageStats) {
+      const tableBody = document.querySelector('#pages-table tbody');
+      if (!tableBody) return;
       
-      container.innerHTML = '';
+      tableBody.innerHTML = '';
       
-      if (!visitors || visitors.length === 0) {
-        container.innerHTML = '<div style="color: #8b949e; font-style: italic;">No recent visitor activity</div>';
+      const topPages = pageStats.topPages || {};
+      
+      let totalViews = 0;
+      Object.values(topPages).forEach(page => {
+        totalViews += page.views;
+      });
+      
+      if (totalViews === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td colspan="4" style="text-align:center;color:#8b949e;">No page data available</td>`;
+        tableBody.appendChild(row);
         return;
       }
       
-      visitors.forEach(visitor => {
-        const visitorElement = document.createElement('div');
-        visitorElement.className = 'visitor-item';
+      Object.entries(topPages).forEach(([path, data]) => {
+        const percentage = ((data.views / totalViews) * 100).toFixed(1);
+        const uniqueCount = data.uniqueIPs?.size || 0;
         
-        const avatarLetter = visitor.ip ? visitor.ip.charAt(0) : '?';
-        
-        visitorElement.innerHTML = `
-          <div class="visitor-avatar">${avatarLetter}</div>
-          <div class="visitor-info">
-            <div class="visitor-path">${visitor.path || '/'}</div>
-            <div class="visitor-ip">IP: ${visitor.ip || 'Unknown'}</div>
-          </div>
-          <div class="visitor-time">${formatTimeAgo(visitor.timestamp)}</div>
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${path}</td>
+          <td>${data.views}</td>
+          <td>${uniqueCount}</td>
+          <td>${percentage}%</td>
         `;
-        
-        container.appendChild(visitorElement);
+        tableBody.appendChild(row);
       });
     }
     
@@ -630,35 +630,12 @@
       const tabs = document.querySelectorAll('.stats-tab');
       tabs.forEach(tab => {
         tab.addEventListener('click', () => {
-          tabs.forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
-          
-          const sections = document.querySelectorAll('.stats-section');
-          sections.forEach(s => s.classList.remove('active'));
-          
-          const tabName = tab.textContent.toLowerCase();
-          const section = document.getElementById(tabName);
-          if (section) section.classList.add('active');
+          const tabId = tab.getAttribute('data-tab');
+          showStatsTab(tabId);
         });
       });
     }
     
-    function formatTimeAgo(timestamp) {
-      const now = new Date();
-      const visitTime = new Date(timestamp);
-      const diffMs = now - visitTime;
-      const diffMins = Math.floor(diffMs / 60000);
-      const diffHours = Math.floor(diffMs / 3600000);
-      const diffDays = Math.floor(diffMs / 86400000);
-      
-      if (diffMins < 1) return 'Just now';
-      if (diffMins < 60) return `${diffMins} min ago`;
-      if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
-      if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-      return visitTime.toLocaleDateString();
-    }
-    
-    // Initialize on load
     document.addEventListener('DOMContentLoaded', loadStats);
   </script>
 </body>
