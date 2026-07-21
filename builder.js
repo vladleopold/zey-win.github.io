@@ -909,6 +909,15 @@ function showBuildInfo(runId) {
     if (!run) return;
     var meta = runMeta[runId] || {};
     var params = meta.params || {};
+    // fallback: parse displayTitle for app/pkg/format when params empty
+    if (!params.app_name || !params.package_name) {
+      var parts = (run.displayTitle || "").split(" / ");
+      if (parts.length >= 2) {
+        if (!params.app_name) params.app_name = parts[0].replace(/^Android:\s*/i, "").trim();
+        if (!params.package_name) params.package_name = parts[1].trim();
+      }
+      if (parts.length >= 3 && !params.build_format) params.build_format = parts[2].trim();
+    }
     var iconUrl = meta.icon || resolveIcon(run) || "";
     var url = run.htmlUrl || "";
     var isActive = ["in_progress","pending","queued","waiting"].indexOf(run.status) !== -1;
