@@ -50,8 +50,8 @@
       "game_repository": "zey-win/plinko",
       "app_name": "Plinko Falling Balls",
       "package_name": "com.falling.plinko",
-      "version_name": "32.0",
-      "version_code": "32",
+      "version_name": "31.0",
+      "version_code": "31",
       "version_mode": "auto_next",
       "zeywin_sdk_version": "v3.9.37",
       "zeywin_api_key": "zw_6398949883576fd4d1321be61dd08334d61a906e9b6cd0b6",
@@ -60,9 +60,7 @@
       "admob_interstitial": "ca-app-pub-1585565865476548/3620083367",
       "admob_rewarded": "ca-app-pub-1585565865476548/8194496114",
       "firebase_cfg": "plinko-falling-balls.json",
-      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.falling.plinko.png",
-      "icon_data_url": "",
-      "updated_at": "2026-07-21T12:11:37.373Z"
+      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.falling.plinko.png"
     },
     {
       "id": "slotspot",
@@ -150,8 +148,8 @@
       "game_repository": "zey-win/baccarat-tiger",
       "app_name": "Baccarat",
       "package_name": "com.playsocialgames.bacarrattiger",
-      "version_name": "10.0",
-      "version_code": "10",
+      "version_name": "11.0",
+      "version_code": "11",
       "version_mode": "auto_next",
       "zeywin_sdk_version": "v3.9.37",
       "zeywin_api_key": "zw_9503eadd84ee8db28d7153101305da2ffeb007c7286b2a51",
@@ -160,7 +158,9 @@
       "admob_interstitial": "ca-app-pub-6988952582458184/8952176419",
       "admob_rewarded": "ca-app-pub-6988952582458184/9223639151",
       "firebase_cfg": null,
-      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__baccarat-tiger.png"
+      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__baccarat-tiger.png",
+      "icon_data_url": "",
+      "updated_at": "2026-07-21T12:11:39.743Z"
     },
     {
       "id": "blackjack",
@@ -266,9 +266,9 @@
       "updated_at": "2026-07-21T08:32:46.892Z"
     },
     {
-      "package_name": "com.falling.plinko",
-      "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.falling.plinko.png",
-      "updated_at": "2026-07-21T12:11:37.373Z"
+      "package_name": "com.playsocialgames.bacarrattiger",
+      "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__baccarat-tiger.png",
+      "updated_at": "2026-07-21T12:11:39.743Z"
     }
   ],
   "builds": [
@@ -1456,5 +1456,5 @@
       "updated_at": "2026-07-20T20:20:01.102Z"
     }
   ],
-  "updated_at": "2026-07-21T12:11:40.119Z"
+  "updated_at": "2026-07-21T12:11:42.577Z"
 }
