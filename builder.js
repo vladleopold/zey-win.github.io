@@ -925,19 +925,35 @@ function showBuildInfo(runId) {
     var iconUrl = meta.icon || resolveIcon(run) || "";
     var url = run.htmlUrl || "";
     var isActive = ["in_progress","pending","queued","waiting"].indexOf(run.status) !== -1;
-    var fields = [
-      ["Игра", params.app_name || ""],
-      ["Package", params.package_name || ""],
-      ["Репозиторий", params.game_repository || ""],
-      ["Формат", params.build_format || ""],
-      ["Версия", params.aab_version_name || params.version_name || meta.ver || ""],
-      ["Версия код", params.aab_version_code || params.version_code || meta.code || ""],
-      ["SDK", params.zeywin_sdk_version || ""],
-      ["API Key", params.zeywin_api_key || ""],
-      ["AdMob App ID", params.admob_android_app_id || ""],
-      ["Статус", run.status || ""],
-      ["# сборки", String(run.runNumber || run.run_number || "")]
-    ];
+    // dynamic fields from params — show EVERYTHING user entered
+    var fieldMap = {
+      app_name: "Название",
+      package_name: "Package",
+      game_repository: "Репозиторий",
+      game_ref: "Ветка",
+      build_format: "Формат",
+      version_name: "Версия",
+      version_code: "Версия код",
+      zeywin_sdk_version: "SDK",
+      zeywin_api_key: "API Key",
+      admob_android_app_id: "AdMob App ID",
+      admob_android_banner_id: "AdMob Banner",
+      admob_android_interstitial_id: "AdMob Interstitial",
+      admob_android_rewarded_id: "AdMob Rewarded",
+      version_mode: "Режим версии"
+    };
+    var fields = [];
+    for (var key in fieldMap) {
+      var val = params[key];
+      if (key === "version_name") {
+        if (!val || val === "1") val = meta.ver || "";
+      } else if (key === "version_code") {
+        if (!val || val === "1") val = meta.code || "";
+      }
+      if (val && val !== "1") fields.push([fieldMap[key], val]);
+    }
+    fields.push(["Статус", run.status || ""]);
+    fields.push(["# сборки", String(run.runNumber || run.run_number || "")]);
     var html = '<div style="display:flex;gap:12px;margin-bottom:12px">';
     if (iconUrl) html += '<img src="' + iconUrl + '" style="width:64px;height:64px;border-radius:12px;flex-shrink:0;object-fit:cover" alt="">';
     html += '<div style="flex:1;min-width:0">';
