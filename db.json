@@ -148,8 +148,8 @@
       "game_repository": "zey-win/baccarat-tiger",
       "app_name": "Baccarat",
       "package_name": "com.playsocialgames.bacarrattiger",
-      "version_name": "11.0",
-      "version_code": "11",
+      "version_name": "10.0",
+      "version_code": "10",
       "version_mode": "auto_next",
       "zeywin_sdk_version": "v3.9.37",
       "zeywin_api_key": "zw_9503eadd84ee8db28d7153101305da2ffeb007c7286b2a51",
@@ -158,9 +158,7 @@
       "admob_interstitial": "ca-app-pub-6988952582458184/8952176419",
       "admob_rewarded": "ca-app-pub-6988952582458184/9223639151",
       "firebase_cfg": null,
-      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__baccarat-tiger.png",
-      "icon_data_url": "",
-      "updated_at": "2026-07-21T12:11:39.743Z"
+      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__baccarat-tiger.png"
     },
     {
       "id": "blackjack",
@@ -264,11 +262,6 @@
       "package_name": "com.socialapps.plinko",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.socialapps.plinko.png",
       "updated_at": "2026-07-21T08:32:46.892Z"
-    },
-    {
-      "package_name": "com.playsocialgames.bacarrattiger",
-      "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__baccarat-tiger.png",
-      "updated_at": "2026-07-21T12:11:39.743Z"
     }
   ],
   "builds": [
@@ -1454,7 +1447,20 @@
       "status": "queued",
       "created_at": "2026-07-20T20:20:01.102Z",
       "updated_at": "2026-07-20T20:20:01.102Z"
+    },
+    {
+      "run_id": 29829088224,
+      "request_id": "builder-mrum4lw5",
+      "package_name": "com.casino.game.socialfun",
+      "app_name": "888 Casino",
+      "game_repository": "zey-win/New-Slots",
+      "build_format": "apk_aab",
+      "version_name": "2.0",
+      "version_code": "2",
+      "status": "queued",
+      "created_at": "2026-07-21T12:11:33.407Z",
+      "updated_at": "2026-07-21T12:11:33.407Z"
     }
   ],
-  "updated_at": "2026-07-21T12:11:42.577Z"
+  "updated_at": "2026-07-21T12:11:45.139Z"
 }
