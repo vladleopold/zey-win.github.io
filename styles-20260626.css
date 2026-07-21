@@ -126,9 +126,13 @@ input[name="zeywin_api_key"]{text-align:right;direction:rtl}
 .dl-btn-apk:hover{background:#2ea043}
 .dl-btn-aab{background:#d4871a;color:#fff}
 .dl-btn-aab:hover{background:#e09e30}
+.info-btn{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;background:#21262d;color:#58a6ff;border:1px solid #30363d;border-radius:4px;font-size:10px;font-weight:700;cursor:pointer;line-height:1}
+.info-btn:hover{background:#30363d;color:#79c0ff}
 .del-btn{background:#da363320;color:#f85149;border:1px solid rgba(218,54,51,0.3);border-radius:6px;padding:3px 8px;font-weight:600}
 .del-btn:hover{background:#da363340}
 .log-btn{background:#21262d;color:#58a6ff;border-radius:6px}
 .log-btn:hover{background:#30363d}
 .skeleton-card{background:#1a202c;border:1px solid #30363d;border-radius:10px;padding:12px;margin-bottom:6px;height:52px;animation:skeleton-pulse 1.2s ease-in-out infinite}
 @keyframes skeleton-pulse{0%,100%{opacity:.3}50%{opacity:.7}}
+#detail-modal.hidden{display:none!important}
+#detail-modal:not(.hidden){display:flex;align-items:center;justify-content:center}

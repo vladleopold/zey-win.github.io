@@ -385,7 +385,7 @@ function buildCardHTML(r, idx) {
   const iconBlock = iconUrl ? `<div class="card-icon-wrap"><img class="card-icon" src="${iconUrl}" alt="" loading="lazy" onerror="this.onerror=null;this.alt='🎮'"></div>` : `<div class="card-icon-wrap card-icon-placeholder">🎮</div>`;
   const timerId = `t-${r.id}`;
   const timerHtml = `<span class="timer" id="${timerId}" data-run="${r.id}" style="display:${st!=='completed'&&timers[r.id]?'inline':'none'};color:#ffd700;font-size:11px;font-weight:700">⏱ </span>`;
-  return `<div class="build-card${isProgress?' in-progress':''}" style="${bgStyle}" data-id="${r.id}">${iconBlock}<div class="card-body"><div class="card-text"><div class="app-name">${versionInfo}</div>${pkg?`<div class="meta">${esc(pkg)}</div>`:""}${versionBlock}</div><div class="btn-group">${concl==="success"&&downloads.apk?`<a class="dl-btn dl-btn-apk" href="${downloads.apk}" download>APK</a>`:""}${concl==="success"&&downloads.aab?`<a class="dl-btn dl-btn-aab" href="${downloads.aab}" download>AAB</a>`:""}${concl!=="success"?`<a href="${esc(url)}" target="_blank" class="log-btn" style="font-size:11px;padding:3px 6px">Логи</a>`:""}<div class="status-row">${timerHtml}<span class="status ${cls} status-small">${label}</span></div><button class="del-btn" onclick="deleteRun(${r.id},event)" title="Удалить">✕</button></div></div></div>`;
+  return `<div class="build-card${isProgress?' in-progress':''}" style="${bgStyle}" data-id="${r.id}">${iconBlock}<div class="card-body"><div class="card-text"><div class="app-name">${versionInfo}</div>${pkg?`<div class="meta">${esc(pkg)}</div>`:""}${versionBlock}</div><div class="btn-group">${concl==="success"&&downloads.apk?`<a class="dl-btn dl-btn-apk" href="${downloads.apk}" download>APK</a>`:""}${concl==="success"&&downloads.aab?`<a class="dl-btn dl-btn-aab" href="${downloads.aab}" download>AAB</a>`:""}${concl!=="success"?`<a href="${esc(url)}" target="_blank" class="log-btn" style="font-size:11px;padding:3px 6px">Логи</a>`:""}<div class="status-row">${timerHtml}<span class="status ${cls} status-small">${label}</span></div><div style="display:flex;gap:2px;margin-top:2px"><button class="info-btn" onclick="event.stopPropagation();showBuildInfo(${r.id})" title="Информация">i</button><button class="del-btn" onclick="deleteRun(${r.id},event)" title="Удалить">✕</button></div></div></div></div>`;
 }
 
 function updateTimers() {
@@ -893,11 +893,89 @@ function restartBuild(runId) {
   openDetail(runId);
 }
 
+let _logTimer = null;
+async function fetchJobLogs(runId) {
+  try {
+    var res = await fetch(apiBase + "/api/logs?run_id=" + runId, { headers: op() });
+    if (!res.ok) return null;
+    return await res.text();
+  } catch { return null; }
+}
+
+function showBuildInfo(runId) {
+  try {
+    var run = runs.find(function(r) { return r.id === runId; });
+    if (!run) return;
+    var meta = runMeta[runId] || {};
+    var params = meta.params || {};
+    var iconUrl = meta.icon || resolveIcon(run) || "";
+    var url = run.htmlUrl || "";
+    var isActive = ["in_progress","pending","queued","waiting"].indexOf(run.status) !== -1;
+    var fields = [
+      ["Игра", params.app_name || ""],
+      ["Package", params.package_name || ""],
+      ["Репозиторий", params.game_repository || ""],
+      ["Формат", params.build_format || ""],
+      ["Версия", params.aab_version_name || params.version_name || meta.ver || ""],
+      ["Версия код", params.aab_version_code || params.version_code || meta.code || ""],
+      ["SDK", params.zeywin_sdk_version || ""],
+      ["API Key", params.zeywin_api_key || ""],
+      ["AdMob App ID", params.admob_android_app_id || ""],
+      ["Статус", run.status || ""],
+      ["# сборки", String(run.runNumber || run.run_number || "")]
+    ];
+    var html = '<div style="display:flex;gap:12px;margin-bottom:12px">';
+    if (iconUrl) html += '<img src="' + iconUrl + '" style="width:64px;height:64px;border-radius:12px;flex-shrink:0;object-fit:cover" alt="">';
+    html += '<div style="flex:1;min-width:0">';
+    html += '<div style="font-size:18px;font-weight:700;color:#f0f6fc;margin-bottom:4px">' + esc(params.app_name || run.displayTitle || "") + '</div>';
+    html += '<div style="font-size:13px;color:#8b949e">' + esc(params.package_name || "") + '</div>';
+    html += '</div></div>';
+    html += '<table style="width:100%;font-size:13px;border-collapse:collapse">';
+    for (var i = 0; i < fields.length; i++) {
+      var k = fields[i][0], v = fields[i][1];
+      if (!v) continue;
+      html += '<tr><td style="padding:3px 8px 3px 0;color:#8b949e;white-space:nowrap;vertical-align:top">' + k + '</td><td style="padding:3px 0;color:#c9d1d9;word-break:break-all">' + esc(v) + '</td></tr>';
+    }
+    html += '</table>';
+    if (url) html += '<div style="margin-top:10px"><a href="' + esc(url) + '" target="_blank" style="color:#58a6ff;font-size:13px">Открыть на GitHub →</a></div>';
+    html += '<div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">';
+    html += '<button onclick="document.getElementById(\'detail-modal\').classList.add(\'hidden\');clearInterval(_logTimer);openDetail(' + runId + ')" style="padding:6px 12px;background:#238636;border:none;border-radius:6px;color:#fff;cursor:pointer;font-size:13px">Перезапустить</button>';
+    html += '<button onclick="document.getElementById(\'detail-modal\').classList.add(\'hidden\');clearInterval(_logTimer)" style="padding:6px 12px;background:#30363d;border:none;border-radius:6px;color:#c9d1d9;cursor:pointer;font-size:13px">Закрыть</button>';
+    html += '</div>';
+    if (isActive) {
+      html += '<div style="margin-top:12px"><div style="font-size:13px;font-weight:600;color:#ffd700;margin-bottom:4px">📋 Логи сборки:</div><pre id="dm-logs" style="background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:8px;font-size:11px;line-height:1.4;max-height:300px;overflow-y:auto;color:#c9d1d9;white-space:pre-wrap;word-break:break-all">Загрузка...</pre></div>';
+    }
+    document.getElementById("dm-content").innerHTML = html;
+    document.getElementById("detail-modal").classList.remove("hidden");
+    if (isActive) {
+      clearInterval(_logTimer);
+      var logsEl = document.getElementById("dm-logs");
+      function pollLogs() {
+        fetchJobLogs(runId).then(function(text) {
+          if (text && logsEl) logsEl.textContent = text;
+        });
+      }
+      pollLogs();
+      _logTimer = setInterval(pollLogs, 7000);
+    }
+  } catch(e) { console.error(e); }
+}
+
+document.getElementById("dm-close").addEventListener("click", function() {
+  document.getElementById("detail-modal").classList.add("hidden");
+  clearInterval(_logTimer);
+});
+document.getElementById("detail-modal").addEventListener("click", function(e) {
+  if (e.target === e.currentTarget) {
+    document.getElementById("detail-modal").classList.add("hidden");
+    clearInterval(_logTimer);
+  }
+});
 
 document.addEventListener("click", function(e) {
   var card = e.target.closest(".build-card");
   if (!card) return;
-  if (e.target.closest("a, button, .del-btn")) return;
+  if (e.target.closest("a, button, .del-btn, .info-btn")) return;
   var id = Number(card.dataset.id);
   if (id) openDetail(id);
 });
