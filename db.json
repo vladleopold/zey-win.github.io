@@ -1449,18 +1449,18 @@
       "updated_at": "2026-07-20T20:20:01.102Z"
     },
     {
-      "run_id": 29865605484,
-      "request_id": "builder-mrv3qcdn",
-      "package_name": "com.casino.game.socialfun",
-      "app_name": "888 Casino",
-      "game_repository": "zey-win/New-Slots",
+      "run_id": 29865610647,
+      "request_id": "builder-mrv3qewy",
+      "package_name": "com.playsocialgames.blackjakck",
+      "app_name": "BlackJack",
+      "game_repository": "zey-win/blackjack",
       "build_format": "apk_aab",
-      "version_name": "2.0",
-      "version_code": "2",
+      "version_name": "16.0",
+      "version_code": "16",
       "status": "queued",
-      "created_at": "2026-07-21T20:24:20.984Z",
-      "updated_at": "2026-07-21T20:24:20.984Z"
+      "created_at": "2026-07-21T20:24:25.667Z",
+      "updated_at": "2026-07-21T20:24:25.667Z"
     }
   ],
-  "updated_at": "2026-07-21T20:24:24.525Z"
+  "updated_at": "2026-07-21T20:24:27.706Z"
 }
