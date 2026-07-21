@@ -41,6 +41,7 @@ function filterRunsByMode() {
 
 let runMeta = {}, releases = [], firebaseJson = null, currentIconDataUrl = null, iconLoadedDeferred = null, userIconSet = false;
 let savedConfigs = [], selectedConfigId = null;
+let configTreeState = {}; // groupId -> expanded boolean
 const versionCache = new Map();
 const sdkVersionCache = new Map();
 const firebaseCache = new Map();
@@ -1090,68 +1091,134 @@ form.addEventListener("submit", async e => {
   } catch (err) { alert("Ошибка: " + err.message); }
 });
 
-// ----- Configs: build history dropdown -----
+// ----- Configs: hierarchical dropdown (grouped by game repository) -----
+let configTreeState = {}; // { groupId: boolean } for expanded/collapsed state
+
+function buildConfigTree() {
+  const groups = new Map();
+  for (const c of savedConfigs) {
+    const repo = c.game_repository || "unknown";
+    if (!groups.has(repo)) groups.set(repo, []);
+    groups.get(repo).push(c);
+  }
+  return groups;
+}
+
 function renderConfigDropdown() {
   const list = $("config-list");
-  const trigger = $("config-trigger");
   if (!list) return;
   list.innerHTML = "";
+  
+  // Toolbar
   const toolbar = document.createElement("div");
   toolbar.style.cssText = "display:flex;gap:6px;align-items:center;padding:8px 10px;border-bottom:1px solid #21262d;background:#0d1117;position:sticky;top:0;z-index:1";
+  
+  const expandAllBtn = document.createElement("button");
+  expandAllBtn.type = "button";
+  expandAllBtn.textContent = "▼ Развернуть все";
+  expandAllBtn.style.cssText = "padding:6px 8px;background:#21262d;border:1px solid #30363d;border-radius:4px;color:#c9d1d9;font-size:12px;cursor:pointer";
+  expandAllBtn.onclick = (e) => { e.stopPropagation(); expandAllGroups(true); };
+  toolbar.appendChild(expandAllBtn);
+  
+  const collapseAllBtn = document.createElement("button");
+  collapseAllBtn.type = "button";
+  collapseAllBtn.textContent = "▲ Свернуть все";
+  collapseAllBtn.style.cssText = "padding:6px 8px;background:#21262d;border:1px solid #30363d;border-radius:4px;color:#c9d1d9;font-size:12px;cursor:pointer";
+  collapseAllBtn.onclick = (e) => { e.stopPropagation(); expandAllGroups(false); };
+  toolbar.appendChild(collapseAllBtn);
+  
   const batchBtn = document.createElement("button");
   batchBtn.type = "button";
-  batchBtn.textContent = "Собрать и Обновить Всё";
+  batchBtn.textContent = "🚀 Собрать и Обновить Всё";
   batchBtn.style.cssText = "flex:1;padding:7px 8px;background:#238636;border:none;border-radius:4px;color:#fff;font-size:13px;cursor:pointer";
   batchBtn.onclick = async (e) => { e.stopPropagation(); closeDropdown(); await runBatchBuilds(); };
   toolbar.appendChild(batchBtn);
+  
   const hint = document.createElement("span");
-  hint.textContent = "APK = v1, AAB = i+1";
+  hint.textContent = "APK=v1, AAB=i+1";
   hint.style.cssText = "color:#8b949e;font-size:11px;white-space:nowrap";
   toolbar.appendChild(hint);
   list.appendChild(toolbar);
-  for (const c of savedConfigs) {
-    const item = document.createElement("div");
-    item.style.cssText = "display:flex;align-items:center;padding:6px 10px;cursor:pointer;border-bottom:1px solid #21262d;font-size:14px";
-    item.onmouseenter = () => { item.style.background = "#1c2333"; };
-    item.onmouseleave = () => { item.style.background = ""; };
-    const label = document.createElement("span");
-    label.style.cssText = "flex:1;color:#c9d1d9";
-    label.textContent = c.label;
-    label.onclick = (e) => { e.stopPropagation(); fillConfig(c.id); closeDropdown(); };
-    item.appendChild(label);
-    const del = document.createElement("button");
-    del.type = "button";
-    del.textContent = "✕";
-    del.title = "Удалить";
-    del.style.cssText = "background:none;border:none;color:#ff4444;cursor:pointer;font-size:14px;padding:2px 6px;border-radius:3px";
-    del.onmouseenter = () => { del.style.background = "#ff444422"; };
-    del.onmouseleave = () => { del.style.background = "none"; };
-    del.onclick = async (e) => {
-      e.stopPropagation();
-      if (!confirm(`Удалить "${c.label}" из истории?`)) return;
-      const id = c.id;
-      savedConfigs = savedConfigs.filter(x => x.id !== id);
-      try {
-        const local = JSON.parse(localStorage.getItem(modeKey("savedConfigs")) || "[]");
-        localStorage.setItem(modeKey("savedConfigs"), JSON.stringify(local.filter(x => x.id !== id)));
-      } catch {}
-      // Delete from backend (shared across devices)
-      try {
-        await fetch(`${apiBase}/api/configs`, {
-          method: "DELETE",
-          headers: op(),
-          body: JSON.stringify({ id })
-        });
-      } catch {}
-      if (selectedConfigId === id) { selectedConfigId = null; }
+  
+  const groups = buildConfigTree();
+  if (groups.size === 0) {
+    list.innerHTML += '<div style="padding:8px;color:#8b949e;font-size:13px">Нет сохранённых конфигов</div>';
+    return;
+  }
+  
+  for (const [repo, configs] of groups.entries()) {
+    const repoShort = repo.split("/").pop() || repo;
+    const groupId = `group-${repo.replace(/[^a-z0-9]/gi, "-")}`;
+    const isExpanded = configTreeState[groupId] !== false; // default expanded
+    
+    // Group header
+    const header = document.createElement("div");
+    header.style.cssText = "display:flex;align-items:center;padding:6px 10px;cursor:pointer;background:#161b22;border-bottom:1px solid #21262d;font-size:13px;font-weight:600;color:#f0f6fc;user-select:none";
+    header.innerHTML = `
+      <span style="width:16px;display:flex;align-items:center;justify-content:center;color:#8b949e;font-size:10px">${isExpanded ? "▼" : "▶"}</span>
+      <span style="flex:1">${esc(repoShort)}</span>
+      <span style="color:#8b949e;font-size:11px;font-weight:400">${configs.length} конфиг${configs.length === 1 ? "" : configs.length < 5 ? "а" : "ов"}</span>
+    `;
+    header.onclick = () => {
+      configTreeState[groupId] = !configTreeState[groupId];
       renderConfigDropdown();
     };
-    item.appendChild(del);
-    list.appendChild(item);
+    header.onmouseenter = () => { header.style.background = "#1c2333"; };
+    header.onmouseleave = () => { header.style.background = ""; };
+    list.appendChild(header);
+    
+    // Group items (configs)
+    if (isExpanded) {
+      for (const c of configs) {
+        const item = document.createElement("div");
+        item.style.cssText = "display:flex;align-items:center;padding:6px 10px 6px 36px;cursor:pointer;border-bottom:1px solid #21262d;font-size:13px;background:#0d1117";
+        item.onmouseenter = () => { item.style.background = "#1c2333"; };
+        item.onmouseleave = () => { item.style.background = "#0d1117"; };
+        
+        const iconUrl = c.icon_url || c.icon_data_url || "";
+        const iconHtml = iconUrl 
+          ? `<img src="${esc(iconUrl)}" style="width:20px;height:20px;border-radius:4px;margin-right:8px;object-fit:cover;flex-shrink:0" alt="">`
+          : `<span style="width:20px;height:20px;margin-right:8px;display:flex;align-items:center;justify-content:center;background:#21262d;border-radius:4px;color:#8b949e;font-size:12px;flex-shrink:0">🎮</span>`;
+        
+        item.innerHTML = `${iconHtml}<span style="flex:1;color:#c9d1d9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.label || c.app_name || c.id)}</span><span style="color:#8b949e;font-size:11px;margin-right:8px">${esc(c.package_name || "")}</span>`;
+        
+        const del = document.createElement("button");
+        del.type = "button";
+        del.textContent = "✕";
+        del.title = "Удалить";
+        del.style.cssText = "background:none;border:none;color:#ff4444;cursor:pointer;font-size:12px;padding:2px 6px;border-radius:3px;flex-shrink:0";
+        del.onmouseenter = () => { del.style.background = "#ff444422"; };
+        del.onmouseleave = () => { del.style.background = "none"; };
+        del.onclick = async (e) => {
+          e.stopPropagation();
+          if (!confirm(`Удалить "${c.label}"?`)) return;
+          const id = c.id;
+          savedConfigs = savedConfigs.filter(x => x.id !== id);
+          try {
+            const local = JSON.parse(localStorage.getItem(modeKey("savedConfigs")) || "[]");
+            localStorage.setItem(modeKey("savedConfigs"), JSON.stringify(local.filter(x => x.id !== id)));
+          } catch {}
+          try {
+            await fetch(`${apiBase}/api/configs`, { method: "DELETE", headers: op(), body: JSON.stringify({ id }) });
+          } catch {}
+          if (selectedConfigId === id) selectedConfigId = null;
+          renderConfigDropdown();
+        };
+        item.appendChild(del);
+        item.onclick = () => { fillConfig(c.id); closeDropdown(); };
+        list.appendChild(item);
+      }
+    }
   }
-  if (!savedConfigs.length) {
-    list.innerHTML = '<div style="padding:8px;color:#8b949e;font-size:13px">Нет сохранённых конфигов</div>';
+}
+
+function expandAllGroups(expand) {
+  const groups = buildConfigTree();
+  for (const [repo] of groups.entries()) {
+    const groupId = `group-${repo.replace(/[^a-z0-9]/gi, "-")}`;
+    configTreeState[groupId] = expand;
   }
+  renderConfigDropdown();
 }
 
 function closeDropdown() {
@@ -1232,6 +1299,22 @@ async function loadConfigs() {
     }
   }
   if (currentVal && [...repoSelect.options].some(o => o.value === currentVal)) repoSelect.value = currentVal;
+}
+
+function buildConfigTree() {
+  const groups = new Map();
+  for (const c of savedConfigs) {
+    const repo = c.game_repository || "unknown";
+    if (!groups.has(repo)) groups.set(repo, []);
+    groups.get(repo).push(c);
+  }
+  // Sort groups by repo name
+  const sorted = new Map([...groups.entries()].sort((a, b) => a[0].localeCompare(b[0])));
+  // Sort configs within each group by label
+  for (const [, configs] of sorted) {
+    configs.sort((a, b) => (a.label || a.app_name || "").localeCompare(b.label || b.app_name || ""));
+  }
+  return sorted;
 }
 
 function fillConfig(configId) {

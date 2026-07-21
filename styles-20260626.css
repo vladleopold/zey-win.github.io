@@ -134,3 +134,8 @@ input[name="zeywin_api_key"]{text-align:right;direction:rtl}
 @keyframes skeleton-pulse{0%,100%{opacity:.3}50%{opacity:.7}}
 #detail-modal.hidden{display:none!important}
 #detail-modal:not(.hidden){display:flex;align-items:center;justify-content:center}
+
+/* Config dropdown tree */
+#config-list{background:#161b22;border:1px solid #30363d;border-radius:4px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+#config-list button:hover{background:#30363d}
+#config-list div[style*="cursor:pointer"]:hover{background:#1c2333}
