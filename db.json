@@ -50,8 +50,8 @@
       "game_repository": "zey-win/plinko",
       "app_name": "Plinko Falling Balls",
       "package_name": "com.falling.plinko",
-      "version_name": "32.0",
-      "version_code": "32",
+      "version_name": "31.0",
+      "version_code": "31",
       "version_mode": "auto_next",
       "zeywin_sdk_version": "v3.9.37",
       "zeywin_api_key": "zw_6398949883576fd4d1321be61dd08334d61a906e9b6cd0b6",
@@ -60,9 +60,7 @@
       "admob_interstitial": "ca-app-pub-1585565865476548/3620083367",
       "admob_rewarded": "ca-app-pub-1585565865476548/8194496114",
       "firebase_cfg": "plinko-falling-balls.json",
-      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.falling.plinko.png",
-      "icon_data_url": "",
-      "updated_at": "2026-07-21T20:24:18.917Z"
+      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.falling.plinko.png"
     },
     {
       "id": "slotspot",
@@ -264,11 +262,6 @@
       "package_name": "com.socialapps.plinko",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.socialapps.plinko.png",
       "updated_at": "2026-07-21T08:32:46.892Z"
-    },
-    {
-      "package_name": "com.falling.plinko",
-      "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.falling.plinko.png",
-      "updated_at": "2026-07-21T20:24:18.917Z"
     }
   ],
   "builds": [
@@ -1454,7 +1447,20 @@
       "status": "queued",
       "created_at": "2026-07-20T20:20:01.102Z",
       "updated_at": "2026-07-20T20:20:01.102Z"
+    },
+    {
+      "run_id": 29865605484,
+      "request_id": "builder-mrv3qcdn",
+      "package_name": "com.casino.game.socialfun",
+      "app_name": "888 Casino",
+      "game_repository": "zey-win/New-Slots",
+      "build_format": "apk_aab",
+      "version_name": "2.0",
+      "version_code": "2",
+      "status": "queued",
+      "created_at": "2026-07-21T20:24:20.984Z",
+      "updated_at": "2026-07-21T20:24:20.984Z"
     }
   ],
-  "updated_at": "2026-07-21T20:24:21.700Z"
+  "updated_at": "2026-07-21T20:24:24.525Z"
 }
