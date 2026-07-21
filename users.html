@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visitor Statistics - ZeyWin CI/CD</title>
+  <meta name="builder-api" content="https://zeywin-android-builder-api.vercel.app">
+  <meta name="builder-key" content="3e9b0ac6ecd43c716a5c80255f6936b163a3ceaa">
+  <link rel="stylesheet" href="styles-20260626.css?v5">
+  <style>
+    body {
+      background: radial-gradient(circle at top, #19202c 0, #0d1117 52%, #090c10 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #c9d1d9;
+      padding: 20px;
+      margin: 0;
+    }
+    
+    .stats-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .stats-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .stats-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    
+    .stats-header p {
+      font-size: 1.2rem;
+      color: #8b949e;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .stats-card {
+      background: rgba(13, 17, 23, 0.9);
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid #30363d;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .stats-card h2 {
+      font-size: 1.5rem;
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: #58a6ff;
+    }
+    
+    .stats-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid #2d3542;
+    }
+    
+    .stats-label {
+      font-weight: 600;
+      color: #8b949e;
+    }
+    
+    .stats-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #e1e4e8;
+    }
+    
+    .stats-value.high {
+      color: #3fb950;
+    }
+    
+    .stats-value.medium {
+      color: #ff9800;
+    }
+    
+    .stats-value.low {
+      color: #f85149;
+    }
+    
+    .stats-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    
+    .stats-table th,
+    .stats-table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #30363d;
+    }
+    
+    .stats-table th {
+      background: rgba(26, 32, 44, 0.5);
+      font-weight: 600;
+      color: #8b949e;
+    }
+    
+    .stats-table tr:hover {
+      background: rgba(88, 166, 255, 0.1);
+    }
+    
+    .stats-tabs {
+      display: flex;
+      border-bottom: 2px solid #30363d;
+      margin-bottom: 20px;
+    }
+    
+    .stats-tab {
+      padding: 12px 24px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: #8b949e;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+    
+    .stats-tab:hover {
+      color: #e1e4e8;
+      background: rgba(88, 166, 255, 0.1);
+    }
+    
+    .stats-tab.active {
+      color: #58a6ff;
+      border-bottom: 2px solid #58a6ff;
+    }
+    
+    .stats-section {
+      display: none;
+    }
+    
+    .stats-section.active {
+      display: block;
+    }
+    
+    .visitor-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .visitor-item {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      border-bottom: 1px solid #2d3542;
+    }
+    
+    .visitor-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #30363d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      font-weight: 600;
+    }
+    
+    .visitor-info {
+      flex: 1;
+    }
+    
+    .visitor-ip {
+      font-size: 0.9rem;
+      color: #8b949e;
+    }
+    
+    .visitor-path {
+      font-weight: 600;
+      color: #58a6ff;
+    }
+    
+    .visitor-time {
+      font-size: 0.85rem;
+      color: #8b949e;
+    }
+    
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #58a6ff;
+      text-decoration: none;
+    }
+    
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    
+    .stats-footer {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #30363d;
+      color: #8b949e;
+      font-size: 0.9rem;
+    }
+    
+    .device-breakdown, .browser-breakdown {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .breakdown-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: rgba(13, 17, 23, 0.5);
+      border-radius: 6px;
+      border: 1px solid #2d3542;
+    }
+    
+    .breakdown-label {
+      font-weight: 600;
+    }
+    
+    .breakdown-value {
+      color: #58a6ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="stats-container">
+    <a href="https://zey-win.github.io" class="back-link">← Back to ZeyWin CI/CD</a>
+    
+    <div class="stats-header">
+      <h1>Visitor Statistics</h1>
+      <p>Analytics dashboard for ZeyWin CI/CD platform</p>
+    </div>
+    
+    <div class="stats-tabs">
+      <button class="stats-tab active" onclick="showStatsTab('overview')">Overview</button>
+      <button class="stats-tab" onclick="showStatsTab('visitors')">Visitors</button>
+      <button class="stats-tab" onclick="showStatsTab('pages')">Pages</button>
+      <button class="stats-tab" onclick="showStatsTab('devices-browsers')">Devices & Browsers</button>
+    </div>
+    
+    <div id="overview" class="stats-section active">
+      <div class="stats-grid">
+        <div class="stats-card">
+          <h2>Site Overview</h2>
+          <div class="stats-row">
+            <span class="stats-label">Total Visitors:</span>
+            <span class="stats-value high" id="total-visitors">--</span>
+          </div>
+          <div class="stats-row">
+            <span class="stats-label">Unique Visitors:</span>
+            <span class="stats-value medium" id="unique-visitors">--</span>
+          </div>
+          <div class="stats-row">
+            <span class="stats-label">Total Page Views:</span>
+            <span class="stats-value high" id="page-views">--</span>
+          </div>
+          <div class="stats-row">
+            <span class="stats-label">Peak Hour:</span>
+            <span class="stats-value" id="peak-hour">--</span>
+          </div>
+          <div class="stats-row">
+            <span class="stats-label">Active Sessions:</span>
+            <span class="stats-value" id="active-sessions">--</span>
+          </div>
+        </div>
+        
+        <div class="stats-card">
+          <h2>Today's Statistics</h2>
+          <div id="daily-stats">
+            <div class="stats-row">
+              <span class="stats-label">Today's Visitors:</span>
+              <span class="stats-value" id="daily-visitors">--</span>
+            </div>
+            <div class="stats-row">
+              <span class="stats-label">Today's Page Views:</span>
+              <span class="stats-value" id="daily-page-views">--</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="stats-card">
+          <h2>Top Pages</h2>
+          <div id="top-pages-list">
+            <div class="stats-row" style="padding: 8px 0; border-bottom: none;">
+              <span class="stats-label">Page / Views</span>
+              <span class="stats-label">Unique IPs</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="stats-card">
+        <h2>Recent Activity</h2>
+        <div class="visitor-list" id="recent-activity">
+          <div class="visitor-item">
+            <div class="visitor-avatar">?</div>
+            <div class="visitor-info">
+              <div class="visitor-path">Loading...</div>
+              <div class="visitor-ip">Loading...</div>
+            </div>
+            <div class="visitor-time">Loading...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="visitors" class="stats-section">
+      <div class="stats-card">
+        <h2>Recent Visitors</h2>
+        <div class="visitor-list" id="visitors-list">
+        </div>
+      </div>
+    </div>
+    
+    <div id="pages" class="stats-section">
+      <div class="stats-card">
+        <h2>Page Analytics</h2>
+        <table class="stats-table" id="pages-table">
+          <thead>
+            <tr>
+              <th>Page</th>
+              <th>Views</th>
+              <th>Unique Visitors</th>
+              <th>% of Total</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div id="devices-browsers" class="stats-section">
+      <div class="stats-grid">
+        <div class="stats-card">
+          <h2>Device Types</h2>
+          <div class="device-breakdown" id="device-breakdown">
+          </div>
+        </div>
+        
+        <div class="stats-card">
+          <h2>Browser Statistics</h2>
+          <div class="browser-breakdown" id="browser-breakdown">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Load statistics
+    async function loadStats() {
+      try {
+        const [siteStats, recentVisitors, pageStats, breakdown] = await Promise.all([
+          fetch('/api/stats/visitor-counts').then(r => r.json()),
+          fetch('/api/stats/recent-visits?limit=20').then(r => r.json()),
+          fetch('/api/stats/page-stats').then(r => r.json()),
+          fetch('/api/stats').then(r => r.json())
+        ]);
+        
+        updateOverviewStats(siteStats);
+        updateRecentVisitors(recentVisitors);
+        updatePageStats(pageStats);
+        updateDeviceBrowserStats(breakdown);
+        initStatsTabs();
+        
+      } catch (error) {
+        console.error('Failed to load statistics:', error);
+        document.getElementById('overview').innerHTML = `
+          <div class="stats-card">
+            <h2>Error Loading Statistics</h2>
+            <p>Unable to load visitor statistics at this time.</p>
+            <p>Please try again later.</p>
+          </div>
+        `;
+      }
+    }
+    
+    function updateOverviewStats(stats) {
+      if (!stats) return;
+      
+      document.getElementById('total-visitors').textContent = stats.totalVisitors || 0;
+      document.getElementById('unique-visitors').textContent = stats.uniqueVisitors || 0;
+      document.getElementById('page-views').textContent = stats.pageViews || 0;
+      
+      const dailyStats = stats.dailyStats || {};
+      const today = Object.keys(dailyStats)[0] || 'Today';
+      const todayData = dailyStats[today];
+      
+      document.getElementById('daily-visitors').textContent = todayData?.visitors || 0;
+      document.getElementById('daily-page-views').textContent = todayData?.pageViews || 0;
+      
+      // Find peak hour
+      const hourStats = [];
+      if (dailyStats) {
+        Object.values(dailyStats).forEach(hourData => {
+          if (hourData.hourStats) {
+            hourData.hourStats.forEach((views, hour) => {
+              if (views > 0) {
+                hourStats.push({ hour, views });
+              }
+            });
+          }
+        });
+      }
+      
+      if (hourStats.length > 0) {
+        const peakHour = hourStats.reduce((max, current) => current.views > max.views ? current : max);
+        document.getElementById('peak-hour').textContent = `${peakHour.hour}:00 - ${peakHour.views} views`;
+      }
+      
+      // Calculate active sessions (last 5 minutes)
+      const now = new Date();
+      const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
+      const activeSessions = stats.recentVisits?.filter(v => 
+        new Date(v.timestamp) > fiveMinutesAgo
+      ).length || 0;
+      document.getElementById('active-sessions').textContent = activeSessions;
+      
+      updateTopPages(stats.topPages || {});
+    }
+    
+    function updateTopPages(topPages) {
+      const container = document.getElementById('top-pages-list');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      
+      if (!topPages || Object.keys(topPages).length === 0) {
+        container.innerHTML = '<div style="color: #8b949e; font-style: italic;">No page data available</div>';
+        return;
+      }
+      
+      let totalViews = 0;
+      Object.values(topPages).forEach(page => {
+        totalViews += page.views;
+      });
+      
+      Object.entries(topPages).forEach(([path, data]) => {
+        const percentage = ((data.views / totalViews) * 100).toFixed(1);
+        const uniqueCount = data.uniqueIPs?.size || 0;
+        
+        const row = document.createElement('div');
+        row.className = 'stats-row';
+        row.innerHTML = `
+          <span class="stats-label">${path}</span>
+          <span class="stats-value">${data.views} views</span>
+          <span class="stats-label">Unique: ${uniqueCount}</span>
+        `;
+        
+        container.appendChild(row);
+      });
+    }
+    
+    function updateRecentVisitors(visitors) {
+      const container = document.getElementById('recent-activity');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      
+      if (!visitors || visitors.length === 0) {
+        container.innerHTML = '<div style="color: #8b949e; font-style: italic;">No recent visitor activity</div>';
+        return;
+      }
+      
+      visitors.forEach(visitor => {
+        const visitorElement = document.createElement('div');
+        visitorElement.className = 'visitor-item';
+        
+        const avatarLetter = visitor.ip ? visitor.ip.charAt(0) : '?';
+        
+        visitorElement.innerHTML = `
+          <div class="visitor-avatar">${avatarLetter}</div>
+          <div class="visitor-info">
+            <div class="visitor-path">${visitor.path || '/'}</div>
+            <div class="visitor-ip">IP: ${visitor.ip || 'Unknown'}</div>
+          </div>
+          <div class="visitor-time">${formatTimeAgo(visitor.timestamp)}</div>
+        `;
+        
+        container.appendChild(visitorElement);
+      });
+    }
+    
+    function updatePageStats(pageStats) {
+      const tableBody = document.querySelector('#pages-table tbody');
+      if (!tableBody) return;
+      
+      tableBody.innerHTML = '';
+      
+      const topPages = pageStats.topPages || {};
+      const userAgentStats = pageStats.userAgentStats || {};
+      
+      let totalViews = 0;
+      Object.values(topPages).forEach(page => {
+        totalViews += page.views;
+      });
+      
+      Object.entries(topPages).forEach(([path, data]) => {
+        const percentage = ((data.views / totalViews) * 100).toFixed(1);
+        const uniqueCount = data.uniqueIPs?.size || 0;
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${path}</td>
+          <td>${data.views}</td>
+          <td>${uniqueCount}</td>
+          <td>${percentage}%</td>
+        `;
+        tableBody.appendChild(row);
+      });
+      
+      // Update browser breakdown
+      updateBrowserBreakdown(userAgentStats);
+    }
+    
+    function updateDeviceBrowserStats(breakdown) {
+      if (!breakdown) return;
+      
+      const deviceContainer = document.getElementById('device-breakdown');
+      const browserContainer = document.getElementById('browser-breakdown');
+      
+      // Device types from user agents
+      const deviceTypes = {
+        'iOS': 0,
+        'Android': 0,
+        'Mac': 0,
+        'Windows': 0,
+        'Unknown': 0
+      };
+      
+      const uaStats = breakdown.userAgentStats || {};
+      Object.entries(uaStats).forEach(([ua, data]) => {
+        if (/iPhone|iPad|iPod/.test(ua)) deviceTypes['iOS'] += data.views;
+        else if (/Android/.test(ua)) deviceTypes['Android'] += data.views;
+        else if (/Macintosh/.test(ua)) deviceTypes['Mac'] += data.views;
+        else if (/Windows/.test(ua)) deviceTypes['Windows'] += data.views;
+        else deviceTypes['Unknown'] += data.views;
+      });
+      
+      if (deviceContainer) {
+        deviceContainer.innerHTML = '';
+        Object.entries(deviceTypes).forEach(([device, count]) => {
+          if (count > 0) {
+            const item = document.createElement('div');
+            item.className = 'breakdown-item';
+            item.innerHTML = `
+              <span class="breakdown-label">${device}</span>
+              <span class="breakdown-value">${count} views</span>
+            `;
+            deviceContainer.appendChild(item);
+          }
+        });
+      }
+      
+      if (browserContainer) {
+        browserContainer.innerHTML = '';
+        Object.entries(uaStats).forEach(([browser, data]) => {
+          const item = document.createElement('div');
+          item.className = 'breakdown-item';
+          item.innerHTML = `
+            <span class="breakdown-label">${browser}</span>
+            <span class="breakdown-value">${data.views} views (${data.visitors} visitors)</span>
+          `;
+          browserContainer.appendChild(item);
+        });
+      }
+    }
+    
+    function updateBrowserBreakdown(userAgentStats) {
+      const container = document.getElementById('browser-breakdown');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      
+      Object.entries(userAgentStats).forEach(([browser, data]) => {
+        const item = document.createElement('div');
+        item.className = 'breakdown-item';
+        item.innerHTML = `
+          <span class="breakdown-label">${browser}</span>
+          <span class="breakdown-value">${data.views} views (${data.visitors} visitors)</span>
+        `;
+        container.appendChild(item);
+      });
+    }
+    
+    function updateRecentVisitors(visitors) {
+      const container = document.getElementById('visitors-list');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      
+      if (!visitors || visitors.length === 0) {
+        container.innerHTML = '<div style="color: #8b949e; font-style: italic;">No recent visitor activity</div>';
+        return;
+      }
+      
+      visitors.forEach(visitor => {
+        const visitorElement = document.createElement('div');
+        visitorElement.className = 'visitor-item';
+        
+        const avatarLetter = visitor.ip ? visitor.ip.charAt(0) : '?';
+        
+        visitorElement.innerHTML = `
+          <div class="visitor-avatar">${avatarLetter}</div>
+          <div class="visitor-info">
+            <div class="visitor-path">${visitor.path || '/'}</div>
+            <div class="visitor-ip">IP: ${visitor.ip || 'Unknown'}</div>
+          </div>
+          <div class="visitor-time">${formatTimeAgo(visitor.timestamp)}</div>
+        `;
+        
+        container.appendChild(visitorElement);
+      });
+    }
+    
+    function initStatsTabs() {
+      const tabs = document.querySelectorAll('.stats-tab');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          
+          const sections = document.querySelectorAll('.stats-section');
+          sections.forEach(s => s.classList.remove('active'));
+          
+          const tabName = tab.textContent.toLowerCase();
+          const section = document.getElementById(tabName);
+          if (section) section.classList.add('active');
+        });
+      });
+    }
+    
+    function formatTimeAgo(timestamp) {
+      const now = new Date();
+      const visitTime = new Date(timestamp);
+      const diffMs = now - visitTime;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+      const diffDays = Math.floor(diffMs / 86400000);
+      
+      if (diffMins < 1) return 'Just now';
+      if (diffMins < 60) return `${diffMins} min ago`;
+      if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+      if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+      return visitTime.toLocaleDateString();
+    }
+    
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', loadStats);
+  </script>
+</body>
+</html>
