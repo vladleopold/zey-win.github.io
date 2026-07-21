@@ -84,7 +84,7 @@ input[name="zeywin_api_key"]{text-align:right;direction:rtl}
 .card-icon-placeholder{display:flex;align-items:center;justify-content:center;font-size:32px;background:#21262d}
 .card-body{display:flex;flex:1;min-width:0;align-items:center;gap:6px}
 .card-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:0;line-height:1.15}
-.build-card .app-name{font-weight:700;font-size:400px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.build-card .app-name{font-weight:700;font-size:18px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .build-card .meta{font-size:13px;color:#8b949e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .build-card .status{padding:3px 8px;border-radius:6px;font-size:13px;font-weight:600;white-space:nowrap;display:inline-flex;align-items:center}
 .status-small{padding:2px 6px;font-size:12px}
@@ -107,9 +107,9 @@ input[name="zeywin_api_key"]{text-align:right;direction:rtl}
 .btn-restart{background:#d4871a !important}
 #build-form .changed{outline:2px solid #d4871a;outline-offset:1px;background:#2a1d08;color:#ffd9a0}
 #build-form .changed:focus{outline-color:#ffb347}
-@media(max-width:820px){.card-icon-wrap{width:60px;height:60px}.build-card .app-name{font-size:312px}.card-icon-placeholder{font-size:26px}.build-card .meta{font-size:12px}.build-card .status{font-size:12px}.build-card .btn-group a,.dl-btn,.del-btn,.log-btn{font-size:11px}.dl-btn{font-size:11px}.version-line{font-size:24px}}
-@media(max-width:600px){.build-card{padding:4px;gap:4px}.card-icon-wrap{width:44px;height:44px;border-radius:6px}.card-icon-placeholder{font-size:20px}.card-body{gap:4px}.build-card .app-name{font-size:224px}.build-card .meta{font-size:9px}.build-card .btn-group{gap:2px}.build-card .btn-group a,.dl-btn,.del-btn,.log-btn{padding:2px 5px;font-size:10px;border-radius:4px}.dl-btn{min-width:30px;padding:2px 5px;font-size:10px}.del-btn{padding:2px 5px;font-size:10px}.build-card .status{padding:1px 4px;font-size:10px;border-radius:4px}.status-small{padding:1px 3px;font-size:9px}.status-row{gap:2px}}
-@media(max-width:440px){.build-card{padding:3px;gap:3px;border-radius:8px}.card-icon-wrap{width:32px;height:32px;border-radius:4px}.card-icon-placeholder{font-size:15px}.card-body{gap:3px}.build-card .app-name{font-size:176px}.build-card .meta{font-size:8px}.build-card .btn-group{gap:1px}.build-card .btn-group a,.dl-btn,.del-btn,.log-btn{padding:1px 4px;font-size:9px;border-radius:3px}.dl-btn{min-width:26px;padding:1px 4px;font-size:9px}.del-btn{padding:1px 4px;font-size:9px}.build-card .status{padding:1px 3px;font-size:9px}.status-row{gap:1px}.build-card .lt{display:none}}
+@media(max-width:820px){.card-icon-wrap{width:60px;height:60px}.build-card .app-name{font-size:16px}.card-icon-placeholder{font-size:26px}.build-card .meta{font-size:12px}.build-card .status{font-size:12px}.build-card .btn-group a,.dl-btn,.del-btn,.log-btn{font-size:11px}.dl-btn{font-size:11px}.version-line{font-size:12px}}
+@media(max-width:600px){.build-card{padding:4px;gap:4px}.card-icon-wrap{width:44px;height:44px;border-radius:6px}.card-icon-placeholder{font-size:20px}.card-body{gap:4px}.build-card .app-name{font-size:14px}.build-card .meta{font-size:9px}.build-card .btn-group{gap:2px}.build-card .btn-group a,.dl-btn,.del-btn,.log-btn{padding:2px 5px;font-size:10px;border-radius:4px}.dl-btn{min-width:30px;padding:2px 5px;font-size:10px}.del-btn{padding:2px 5px;font-size:10px}.build-card .status{padding:1px 4px;font-size:10px;border-radius:4px}.status-small{padding:1px 3px;font-size:9px}.status-row{gap:2px}}
+@media(max-width:440px){.build-card{padding:3px;gap:3px;border-radius:8px}.card-icon-wrap{width:32px;height:32px;border-radius:4px}.card-icon-placeholder{font-size:15px}.card-body{gap:3px}.build-card .app-name{font-size:12px}.build-card .meta{font-size:8px}.build-card .btn-group{gap:1px}.build-card .btn-group a,.dl-btn,.del-btn,.log-btn{padding:1px 4px;font-size:9px;border-radius:3px}.dl-btn{min-width:26px;padding:1px 4px;font-size:9px}.del-btn{padding:1px 4px;font-size:9px}.build-card .status{padding:1px 3px;font-size:9px}.status-row{gap:1px}.build-card .lt{display:none}}
 .status-success{background:#23863620;color:#3fb950}
 .status-failure{background:#da363320;color:#f85149}
 .status-pending{background:#d2992220;color:#d29922}
