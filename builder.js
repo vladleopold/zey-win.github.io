@@ -1081,18 +1081,6 @@ form.addEventListener("submit", async e => {
     p.icon_png_path = restartIcon.startsWith("data:") ? "" : restartIcon;
     p.firebaseJsonBase64 = firebaseJson || original.firebaseJsonBase64 || original.firebase_json_base64 || "";
   }
-  // Bump the matching saved config's version using the i+1.0 algorithm
-  // Only when auto_next mode — manual mode preserves user input
-  const buildId = (p.app_name || "").toLowerCase().replace(/\s+/g, "-");
-  const existingCfg = savedConfigs.find(c => c.id === buildId);
-  let bumped = null;
-  if (existingCfg && p.version_mode === "auto_next") {
-    bumped = bumpVersion(existingCfg.version_name, existingCfg.version_code);
-    p.aab_version_name = bumped.versionName;
-    p.aab_version_code = bumped.versionCode;
-    p.version_name = bumped.versionName;
-    p.version_code = bumped.versionCode;
-  }
   try {
     const d = await submitBuildPayload(p);
     if (d.run) {
@@ -1101,7 +1089,6 @@ form.addEventListener("submit", async e => {
       runMeta[d.run.id] = { ...(runMeta[d.run.id] || {}), ver: latestVersion, code: latestCode };
     }
     autoSaveConfig(fd);
-    if (bumped) updateConfigVersion(p.app_name, bumped);
     iconLoadedDeferred = null;
     modal.classList.add("hidden");
     form.style.display = "";
