@@ -1082,16 +1082,16 @@ form.addEventListener("submit", async e => {
     p.firebaseJsonBase64 = firebaseJson || original.firebaseJsonBase64 || original.firebase_json_base64 || "";
   }
   // Bump the matching saved config's version using the i+1.0 algorithm
+  // Only when auto_next mode — manual mode preserves user input
   const buildId = (p.app_name || "").toLowerCase().replace(/\s+/g, "-");
   const existingCfg = savedConfigs.find(c => c.id === buildId);
   let bumped = null;
-  if (existingCfg) {
+  if (existingCfg && p.version_mode === "auto_next") {
     bumped = bumpVersion(existingCfg.version_name, existingCfg.version_code);
-    p.version_name = "1";
-    p.version_code = "1";
     p.aab_version_name = bumped.versionName;
     p.aab_version_code = bumped.versionCode;
-    p.version_mode = "manual";
+    p.version_name = bumped.versionName;
+    p.version_code = bumped.versionCode;
   }
   try {
     const d = await submitBuildPayload(p);
