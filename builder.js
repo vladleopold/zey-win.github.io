@@ -487,10 +487,7 @@ async function loadBuilds() {
   const gen = ++loadBuildsGen;
   try {
     const workflow = mode === "admin" ? "2" : "1";
-    const res = await Promise.race([
-      fetch(`${apiBase}/api/runs?workflow=${workflow}`),
-      new Promise((_, reject) => setTimeout(() => reject(new Error("таймаут loadBuilds")), 15000))
-    ]);
+    const res = await fetch(`${apiBase}/api/runs?workflow=${workflow}`);
     if (gen !== loadBuildsGen) return;
     if (!res.ok) return;
     const d = await res.json();
@@ -1619,7 +1616,7 @@ showPageSpinner();
   updateIcon();
   loadBuilds();
   loadConfigs();
-  setInterval(loadBuilds, 15000);
+  setInterval(loadBuilds, 5000);
   setTimeout(loadReleases, 10);
 })();
 
@@ -1668,7 +1665,6 @@ function toggleMode() {
   activeContainer.innerHTML = "";
   runs.length = 0;
   renderAll();
-  showPageSpinner();
 
   loadBuilds();
   loadConfigs();
@@ -1686,27 +1682,11 @@ function startModeTransition() {
   const panel = document.createElement("div");
   panel.id = "mode-loading-panel";
   panel.style.cssText = "position:fixed;bottom:0;left:0;right:0;z-index:99998;background:rgba(22,27,34,0.95);border-top:1px solid #30363d;padding:16px 20px;transform:translateY(100%);transition:transform 0.4s ease-out;backdrop-filter:blur(10px)";
-  panel.innerHTML = `<div style="max-width:600px;margin:0 auto"><div style="color:#8b949e;font-size:13px;margin-bottom:8px">Загрузка режима "${modeLabel}"...</div><div style="height:6px;background:#21262d;border-radius:3px;overflow:hidden"><div id="mode-progress" style="height:100%;width:0%;background:linear-gradient(90deg,#58a6ff,#a855f7);border-radius:3px;transition:width 0.1s linear"></div></div></div>`;
+  panel.innerHTML = `<div style="max-width:600px;margin:0 auto"><div style="color:#8b949e;font-size:13px">Загрузка режима "${modeLabel}"...</div></div>`;
   document.body.appendChild(panel);
   requestAnimationFrame(() => { panel.style.transform = "translateY(0)"; });
 
-  const progress = document.getElementById("mode-progress");
-  const start = Date.now();
-  const duration = 10000;
-  let frameId = null;
-
-  function tick() {
-    const elapsed = Date.now() - start;
-    const pct = Math.min(100, (elapsed / duration) * 100);
-    if (progress) progress.style.width = pct + "%";
-    if (elapsed < duration) {
-      frameId = requestAnimationFrame(tick);
-    } else {
-      finish();
-    }
-  }
-  function finish() {
-    cancelAnimationFrame(frameId);
+  setTimeout(() => {
     if (panel) {
       panel.style.transform = "translateY(100%)";
       panel.style.opacity = "0";
@@ -1719,9 +1699,7 @@ function startModeTransition() {
       setTimeout(() => glow.remove(), 900);
     }
     updateModeTheme();
-  }
-  frameId = requestAnimationFrame(tick);
-  updateModeTheme();
+  }, 800);
 }
 
 function updateModeTheme() {
