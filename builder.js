@@ -19,20 +19,6 @@ const versionMode = null;
 const sdkVersion = $("sdk-version");
 const sparksBtn = null;
 const loading = $("loading");
-let buildCardsLoading = false;
-let buildCardsLoader = null;
-function ensureBuildCardsLoader() {
-  if (buildCardsLoader) return buildCardsLoader;
-  const el = document.createElement("div");
-  el.id = "build-cards-loader";
-  el.style.cssText = "display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:50;pointer-events:none";
-  el.innerHTML = '<div class="spinner" style="width:64px;height:64px;border:5px solid #30363d;border-top-color:#58a6ff;border-radius:50%;animation:spin .3s linear infinite"></div><div style="color:#8b949e;font-size:12px;margin-top:10px;text-align:center">Загрузка сборок...</div>';
-  buildsContainer.style.position = buildsContainer.style.position || "relative";
-  buildsContainer.style.minHeight = "200px";
-  buildsContainer.appendChild(el);
-  buildCardsLoader = el;
-  return el;
-}
 
 const REPO_NAMES = { "zey-win/plinko": "plinko", "zey-win/blackjack": "blackjack", "zey-win/roulette": "roulette", "zey-win/dragon-tiger": "dragon tiger", "zey-win/baccarat-tiger": "baccarat", "zey-win/wheel-of-fortune": "lucky wheel", "zey-win/Unstopable": "unstopable", "zey-win/SlotSpot": "slotspot" };
 const REPO_NAMES_ADMIN = { "zey-win/plinko": "plinko", "zey-win/blackjack": "blackjack", "zey-win/roulette": "roulette", "zey-win/dragon-tiger": "dragon tiger", "zey-win/baccarat-tiger": "baccarat", "zey-win/wheel-of-fortune": "lucky wheel", "zey-win/Unstopable": "unstopable", "zey-win/SlotSpot": "slotspot" };
@@ -178,47 +164,36 @@ async function fetchVersionFromCiCd(pkg) {
 }
 
 async function loadArtifactVersions() {
-  const completed = runs.filter(r => r.status === "completed");
-  const needsVersion = completed.filter(r => {
-    const v = runMeta[r.id]?.ver;
-    return !v || v === "1";
+  const promises = runs.filter(r => r.status === "completed").map(async (r) => {
+    if (runMeta[r.id]?.ver && runMeta[r.id].ver !== "1") return;
+    var verName = "", verCode = "";
+    try {
+      const res = await fetch(`${apiBase}/api/builds/${r.id}`);
+      if (res.ok) {
+        const d = await res.json();
+        if (d.ok && d.config) {
+          verName = d.config.aab_version_name || d.config.version_name || "";
+          verCode = d.config.aab_version_code || d.config.version_code || "";
+        }
+      }
+    } catch {}
+    if (!verName || !verCode) {
+      const { pkg } = parseTitle(r.displayTitle || r.name || "");
+      if (pkg) {
+        const cicd = await fetchVersionFromCiCd(pkg);
+        if (cicd) {
+          if (!verName) verName = cicd.versionName;
+          if (!verCode) verCode = cicd.versionCode;
+        }
+      }
+    }
+    if (verName || verCode) {
+      if (!runMeta[r.id]) runMeta[r.id] = {};
+      if (verName) runMeta[r.id].ver = verName;
+      if (verCode) runMeta[r.id].code = verCode;
+    }
   });
-  const batchSize = 3;
-  for (let i = 0; i < needsVersion.length; i += batchSize) {
-    const batch = needsVersion.slice(i, i + batchSize);
-    await Promise.all(batch.map(loadVersionForRun));
-    renderAll();
-    await new Promise(r => setTimeout(r, 50));
-  }
-}
-
-async function loadVersionForRun(r) {
-  var verName = "", verCode = "";
-  try {
-    const res = await fetch(`${apiBase}/api/builds/${r.id}`);
-    if (res.ok) {
-      const d = await res.json();
-      if (d.ok && d.config) {
-        verName = d.config.aab_version_name || d.config.version_name || "";
-        verCode = d.config.aab_version_code || d.config.version_code || "";
-      }
-    }
-  } catch {}
-  if (!verName || !verCode) {
-    const { pkg } = parseTitle(r.displayTitle || r.name || "");
-    if (pkg) {
-      const cicd = await fetchVersionFromCiCd(pkg);
-      if (cicd) {
-        if (!verName) verName = cicd.versionName;
-        if (!verCode) verCode = cicd.versionCode;
-      }
-    }
-  }
-  if (verName || verCode) {
-    if (!runMeta[r.id]) runMeta[r.id] = {};
-    if (verName) runMeta[r.id].ver = verName;
-    if (verCode) runMeta[r.id].code = verCode;
-  }
+  await Promise.all(promises);
 }
 
  async function loadVersionSuggestion(packageName, force = false) {
@@ -467,13 +442,7 @@ function renderAll() {
   if (activeContainer.innerHTML !== activeHtml) activeContainer.innerHTML = activeHtml;
   if (buildsContainer.innerHTML !== doneHtml) buildsContainer.innerHTML = doneHtml;
   activeContainer.style.display = activeHtml ? "" : "none";
-  if (doneHtml) {
-    buildsContainer.style.display = "";
-  } else if (buildCardsLoader && buildCardsLoading) {
-    buildsContainer.style.display = "";
-  } else {
-    buildsContainer.style.display = "none";
-  }
+  buildsContainer.style.display = doneHtml ? "" : "none";
 
   let statsEl = document.getElementById("stats");
   if (!statsEl) {
@@ -488,9 +457,6 @@ function renderAll() {
 async function loadBuilds() {
   if (loading) loading.style.display = "inline-flex";
   try {
-    const cardLoader = ensureBuildCardsLoader();
-    buildCardsLoading = true;
-    cardLoader.style.display = "block";
     const workflow = mode === "admin" ? "2" : "1";
     const [runsRes] = await Promise.all([fetch(`${apiBase}/api/runs?workflow=${workflow}`), loadReleases()]);
     if (!runsRes.ok) return;
@@ -536,14 +502,8 @@ async function loadBuilds() {
       }
     }
     renderAll();
-    buildCardsLoading = false;
-    if (buildCardsLoader) buildCardsLoader.style.display = "none";
     loadArtifactVersions().then(() => renderAll());
-  } catch(e) { console.error(e); } finally {
-    if (loading) loading.style.display = "none";
-    buildCardsLoading = false;
-    if (buildCardsLoader) buildCardsLoader.style.display = "none";
-  }
+  } catch(e) { console.error(e); } finally { if (loading) loading.style.display = "none"; }
 }
 
 async function deleteRun(runId, e) {
@@ -1664,11 +1624,6 @@ function toggleMode() {
   buildsContainer.innerHTML = "";
   activeContainer.innerHTML = "";
   runs.length = 0;
-
-  const cardLoader = ensureBuildCardsLoader();
-  buildCardsLoading = true;
-  cardLoader.style.display = "block";
-  buildsContainer.style.display = "";
 
   loadBuilds();
   loadConfigs();
