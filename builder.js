@@ -467,7 +467,6 @@ function renderAll() {
 }
 
 async function loadBuilds() {
-  showPageSpinner();
   if (loading) loading.style.display = "inline-flex";
   try {
     const workflow = mode === "admin" ? "2" : "1";
@@ -515,7 +514,11 @@ async function loadBuilds() {
       }
     }
     renderAll();
-    hidePageSpinner();
+    if (!buildsContainer.querySelector('.build-card') && !activeContainer.querySelector('.build-card')) {
+      showPageSpinner();
+    } else {
+      hidePageSpinner();
+    }
     loadArtifactVersions().then(() => renderAll());
   } catch(e) { console.error(e); } finally { if (loading) loading.style.display = "none"; }
 }
@@ -1584,7 +1587,7 @@ $("f-app-name").addEventListener("paste", e => {
 // ----- Startup -----
 const stopTimerLoop = startTimerLoop();
 syncSdkVersionField(true);
-renderSkeletons();
+showPageSpinner();
 
 (async () => {
   await loadReleases();
@@ -1695,35 +1698,9 @@ function startModeTransition() {
 }
 
 function updateModeTheme() {
-  const isAdmin = mode === "admin";
   const btn = document.getElementById("mode-toggle");
   if (btn) {
-    btn.textContent = isAdmin ? "сайт" : "админка";
-    if (isAdmin) {
-      btn.style.background = "#1f2937";
-      btn.style.color = "#9ca3af";
-      btn.style.border = "1px solid #4b5563";
-    } else {
-      btn.style.background = "#6b7280";
-      btn.style.color = "#e5e7eb";
-      btn.style.border = "1px solid #9ca3af";
-    }
-    btn.style.fontSize = "6px";
-    btn.style.padding = "2px 5px";
-  }
-  const logo = document.getElementById("mode-logo");
-  if (logo) {
-    logo.textContent = isAdmin ? "CI/CD" : "CI / CD САЙТ";
-    logo.style.color = "#f0f6fc";
-  }
-  const newBuildBtn = document.getElementById("new-build");
-  if (newBuildBtn) {
-    newBuildBtn.style.background = isAdmin ? "#7c3aed" : "#58a6ff";
-    newBuildBtn.style.color = "#fff";
-    newBuildBtn.style.fontWeight = "600";
-    newBuildBtn.style.border = "none";
-    newBuildBtn.style.borderRadius = "6px";
-    newBuildBtn.style.padding = "6px 14px";
+    btn.textContent = mode === "admin" ? "сайт" : "админка";
   }
 }
 
