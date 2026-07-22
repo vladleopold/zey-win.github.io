@@ -236,6 +236,15 @@
       "package_name": "com.playsocgame.jack",
       "version_mode": "auto_next",
       "updated_at": "2026-07-22T06:07:51.573Z"
+    },
+    {
+      "id": "vladleopold-jack",
+      "label": "Jack",
+      "game_repository": "vladleopold/jack",
+      "app_name": "Jack",
+      "package_name": "com.socgame.jack",
+      "version_mode": "auto_next",
+      "updated_at": "2026-07-22T06:17:18.655Z"
     }
   ],
   "icons": [
@@ -1465,5 +1474,5 @@
       "updated_at": "2026-07-20T20:20:01.102Z"
     }
   ],
-  "updated_at": "2026-07-22T06:10:55.591Z"
+  "updated_at": "2026-07-22T06:17:18.655Z"
 }
