@@ -283,6 +283,29 @@
       "firebase_json_base64": "",
       "mode": "main",
       "updated_at": "2026-07-22T07:54:36.940Z"
+    },
+    {
+      "id": "bl",
+      "label": "bl",
+      "game_repository": "vladleopold/blackjack_sony",
+      "app_name": "bl",
+      "package_name": "com.com.com",
+      "version_name": "1",
+      "version_code": "1",
+      "version_mode": "auto_next",
+      "zeywin_sdk_version": "v3.9.39",
+      "zeywin_api_key": "",
+      "admob_app_id": "",
+      "admob_banner": "",
+      "admob_interstitial": "",
+      "admob_rewarded": "",
+      "icon_path": "",
+      "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.socialapps.plinko.png",
+      "icon_data_url": "",
+      "firebase_cfg": "",
+      "firebase_json_base64": "",
+      "mode": "admin",
+      "updated_at": "2026-07-22T08:08:46.413Z"
     }
   ],
   "icons": [
@@ -335,6 +358,11 @@
       "package_name": "com.fbfn.fjjf",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.socialapps.plinko.png",
       "updated_at": "2026-07-22T07:54:36.940Z"
+    },
+    {
+      "package_name": "com.com.com",
+      "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.socialapps.plinko.png",
+      "updated_at": "2026-07-22T08:08:46.414Z"
     }
   ],
   "builds": [
@@ -1520,20 +1548,7 @@
       "status": "queued",
       "created_at": "2026-07-20T20:20:01.102Z",
       "updated_at": "2026-07-20T20:20:01.102Z"
-    },
-    {
-      "run_id": 29902841122,
-      "request_id": "builder-mrvsw5yh",
-      "package_name": "com.com.com",
-      "app_name": "bl",
-      "game_repository": "vladleopold/blackjack_sony",
-      "build_format": "apk",
-      "version_name": "1",
-      "version_code": "1",
-      "status": "queued",
-      "created_at": "2026-07-22T08:08:39.017Z",
-      "updated_at": "2026-07-22T08:08:39.017Z"
     }
   ],
-  "updated_at": "2026-07-22T08:08:39.017Z"
+  "updated_at": "2026-07-22T08:08:46.414Z"
 }
