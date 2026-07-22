@@ -487,7 +487,10 @@ async function loadBuilds() {
   const gen = ++loadBuildsGen;
   try {
     const workflow = mode === "admin" ? "2" : "1";
-    const res = await fetch(`${apiBase}/api/runs?workflow=${workflow}`);
+    const res = await Promise.race([
+      fetch(`${apiBase}/api/runs?workflow=${workflow}`),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("таймаут loadBuilds")), 15000))
+    ]);
     if (gen !== loadBuildsGen) return;
     if (!res.ok) return;
     const d = await res.json();
@@ -526,13 +529,16 @@ async function loadBuilds() {
         timers[r.id] = { start: created, total: (39 + (r.id % 12)) * 60 * 1000 };
       }
     }
-    for (const r of runs) {
-      const old = oldRuns.find(o => o.id === r.id);
-      if (old && old.status !== "completed" && r.status === "completed") {
-        if (r.conclusion === "success") { playFanfare(); fireConfetti(4000); }
-        else { playErrorSound(); flashRed(); }
+    setTimeout(() => {
+      for (const r of runs) {
+        const old = oldRuns.find(o => o.id === r.id);
+        if (old && old.status !== "completed" && r.status === "completed") {
+          if (r.conclusion === "success") { playFanfare(); fireConfetti(4000); }
+          else { playErrorSound(); flashRed(); }
+        }
       }
-    }
+      renderAll();
+    }, 0);
     renderAll();
     if (!buildsContainer.querySelector('.build-card') && !activeContainer.querySelector('.build-card')) {
       showPageSpinner();
@@ -1610,11 +1616,11 @@ syncSdkVersionField(true);
 showPageSpinner();
 
 (async () => {
-  loadReleases();
   updateIcon();
   loadBuilds();
   loadConfigs();
   setInterval(loadBuilds, 15000);
+  setTimeout(loadReleases, 10000);
 })();
 
 function populateRepoSelect() {
