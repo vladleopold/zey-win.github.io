@@ -1694,7 +1694,7 @@ function updateModeTheme() {
   }
   const logo = document.getElementById("mode-logo");
   if (logo) {
-    logo.textContent = isAdmin ? "CI / CD САЙТ" : "CI/CD";
+    logo.textContent = isAdmin ? "CI/CD" : "CI / CD САЙТ";
     logo.style.color = isAdmin ? "#58a6ff" : "#c084fc";
   }
   const newBuildBtn = document.getElementById("new-build");
