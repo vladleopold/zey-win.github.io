@@ -102,10 +102,10 @@
       "firebase_cfg": "unstopablerealmoney.json",
       "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__Unstopable.png",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__Unstopable.png",
-      "updated_at": "2026-07-22T11:38:54.868Z",
+      "updated_at": "2026-07-22T13:59:05.143Z",
       "icon_path": "",
       "firebase_json_base64": "ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiNDYwNjU3NDQzODE3IiwKICAgICJwcm9qZWN0X2lkIjogInVuc3RvcGFibGVyZWFsbW9uZXkiLAogICAgInN0b3JhZ2VfYnVja2V0IjogInVuc3RvcGFibGVyZWFsbW9uZXkuZmlyZWJhc2VzdG9yYWdlLmFwcCIKICB9LAogICJjbGllbnQiOiBbCiAgICB7CiAgICAgICJjbGllbnRfaW5mbyI6IHsKICAgICAgICAibW9iaWxlc2RrX2FwcF9pZCI6ICIxOjQ2MDY1NzQ0MzgxNzphbmRyb2lkOmZkYjMyMTk4MTBjNjEwNDNlNzAxNzgiLAogICAgICAgICJhbmRyb2lkX2NsaWVudF9pbmZvIjogewogICAgICAgICAgInBhY2thZ2VfbmFtZSI6ICJjb20ucGxheXNvY2lhbGdhbWVzLmNoaWNrZW4ucm9hZCIKICAgICAgICB9CiAgICAgIH0sCiAgICAgICJvYXV0aF9jbGllbnQiOiBbXSwKICAgICAgImFwaV9rZXkiOiBbCiAgICAgICAgewogICAgICAgICAgImN1cnJlbnRfa2V5IjogIkFJemFTeUNTNWVaclVMSlFNMkhRZkZFQVBzdnRvVlVZWU1XR1pHMCIKICAgICAgICB9CiAgICAgIF0sCiAgICAgICJzZXJ2aWNlcyI6IHsKICAgICAgICAiYXBwaW52aXRlX3NlcnZpY2UiOiB7CiAgICAgICAgICAib3RoZXJfcGxhdGZvcm1fb2F1dGhfY2xpZW50IjogW10KICAgICAgICB9CiAgICAgIH0KICAgIH0KICBdLAogICJjb25maWd1cmF0aW9uX3ZlcnNpb24iOiAiMSIKfQ==",
-      "mode": "main"
+      "mode": "admin"
     },
     {
       "id": "lucky-wheel",
@@ -364,7 +364,7 @@
     {
       "package_name": "com.playsocialgames.chicken.road",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__Unstopable.png",
-      "updated_at": "2026-07-22T11:38:54.868Z"
+      "updated_at": "2026-07-22T13:59:05.143Z"
     },
     {
       "package_name": "com.socgame.black",
@@ -1572,5 +1572,5 @@
       "updated_at": "2026-07-20T20:20:01.102Z"
     }
   ],
-  "updated_at": "2026-07-22T13:03:09.787Z"
+  "updated_at": "2026-07-22T13:59:05.143Z"
 }
