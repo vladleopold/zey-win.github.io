@@ -185,13 +185,13 @@
       "updated_at": "2026-07-19T14:49:42.936Z"
     },
     {
-      "id": "dragon-tiger",
-      "label": "Baccarat Social (Dragon Tiger)",
+      "id": "baccarat-social",
+      "label": "Baccarat Social",
       "game_repository": "zey-win/dragon-tiger",
       "app_name": "Baccarat Social",
       "package_name": "com.PlayMaxSolutions.DragonTiger",
-      "version_name": "6.4",
-      "version_code": "6",
+      "version_name": "7.0",
+      "version_code": "7",
       "version_mode": "auto_next",
       "zeywin_sdk_version": "v3.9.37",
       "zeywin_api_key": "",
@@ -199,13 +199,12 @@
       "admob_banner": "",
       "admob_interstitial": "",
       "admob_rewarded": "ca-app-pub-7850961348081827/6758080070",
-      "firebase_cfg": null,
+      "firebase_cfg": "",
       "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__dragon-tiger.png",
       "icon_path": "",
       "firebase_json_base64": "",
-      "updated_at": "2026-07-22T06:40:05.479Z",
-      "icon_data_url": "",
-      "mode": "main"
+      "updated_at": "2026-07-22T06:18:09.653Z",
+      "icon_data_url": ""
     },
     {
       "id": "888-casino",
@@ -237,6 +236,16 @@
       "package_name": "com.playsocgame.jack",
       "version_mode": "auto_next",
       "updated_at": "2026-07-22T06:07:51.573Z"
+    },
+    {
+      "id": "vladleopold-blackjack-sony",
+      "label": "blackjack_sony",
+      "game_repository": "vladleopold/blackjack_sony",
+      "app_name": "blackjack_sony",
+      "package_name": "com.socgame.black",
+      "version_mode": "auto_next",
+      "mode": "admin",
+      "updated_at": "2026-07-22T06:41:42.952Z"
     }
   ],
   "icons": [
@@ -248,7 +257,7 @@
     {
       "package_name": "com.PlayMaxSolutions.DragonTiger",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__dragon-tiger.png",
-      "updated_at": "2026-07-22T06:40:05.479Z"
+      "updated_at": "2026-07-22T06:10:55.591Z"
     },
     {
       "package_name": "com.casino.game.socialfun",
@@ -1466,5 +1475,5 @@
       "updated_at": "2026-07-20T20:20:01.102Z"
     }
   ],
-  "updated_at": "2026-07-22T06:40:05.479Z"
+  "updated_at": "2026-07-22T06:41:42.952Z"
 }
