@@ -23,7 +23,7 @@ const loading = $("loading");
 const REPO_NAMES = { "zey-win/plinko": "plinko", "zey-win/blackjack": "blackjack", "zey-win/roulette": "roulette", "zey-win/dragon-tiger": "dragon tiger", "zey-win/baccarat-tiger": "baccarat", "zey-win/wheel-of-fortune": "lucky wheel", "zey-win/Unstopable": "unstopable", "zey-win/SlotSpot": "slotspot" };
 const REPO_NAMES_ADMIN = { "zey-win/plinko": "plinko", "zey-win/blackjack": "blackjack", "zey-win/roulette": "roulette", "zey-win/dragon-tiger": "dragon tiger", "zey-win/baccarat-tiger": "baccarat", "zey-win/wheel-of-fortune": "lucky wheel", "zey-win/Unstopable": "unstopable", "zey-win/SlotSpot": "slotspot" };
 
-let mode = "main";
+let mode = localStorage.getItem('builder_mode') || 'main';
 function modeKey(base) { return base + (mode === "admin" ? "_admin" : ""); }
 function getRepoNames() { return mode === "admin" ? REPO_NAMES_ADMIN : REPO_NAMES; }
 function iconDir() { return mode === "admin" ? "icons-admin" : "icons"; }
@@ -1568,6 +1568,7 @@ function populateRepoSelect() {
 
 function toggleMode() {
   mode = mode === "main" ? "admin" : "main";
+  localStorage.setItem('builder_mode', mode);
   const btn = document.getElementById("mode-toggle");
   if (btn) btn.textContent = mode === "main" ? "админка" : "сайт";
   const local = JSON.parse(localStorage.getItem(modeKey("savedConfigs")) || "[]");
@@ -1582,7 +1583,7 @@ function toggleMode() {
 (function() {
   const btn = document.createElement("button");
   btn.id = "mode-toggle";
-  btn.textContent = "админка";
+  btn.textContent = mode === "admin" ? "сайт" : "админка";
   btn.style.cssText = "position:fixed;bottom:8px;right:8px;z-index:9999;background:#444;color:#aaa;border:none;border-radius:4px;padding:4px 8px;font-size:11px;cursor:pointer;opacity:.7";
   btn.onmouseenter = function() { this.style.opacity = "1"; };
   btn.onmouseleave = function() { this.style.opacity = ".7"; };
@@ -1615,47 +1616,3 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
   document.addEventListener('DOMContentLoaded', trackVisitor);
 }
 
-// ===== MODE SWITCHING FIX =====
-function updateModeUI() {
-  const modeToggle = document.getElementById('mode-toggle');
-  if (!modeToggle) return;
-  
-  const isAdmin = mode === 'admin';
-  modeToggle.textContent = isAdmin ? 'Сайт' : 'Админка';
-  modeToggle.setAttribute('aria-label', isAdmin ? 'Переключить на сайт' : 'Переключить на админку');
-  
-  // Update header indicator
-  const modeIndicator = document.getElementById('mode-indicator');
-  if (modeIndicator) {
-    modeIndicator.textContent = isAdmin ? '🔧 АДМИНКА' : '🌐 САЙТ';
-  }
-  
-  // Show/hide admin elements
-  document.querySelectorAll('.admin-only').forEach(el => {
-    el.style.display = isAdmin ? '' : 'none';
-  });
-  
-  document.querySelectorAll('.main-only').forEach(el => {
-    el.style.display = isAdmin ? 'none' : '';
-  });
-  
-  // Re-render configs for current mode
-  renderSavedConfigs();
-}
-
-// Override mode toggle click handler
-const originalModeToggle = document.getElementById('mode-toggle');
-if (originalModeToggle) {
-  originalModeToggle.addEventListener('click', () => {
-    mode = mode === 'admin' ? 'main' : 'admin';
-    localStorage.setItem('builder_mode', mode);
-    updateModeUI();
-    location.reload();
-  });
-}
-
-// Initialize mode on load
-if (!mode || mode === 'undefined') {
-  mode = localStorage.getItem('builder_mode') || 'main';
-}
-updateModeUI();
