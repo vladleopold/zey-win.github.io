@@ -282,7 +282,7 @@
       "firebase_cfg": "",
       "firebase_json_base64": "",
       "mode": "main",
-      "updated_at": "2026-07-22T07:52:57.316Z"
+      "updated_at": "2026-07-22T07:54:36.940Z"
     }
   ],
   "icons": [
@@ -334,7 +334,7 @@
     {
       "package_name": "com.fbfn.fjjf",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.socialapps.plinko.png",
-      "updated_at": "2026-07-22T07:52:57.316Z"
+      "updated_at": "2026-07-22T07:54:36.940Z"
     }
   ],
   "builds": [
@@ -1522,5 +1522,5 @@
       "updated_at": "2026-07-20T20:20:01.102Z"
     }
   ],
-  "updated_at": "2026-07-22T07:52:57.316Z"
+  "updated_at": "2026-07-22T07:54:36.940Z"
 }
