@@ -456,6 +456,8 @@ function renderAll() {
   activeContainer.style.display = activeHtml ? "" : "none";
   buildsContainer.style.display = doneHtml ? "" : "none";
 
+  if (activeHtml || doneHtml) hidePageSpinner();
+
   let statsEl = document.getElementById("stats");
   if (!statsEl) {
     statsEl = document.createElement("div");
