@@ -1,4 +1,6 @@
+console.log("[builder] script start, mode=", mode);
 const apiBase = document.querySelector('meta[name="builder-api"]')?.content?.replace(/\/$/, "") || "https://android-builder-api.vercel.app";
+console.log("[builder] apiBase=", apiBase);
 const operatorKey = document.querySelector('meta[name="builder-key"]')?.content?.trim() || "";
 const op = (extra = {}) => ({ "Content-Type": "application/json", "x-builder-key": operatorKey, ...extra });
 const $ = id => document.getElementById(id);
@@ -472,23 +474,27 @@ function renderAll() {
     buildsContainer.appendChild(statsEl);
   }
   statsEl.textContent = `Всего: ${runs.length} | Активные: ${active.length} | Успешно: ${done.length} | Ошибок: ${fail.length}`;
+  console.log("[builder] renderAll modeRuns=", modeRuns.length, "active=", active.length, "done=", done.length, "fail=", fail.length);
 }
 
 async function loadBuilds() {
   const gen = ++loadBuildsGen;
   try {
     const workflow = mode === "admin" ? "2" : "1";
+    console.log("[builder] loadBuilds workflow=", workflow, "apiBase=", apiBase);
     const res = await fetch(`${apiBase}/api/runs?workflow=${workflow}`);
+    console.log("[builder] fetch status=", res.status, "ok=", res.ok);
     if (gen !== loadBuildsGen) return;
-    if (!res.ok) return;
+    if (!res.ok) { console.error("[builder] fetch not ok", res.status); return; }
     const d = await res.json();
+    console.log("[builder] runs count=", Array.isArray(d.runs) ? d.runs.length : "n/a");
     if (gen !== loadBuildsGen) return;
     const oldRuns = runs;
     runs = Array.isArray(d.runs) ? d.runs : [];
     renderAll();
     requestAnimationFrame(() => { if (gen === loadBuildsGen) { hidePageSpinner(); if (loading) loading.style.display = "none"; } });
     setTimeout(() => { if (gen === loadBuildsGen) runPostFetch(gen, oldRuns); }, 0);
-  } catch(e) { console.error(e); }
+  } catch(e) { console.error("[builder] loadBuilds error", e); }
 }
 
 function runPostFetch(gen, oldRuns) {
