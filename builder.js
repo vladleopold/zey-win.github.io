@@ -37,7 +37,7 @@ function hidePageSpinner() {
 function startProgress() {
   const txt = document.getElementById("page-progress-text");
   if (!txt) return;
-  const totalMs = 15000;
+  const totalMs = 27000;
   const start = Date.now();
   function tick() {
     const elapsed = Date.now() - start;
