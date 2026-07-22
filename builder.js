@@ -178,36 +178,46 @@ async function fetchVersionFromCiCd(pkg) {
 }
 
 async function loadArtifactVersions() {
-  for (const r of runs) {
-    if (r.status !== "completed") continue;
+  const completed = runs.filter(r => r.status === "completed");
+  const needsVersion = completed.filter(r => {
     const v = runMeta[r.id]?.ver;
-    if (v && v !== "1") continue;
-    var verName = "", verCode = "";
-    try {
-      const res = await fetch(`${apiBase}/api/builds/${r.id}`);
-      if (res.ok) {
-        const d = await res.json();
-        if (d.ok && d.config) {
-          verName = d.config.aab_version_name || d.config.version_name || "";
-          verCode = d.config.aab_version_code || d.config.version_code || "";
-        }
-      }
-    } catch {}
-    if (!verName || !verCode) {
-      const { pkg } = parseTitle(r.displayTitle || r.name || "");
-      if (pkg) {
-        const cicd = await fetchVersionFromCiCd(pkg);
-        if (cicd) {
-          if (!verName) verName = cicd.versionName;
-          if (!verCode) verCode = cicd.versionCode;
-        }
+    return !v || v === "1";
+  });
+  const batchSize = 3;
+  for (let i = 0; i < needsVersion.length; i += batchSize) {
+    const batch = needsVersion.slice(i, i + batchSize);
+    await Promise.all(batch.map(loadVersionForRun));
+    renderAll();
+    await new Promise(r => setTimeout(r, 50));
+  }
+}
+
+async function loadVersionForRun(r) {
+  var verName = "", verCode = "";
+  try {
+    const res = await fetch(`${apiBase}/api/builds/${r.id}`);
+    if (res.ok) {
+      const d = await res.json();
+      if (d.ok && d.config) {
+        verName = d.config.aab_version_name || d.config.version_name || "";
+        verCode = d.config.aab_version_code || d.config.version_code || "";
       }
     }
-    if (verName || verCode) {
-      if (!runMeta[r.id]) runMeta[r.id] = {};
-      if (verName) runMeta[r.id].ver = verName;
-      if (verCode) runMeta[r.id].code = verCode;
+  } catch {}
+  if (!verName || !verCode) {
+    const { pkg } = parseTitle(r.displayTitle || r.name || "");
+    if (pkg) {
+      const cicd = await fetchVersionFromCiCd(pkg);
+      if (cicd) {
+        if (!verName) verName = cicd.versionName;
+        if (!verCode) verCode = cicd.versionCode;
+      }
     }
+  }
+  if (verName || verCode) {
+    if (!runMeta[r.id]) runMeta[r.id] = {};
+    if (verName) runMeta[r.id].ver = verName;
+    if (verCode) runMeta[r.id].code = verCode;
   }
 }
 
@@ -526,8 +536,9 @@ async function loadBuilds() {
       }
     }
     renderAll();
-    await loadArtifactVersions();
-    renderAll();
+    buildCardsLoading = false;
+    if (buildCardsLoader) buildCardsLoader.style.display = "none";
+    loadArtifactVersions().then(() => renderAll());
   } catch(e) { console.error(e); } finally {
     if (loading) loading.style.display = "none";
     buildCardsLoading = false;
