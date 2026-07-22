@@ -19,6 +19,18 @@ const versionMode = null;
 const sdkVersion = $("sdk-version");
 const sparksBtn = null;
 const loading = $("loading");
+let pageSpinner = null;
+function showPageSpinner() {
+  if (pageSpinner) { pageSpinner.style.display = "flex"; return; }
+  pageSpinner = document.createElement("div");
+  pageSpinner.id = "page-spinner";
+  pageSpinner.style.cssText = "display:flex;flex-direction:column;align-items:center;justify-content:center;position:fixed;inset:0;z-index:9999;background:rgba(13,17,23,0.9);gap:16px";
+  pageSpinner.innerHTML = '<div class="spinner" style="width:80px;height:80px;border:6px solid #30363d;border-top-color:#58a6ff;border-radius:50%;animation:spin .3s linear infinite"></div><div style="color:#8b949e;font-size:14px">Загрузка сборок...</div>';
+  document.body.appendChild(pageSpinner);
+}
+function hidePageSpinner() {
+  if (pageSpinner) pageSpinner.style.display = "none";
+}
 
 const REPO_NAMES = { "zey-win/plinko": "plinko", "zey-win/blackjack": "blackjack", "zey-win/roulette": "roulette", "zey-win/dragon-tiger": "dragon tiger", "zey-win/baccarat-tiger": "baccarat", "zey-win/wheel-of-fortune": "lucky wheel", "zey-win/Unstopable": "unstopable", "zey-win/SlotSpot": "slotspot" };
 const REPO_NAMES_ADMIN = { "zey-win/plinko": "plinko", "zey-win/blackjack": "blackjack", "zey-win/roulette": "roulette", "zey-win/dragon-tiger": "dragon tiger", "zey-win/baccarat-tiger": "baccarat", "zey-win/wheel-of-fortune": "lucky wheel", "zey-win/Unstopable": "unstopable", "zey-win/SlotSpot": "slotspot" };
@@ -399,7 +411,7 @@ function buildCardHTML(r, idx) {
   else { label = "🔄<span class='lt'> "+st+"</span>"; cls = "status-pending"; }
   const isProgress = ["in_progress","pending","queued","waiting"].includes(st);
   const bgStyle = idx % 2 === 0 ? 'background:#1a202c' : 'background:#161b22';
-  const iconBlock = iconUrl ? `<div class="card-icon-wrap"><img class="card-icon" src="${iconUrl}" alt="" loading="lazy" onerror="this.onerror=null;this.alt='🎮'"></div>` : `<div class="card-icon-wrap card-icon-placeholder">🎮</div>`;
+    const iconBlock = iconUrl ? `<div class="card-icon-wrap"><img class="card-icon" src="${iconUrl}" alt="" decoding="async" onerror="this.onerror=null;this.alt='🎮'"></div>` : `<div class="card-icon-wrap card-icon-placeholder">🎮</div>`;
   const timerId = `t-${r.id}`;
   const timerHtml = `<span class="timer" id="${timerId}" data-run="${r.id}" style="display:${st!=='completed'&&timers[r.id]?'inline':'none'};color:#ffd700;font-size:11px;font-weight:700">⏱ </span>`;
   return `<div class="build-card${isProgress?' in-progress':''}" style="${bgStyle}" data-id="${r.id}">${iconBlock}<div class="card-body"><div class="card-text"><div class="app-name">${versionInfo}</div>${pkg?`<div class="meta">${esc(pkg)}</div>`:""}${versionBlock}</div><div class="btn-group">${concl==="success"&&downloads.apk?`<a class="dl-btn dl-btn-apk" href="${downloads.apk}" download>APK</a>`:""}${concl==="success"&&downloads.aab?`<a class="dl-btn dl-btn-aab" href="${downloads.aab}" download>AAB</a>`:""}${concl!=="success"?`<a href="${esc(url)}" target="_blank" class="log-btn" style="font-size:11px;padding:3px 6px">Логи</a>`:""}<div class="status-row">${timerHtml}<span class="status ${cls} status-small">${label}</span></div><button class="del-btn" onclick="deleteRun(${r.id},event)" title="Удалить">✕</button></div></div></div>`;
@@ -455,6 +467,7 @@ function renderAll() {
 }
 
 async function loadBuilds() {
+  showPageSpinner();
   if (loading) loading.style.display = "inline-flex";
   try {
     const workflow = mode === "admin" ? "2" : "1";
@@ -502,6 +515,7 @@ async function loadBuilds() {
       }
     }
     renderAll();
+    hidePageSpinner();
     loadArtifactVersions().then(() => renderAll());
   } catch(e) { console.error(e); } finally { if (loading) loading.style.display = "none"; }
 }
