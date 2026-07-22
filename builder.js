@@ -28,6 +28,7 @@ function ensureBuildCardsLoader() {
   el.style.cssText = "display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:50;pointer-events:none";
   el.innerHTML = '<div class="spinner" style="width:64px;height:64px;border:5px solid #30363d;border-top-color:#58a6ff;border-radius:50%;animation:spin .3s linear infinite"></div><div style="color:#8b949e;font-size:12px;margin-top:10px;text-align:center">Загрузка сборок...</div>';
   buildsContainer.style.position = buildsContainer.style.position || "relative";
+  buildsContainer.style.minHeight = "200px";
   buildsContainer.appendChild(el);
   buildCardsLoader = el;
   return el;
@@ -456,7 +457,13 @@ function renderAll() {
   if (activeContainer.innerHTML !== activeHtml) activeContainer.innerHTML = activeHtml;
   if (buildsContainer.innerHTML !== doneHtml) buildsContainer.innerHTML = doneHtml;
   activeContainer.style.display = activeHtml ? "" : "none";
-  buildsContainer.style.display = doneHtml ? "" : "none";
+  if (doneHtml) {
+    buildsContainer.style.display = "";
+  } else if (buildCardsLoader && buildCardsLoading) {
+    buildsContainer.style.display = "";
+  } else {
+    buildsContainer.style.display = "none";
+  }
 
   let statsEl = document.getElementById("stats");
   if (!statsEl) {
@@ -1641,6 +1648,16 @@ function toggleMode() {
   savedConfigs.push(...local);
   populateRepoSelect();
   if (!modal?.classList.contains("hidden")) modal.classList.add("hidden");
+
+  buildsContainer.innerHTML = "";
+  activeContainer.innerHTML = "";
+  runs.length = 0;
+
+  const cardLoader = ensureBuildCardsLoader();
+  buildCardsLoading = true;
+  cardLoader.style.display = "block";
+  buildsContainer.style.display = "";
+
   loadBuilds();
   loadConfigs();
 }
