@@ -24,7 +24,7 @@ function showPageSpinner() {
   if (pageSpinner) { pageSpinner.style.display = "flex"; return; }
   pageSpinner = document.createElement("div");
   pageSpinner.id = "page-spinner";
-  pageSpinner.style.cssText = "display:flex;flex-direction:column;align-items:center;justify-content:center;position:fixed;inset:0;z-index:100000;background:rgba(13,17,23,0.9);gap:16px;pointer-events:none";
+  pageSpinner.style.cssText = "display:flex;flex-direction:column;align-items:center;justify-content:center;position:fixed;inset:0;z-index:100000;background:#0d1117;gap:16px;pointer-events:none";
   pageSpinner.innerHTML = '<div class="spinner" style="width:80px;height:80px;border:6px solid #30363d;border-top-color:#58a6ff;border-radius:50%;animation:spin .3s linear infinite"></div><div style="color:#8b949e;font-size:14px">Загрузка сборок...</div>';
   document.body.appendChild(pageSpinner);
 }
