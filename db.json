@@ -1548,7 +1548,20 @@
       "status": "queued",
       "created_at": "2026-07-20T20:20:01.102Z",
       "updated_at": "2026-07-20T20:20:01.102Z"
+    },
+    {
+      "run_id": 29903939499,
+      "request_id": "builder-mrvthuq5",
+      "package_name": "com.playsocgame.jack",
+      "app_name": "Blackjack_Blad",
+      "game_repository": "vladleopold/unity-blackjack",
+      "build_format": "apk",
+      "version_name": "1",
+      "version_code": "1",
+      "status": "queued",
+      "created_at": "2026-07-22T08:25:36.311Z",
+      "updated_at": "2026-07-22T08:25:36.311Z"
     }
   ],
-  "updated_at": "2026-07-22T08:19:39.995Z"
+  "updated_at": "2026-07-22T08:25:36.311Z"
 }
