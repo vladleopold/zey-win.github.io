@@ -1680,19 +1680,27 @@ function updateModeTheme() {
   const btn = document.getElementById("mode-toggle");
   if (btn) {
     btn.textContent = isAdmin ? "сайт" : "админка";
-    btn.style.background = isAdmin ? "#1f2937" : "#2d1b4e";
-    btn.style.color = isAdmin ? "#9ca3af" : "#c084fc";
-    btn.style.border = isAdmin ? "1px solid #4b5563" : "1px solid #7c3aed";
+    if (isAdmin) {
+      btn.style.background = "#1f2937";
+      btn.style.color = "#9ca3af";
+      btn.style.border = "1px solid #4b5563";
+    } else {
+      btn.style.background = "#6b7280";
+      btn.style.color = "#e5e7eb";
+      btn.style.border = "1px solid #9ca3af";
+    }
+    btn.style.fontSize = "6px";
+    btn.style.padding = "2px 5px";
   }
   const logo = document.getElementById("mode-logo");
   if (logo) {
-    logo.textContent = isAdmin ? "CI / CD — админка" : "CI / CD";
+    logo.textContent = isAdmin ? "CI / CD САЙТ" : "CI/CD";
     logo.style.color = isAdmin ? "#58a6ff" : "#c084fc";
   }
   const indicator = document.getElementById("mode-indicator");
   if (indicator) {
     indicator.style.display = "inline";
-    indicator.textContent = isAdmin ? "🔧 АДМИНКА" : "🌐 САЙТ";
+    indicator.textContent = isAdmin ? "🌐 САЙТ" : "🔧 АДМИНКА";
     indicator.style.background = isAdmin ? "rgba(88,166,255,0.15)" : "rgba(124,58,237,0.2)";
     indicator.style.color = isAdmin ? "#58a6ff" : "#c084fc";
     indicator.style.border = isAdmin ? "1px solid #58a6ff" : "1px solid #7c3aed";
@@ -1712,7 +1720,7 @@ function updateModeTheme() {
   const btn = document.createElement("button");
   btn.id = "mode-toggle";
   btn.textContent = mode === "admin" ? "сайт" : "админка";
-  btn.style.cssText = "position:fixed;bottom:8px;right:8px;z-index:9999;border:none;border-radius:4px;padding:4px 10px;font-size:12px;cursor:pointer;opacity:.75;transition:all 0.3s";
+  btn.style.cssText = "position:fixed;bottom:8px;right:8px;z-index:9999;border:none;border-radius:4px;padding:2px 5px;font-size:6px;cursor:pointer;opacity:.75;transition:all 0.3s";
   btn.onmouseenter = function() { this.style.opacity = "1"; };
   btn.onmouseleave = function() { this.style.opacity = ".75"; };
   btn.onclick = toggleMode;
