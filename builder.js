@@ -435,7 +435,8 @@ function renderAll() {
 async function loadBuilds() {
   if (loading) loading.style.display = "inline-flex";
   try {
-    const [runsRes] = await Promise.all([fetch(`${apiBase}/api/runs`), loadReleases()]);
+    const workflow = mode === "admin" ? "2" : "1";
+    const [runsRes] = await Promise.all([fetch(`${apiBase}/api/runs?workflow=${workflow}`), loadReleases()]);
     if (!runsRes.ok) return;
     const d = await runsRes.json();
     const oldRuns = runs;
