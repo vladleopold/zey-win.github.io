@@ -464,8 +464,6 @@ function renderAll() {
   activeContainer.style.display = activeHtml ? "" : "none";
   buildsContainer.style.display = doneHtml ? "" : "none";
 
-  if (activeHtml || doneHtml) hidePageSpinner();
-
   let statsEl = document.getElementById("stats");
   if (!statsEl) {
     statsEl = document.createElement("div");
@@ -478,27 +476,18 @@ function renderAll() {
 
 async function loadBuilds() {
   const gen = ++loadBuildsGen;
-  const t0 = performance.now();
   try {
     const workflow = mode === "admin" ? "2" : "1";
     const res = await fetch(`${apiBase}/api/runs?workflow=${workflow}`);
-    const t1 = performance.now();
-    console.log(`[perf] loadBuilds fetch=${(t1-t0).toFixed(0)}ms`);
     if (gen !== loadBuildsGen) return;
     if (!res.ok) return;
     const d = await res.json();
-    const t2 = performance.now();
-    console.log(`[perf] loadBuilds json=${(t2-t1).toFixed(0)}ms`);
     if (gen !== loadBuildsGen) return;
     const oldRuns = runs;
     runs = Array.isArray(d.runs) ? d.runs : [];
-    const t3 = performance.now();
-    console.log(`[perf] loadBuilds aboutToRender=${(t3-t2).toFixed(0)}ms`);
     renderAll();
-    hidePageSpinner();
-    const t4 = performance.now();
-    console.log(`[perf] loadBuilds renderDone=${(t4-t3).toFixed(0)}ms total=${(t4-t0).toFixed(0)}ms`);
-    requestAnimationFrame(() => { if (gen === loadBuildsGen) runPostFetch(gen, oldRuns); });
+    requestAnimationFrame(() => { if (gen === loadBuildsGen) { hidePageSpinner(); if (loading) loading.style.display = "none"; } });
+    setTimeout(() => { if (gen === loadBuildsGen) runPostFetch(gen, oldRuns); }, 0);
   } catch(e) { console.error(e); }
 }
 
