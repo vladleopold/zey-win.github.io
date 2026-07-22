@@ -1615,8 +1615,7 @@ function toggleMode() {
       try { localStorage.setItem('builder_mode', mode); } catch {}
     }
   }
-  const btn = document.getElementById("mode-toggle");
-  if (btn) btn.textContent = mode === "main" ? "админка" : "сайт";
+  startModeTransition();
   const local = JSON.parse(localStorage.getItem(modeKey("savedConfigs")) || "[]");
   savedConfigs.length = 0;
   savedConfigs.push(...local);
@@ -1626,15 +1625,99 @@ function toggleMode() {
   loadConfigs();
 }
 
+function startModeTransition() {
+  const isAdmin = mode === "admin";
+  const modeLabel = isAdmin ? "админка" : "сайт";
+  const glow = document.createElement("div");
+  glow.id = "mode-glow";
+  glow.style.cssText = "position:fixed;inset:0;pointer-events:none;z-index:99999;opacity:0;transition:opacity 0.3s;box-shadow:inset 0 0 100px rgba(88,166,255,0.5), inset 0 0 200px rgba(168,85,247,0.3);filter:blur(40px)";
+  document.body.appendChild(glow);
+  requestAnimationFrame(() => { glow.style.opacity = "1"; });
+
+  const panel = document.createElement("div");
+  panel.id = "mode-loading-panel";
+  panel.style.cssText = "position:fixed;bottom:0;left:0;right:0;z-index:99998;background:rgba(22,27,34,0.95);border-top:1px solid #30363d;padding:16px 20px;transform:translateY(100%);transition:transform 0.4s ease-out;backdrop-filter:blur(10px)";
+  panel.innerHTML = `<div style="max-width:600px;margin:0 auto"><div style="color:#8b949e;font-size:13px;margin-bottom:8px">Загрузка режима "${modeLabel}"...</div><div style="height:6px;background:#21262d;border-radius:3px;overflow:hidden"><div id="mode-progress" style="height:100%;width:0%;background:linear-gradient(90deg,#58a6ff,#a855f7);border-radius:3px;transition:width 0.1s linear"></div></div></div>`;
+  document.body.appendChild(panel);
+  requestAnimationFrame(() => { panel.style.transform = "translateY(0)"; });
+
+  const progress = document.getElementById("mode-progress");
+  const start = Date.now();
+  const duration = 10000;
+  let frameId = null;
+
+  function tick() {
+    const elapsed = Date.now() - start;
+    const pct = Math.min(100, (elapsed / duration) * 100);
+    if (progress) progress.style.width = pct + "%";
+    if (elapsed < duration) {
+      frameId = requestAnimationFrame(tick);
+    } else {
+      finish();
+    }
+  }
+  function finish() {
+    cancelAnimationFrame(frameId);
+    if (panel) {
+      panel.style.transform = "translateY(100%)";
+      panel.style.opacity = "0";
+      panel.style.transition = "transform 0.4s ease-in, opacity 0.4s ease-in";
+      setTimeout(() => panel.remove(), 500);
+    }
+    if (glow) {
+      glow.style.opacity = "0";
+      glow.style.transition = "opacity 0.8s ease-out";
+      setTimeout(() => glow.remove(), 900);
+    }
+    updateModeTheme();
+  }
+  frameId = requestAnimationFrame(tick);
+  updateModeTheme();
+}
+
+function updateModeTheme() {
+  const isAdmin = mode === "admin";
+  const btn = document.getElementById("mode-toggle");
+  if (btn) {
+    btn.textContent = isAdmin ? "сайт" : "админка";
+    btn.style.background = isAdmin ? "#2d1b4e" : "#1f2937";
+    btn.style.color = isAdmin ? "#c084fc" : "#9ca3af";
+    btn.style.border = isAdmin ? "1px solid #7c3aed" : "1px solid #4b5563";
+  }
+  const logo = document.getElementById("mode-logo");
+  if (logo) {
+    logo.textContent = isAdmin ? "CI / CD — админка" : "CI / CD";
+    logo.style.color = isAdmin ? "#c084fc" : "#f0f6fc";
+  }
+  const indicator = document.getElementById("mode-indicator");
+  if (indicator) {
+    indicator.style.display = "inline";
+    indicator.textContent = isAdmin ? "🔧 АДМИНКА" : "🌐 САЙТ";
+    indicator.style.background = isAdmin ? "rgba(124,58,237,0.2)" : "rgba(88,166,255,0.15)";
+    indicator.style.color = isAdmin ? "#c084fc" : "#58a6ff";
+    indicator.style.border = isAdmin ? "1px solid #7c3aed" : "1px solid #58a6ff";
+  }
+  const newBuildBtn = document.getElementById("new-build");
+  if (newBuildBtn) {
+    newBuildBtn.style.background = isAdmin ? "#7c3aed" : "#58a6ff";
+    newBuildBtn.style.color = "#fff";
+    newBuildBtn.style.fontWeight = "600";
+    newBuildBtn.style.border = "none";
+    newBuildBtn.style.borderRadius = "6px";
+    newBuildBtn.style.padding = "6px 14px";
+  }
+}
+
 (function() {
   const btn = document.createElement("button");
   btn.id = "mode-toggle";
   btn.textContent = mode === "admin" ? "сайт" : "админка";
-  btn.style.cssText = "position:fixed;bottom:8px;right:8px;z-index:9999;background:#444;color:#aaa;border:none;border-radius:4px;padding:4px 8px;font-size:11px;cursor:pointer;opacity:.7";
+  btn.style.cssText = "position:fixed;bottom:8px;right:8px;z-index:9999;border:none;border-radius:4px;padding:4px 10px;font-size:12px;cursor:pointer;opacity:.75;transition:all 0.3s";
   btn.onmouseenter = function() { this.style.opacity = "1"; };
-  btn.onmouseleave = function() { this.style.opacity = ".7"; };
+  btn.onmouseleave = function() { this.style.opacity = ".75"; };
   btn.onclick = toggleMode;
   document.body.appendChild(btn);
+  updateModeTheme();
 })();
 
 function renderSkeletons() {

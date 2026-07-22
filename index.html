@@ -31,6 +31,13 @@ header h1 { font-size: clamp(20px, 4vw, 28px); font-weight: 700; }
 .card-icon { width: 80px; height: 80px; border-radius: 16px; }
 .build-card .app-name { font-size: 22px; font-weight: 800; margin-bottom: 2px; }
 .build-card .meta { font-size: 13px; }
+@keyframes mode-glow-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+#mode-glow {
+  animation: mode-glow-pulse 1.5s ease-in-out infinite;
+}
 @media (max-width: 820px) {
   #modal form { width: calc(100vw - 16px); max-width: calc(100vw - 16px); padding: 10px; }
 }
@@ -66,7 +73,8 @@ header h1 { font-size: clamp(20px, 4vw, 28px); font-weight: 700; }
 </head>
 <body>
 <header style="display:flex;align-items:center;background:#161b22;position:relative">
-<h1 style="margin:0;color:#f0f6fc;flex-shrink:0">CI / CD</h1>
+<h1 style="margin:0;color:#f0f6fc;flex-shrink:0" id="mode-logo">CI / CD</h1>
+<span id="mode-indicator" style="display:none;padding:4px 10px;border-radius:12px;font-size:12px;font-weight:700"></span>
 <div id="loading" class="spinner-inline" style="position:absolute;left:50%;transform:translateX(-50%)"><div class="spinner"></div></div>
 <button id="new-build" style="margin-left:auto;flex-shrink:0">сделать app</button>
 </header>
