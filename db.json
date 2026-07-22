@@ -318,8 +318,8 @@
       "icon_data_url": "",
       "firebase_cfg": "",
       "firebase_json_base64": "",
-      "mode": "admin",
-      "updated_at": "2026-07-22T08:08:46.413Z"
+      "mode": "main",
+      "updated_at": "2026-07-22T09:06:36.604Z"
     }
   ],
   "icons": [
@@ -376,7 +376,7 @@
     {
       "package_name": "com.com.com",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.socialapps.plinko.png",
-      "updated_at": "2026-07-22T08:08:46.414Z"
+      "updated_at": "2026-07-22T09:06:36.604Z"
     },
     {
       "package_name": "com.playsocgame.jack",
@@ -1569,5 +1569,5 @@
       "updated_at": "2026-07-20T20:20:01.102Z"
     }
   ],
-  "updated_at": "2026-07-22T08:44:31.288Z"
+  "updated_at": "2026-07-22T09:06:36.604Z"
 }
