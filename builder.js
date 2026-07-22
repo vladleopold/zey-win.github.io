@@ -472,11 +472,13 @@ async function loadBuilds() {
   if (loading) loading.style.display = "inline-flex";
   try {
     const workflow = mode === "admin" ? "2" : "1";
-    const [runsRes] = await Promise.all([fetch(`${apiBase}/api/runs?workflow=${workflow}`), loadReleases()]);
+    const runsRes = await fetch(`${apiBase}/api/runs?workflow=${workflow}`);
+    loadReleases();
     if (!runsRes.ok) return;
     const d = await runsRes.json();
     const oldRuns = runs;
     runs = Array.isArray(d.runs) ? d.runs : [];
+    renderAll();
     for (const r of runs) {
       if (!runMeta[r.id]) runMeta[r.id] = {};
       if (!runMeta[r.id].icon) {
