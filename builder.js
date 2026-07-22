@@ -20,16 +20,35 @@ const sdkVersion = $("sdk-version");
 const sparksBtn = null;
 const loading = $("loading");
 let pageSpinner = null;
+let progressAnimId = null;
 function showPageSpinner() {
   if (pageSpinner) { pageSpinner.style.display = "flex"; return; }
   pageSpinner = document.createElement("div");
   pageSpinner.id = "page-spinner";
   pageSpinner.style.cssText = "display:flex;flex-direction:column;align-items:center;justify-content:center;position:fixed;inset:0;z-index:100000;background:rgba(13,17,23,0.8);gap:16px;pointer-events:none";
-  pageSpinner.innerHTML = '<div class="spinner" style="width:80px;height:80px;border:6px solid #30363d;border-top-color:#58a6ff;border-radius:50%;animation:spin .3s linear infinite"></div><div style="color:#8b949e;font-size:14px">Загрузка сборок...</div>';
+  pageSpinner.innerHTML = '<div class="spinner" style="width:80px;height:80px;border:6px solid #30363d;border-top-color:#58a6ff;border-radius:50%;animation:spin .3s linear infinite"></div><div style="color:#8b949e;font-size:14px">Загрузка сборок...</div><div id="page-progress-text" style="color:#8b949e;font-size:12px;font-weight:700;width:200px;text-align:center">0%</div>';
   document.body.appendChild(pageSpinner);
+  startProgress();
 }
 function hidePageSpinner() {
+  if (progressAnimId) { cancelAnimationFrame(progressAnimId); progressAnimId = null; }
   if (pageSpinner) pageSpinner.style.display = "none";
+}
+function startProgress() {
+  const txt = document.getElementById("page-progress-text");
+  if (!txt) return;
+  const totalMs = 15000;
+  const start = Date.now();
+  function tick() {
+    const elapsed = Date.now() - start;
+    const base = Math.min(95, (elapsed / totalMs) * 100);
+    const jitter = Math.sin(elapsed / 350) * 6 + Math.cos(elapsed / 170) * 4 + Math.sin(elapsed / 780) * 3;
+    let p = Math.max(0, Math.min(100, base + jitter));
+    txt.textContent = Math.floor(p) + "%";
+    if (elapsed < totalMs) { progressAnimId = requestAnimationFrame(tick); }
+    else { txt.textContent = "100%"; progressAnimId = null; }
+  }
+  progressAnimId = requestAnimationFrame(tick);
 }
 
 const REPO_NAMES = { "zey-win/plinko": "plinko", "zey-win/blackjack": "blackjack", "zey-win/roulette": "roulette", "zey-win/dragon-tiger": "dragon tiger", "zey-win/baccarat-tiger": "baccarat", "zey-win/wheel-of-fortune": "lucky wheel", "zey-win/Unstopable": "unstopable", "zey-win/SlotSpot": "slotspot" };
