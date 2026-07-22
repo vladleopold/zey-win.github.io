@@ -1594,9 +1594,27 @@ function populateRepoSelect() {
   if ([...repoSelect.options].some(o => o.value === currentVal)) repoSelect.value = currentVal;
 }
 
+function cleanupLocalStorage() {
+  try {
+    const prefixes = ['savedConfigs', 'rv'];
+    for (const key of Object.keys(localStorage)) {
+      if (prefixes.some(p => key.includes(p))) {
+        localStorage.removeItem(key);
+      }
+    }
+  } catch {}
+}
+
 function toggleMode() {
   mode = mode === "main" ? "admin" : "main";
-  localStorage.setItem('builder_mode', mode);
+  try {
+    localStorage.setItem('builder_mode', mode);
+  } catch (e) {
+    if (e.name === 'QuotaExceededError') {
+      cleanupLocalStorage();
+      try { localStorage.setItem('builder_mode', mode); } catch {}
+    }
+  }
   const btn = document.getElementById("mode-toggle");
   if (btn) btn.textContent = mode === "main" ? "админка" : "сайт";
   const local = JSON.parse(localStorage.getItem(modeKey("savedConfigs")) || "[]");
