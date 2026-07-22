@@ -1638,6 +1638,7 @@ function toggleMode() {
   buildsContainer.innerHTML = "";
   activeContainer.innerHTML = "";
   runs.length = 0;
+  showPageSpinner();
 
   loadBuilds();
   loadConfigs();
