@@ -20,16 +20,45 @@ const sdkVersion = $("sdk-version");
 const sparksBtn = null;
 const loading = $("loading");
 let pageSpinner = null;
+let progressAnimId = null;
 function showPageSpinner() {
   if (pageSpinner) { pageSpinner.style.display = "flex"; return; }
   pageSpinner = document.createElement("div");
   pageSpinner.id = "page-spinner";
-  pageSpinner.style.cssText = "display:flex;flex-direction:column;align-items:center;justify-content:center;position:fixed;inset:0;z-index:100000;background:rgba(13,17,23,0.8);gap:16px;pointer-events:none";
-  pageSpinner.innerHTML = '<div class="spinner" style="width:80px;height:80px;border:6px solid #30363d;border-top-color:#58a6ff;border-radius:50%;animation:spin .3s linear infinite"></div><div style="color:#8b949e;font-size:14px">Загрузка сборок...</div>';
+  pageSpinner.style.cssText = "display:flex;flex-direction:column;align-items:center;justify-content:center;position:fixed;inset:0;z-index:100000;background:rgba(13,17,23,0.85);gap:18px;pointer-events:none";
+  pageSpinner.innerHTML = `
+    <div class="spinner" style="width:70px;height:70px;border:6px solid #30363d;border-top-color:#58a6ff;border-radius:50%;animation:spin .7s linear infinite"></div>
+    <div style="color:#8b949e;font-size:14px;font-weight:600">Загрузка сборок...</div>
+    <div style="width:280px;height:10px;background:#161b22;border-radius:5px;overflow:hidden;border:1px solid #30363d">
+      <div id="page-progress-bar" style="width:0%;height:100%;background:linear-gradient(90deg,#58a6ff,#a855f7);border-radius:5px;transition:width .4s ease"></div>
+    </div>
+    <div id="page-progress-text" style="color:#8b949e;font-size:12px">0%</div>
+  `;
   document.body.appendChild(pageSpinner);
+  startProgress();
 }
 function hidePageSpinner() {
+  if (progressAnimId) { cancelAnimationFrame(progressAnimId); progressAnimId = null; }
   if (pageSpinner) pageSpinner.style.display = "none";
+}
+function startProgress() {
+  const bar = document.getElementById("page-progress-bar");
+  const txt = document.getElementById("page-progress-text");
+  if (!bar || !txt) return;
+  let progress = 0;
+  const totalMs = 25000;
+  const start = Date.now();
+  function tick() {
+    const elapsed = Date.now() - start;
+    const base = Math.min(95, (elapsed / totalMs) * 100);
+    const jitter = Math.sin(elapsed / 420) * 6 + Math.cos(elapsed / 170) * 4 + Math.sin(elapsed / 780) * 3;
+    progress = Math.max(0, Math.min(98, base + jitter));
+    bar.style.width = progress + "%";
+    txt.textContent = Math.floor(progress) + "%";
+    if (elapsed < totalMs) { progressAnimId = requestAnimationFrame(tick); }
+    else { bar.style.width = "100%"; txt.textContent = "100%"; progressAnimId = null; }
+  }
+  progressAnimId = requestAnimationFrame(tick);
 }
 
 const REPO_NAMES = { "zey-win/plinko": "plinko", "zey-win/blackjack": "blackjack", "zey-win/roulette": "roulette", "zey-win/dragon-tiger": "dragon tiger", "zey-win/baccarat-tiger": "baccarat", "zey-win/wheel-of-fortune": "lucky wheel", "zey-win/Unstopable": "unstopable", "zey-win/SlotSpot": "slotspot" };
