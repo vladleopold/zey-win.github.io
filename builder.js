@@ -1,6 +1,4 @@
-console.log("[builder] script start, mode=", mode);
 const apiBase = document.querySelector('meta[name="builder-api"]')?.content?.replace(/\/$/, "") || "https://android-builder-api.vercel.app";
-console.log("[builder] apiBase=", apiBase);
 const operatorKey = document.querySelector('meta[name="builder-key"]')?.content?.trim() || "";
 const op = (extra = {}) => ({ "Content-Type": "application/json", "x-builder-key": operatorKey, ...extra });
 const $ = id => document.getElementById(id);
@@ -486,7 +484,7 @@ async function loadBuilds() {
     const res = await fetch(`${apiBase}/api/runs?workflow=${workflow}`);
     console.log("[builder] fetch status=", res.status, "ok=", res.ok);
     if (gen !== loadBuildsGen) return;
-    if (!res.ok) { console.error("[builder] fetch not ok", res.status); return; }
+    if (!res.ok) { console.error("[builder] fetch not ok", res.status); buildsContainer.innerHTML = `<div style="color:#f85149;padding:12px">Ошибка загрузки: HTTP ${res.status}</div>`; return; }
     const d = await res.json();
     console.log("[builder] runs count=", Array.isArray(d.runs) ? d.runs.length : "n/a");
     if (gen !== loadBuildsGen) return;
@@ -495,7 +493,7 @@ async function loadBuilds() {
     renderAll();
     requestAnimationFrame(() => { if (gen === loadBuildsGen) { hidePageSpinner(); if (loading) loading.style.display = "none"; } });
     setTimeout(() => { if (gen === loadBuildsGen) runPostFetch(gen, oldRuns); }, 0);
-  } catch(e) { console.error("[builder] loadBuilds error", e); }
+  } catch(e) { console.error("[builder] loadBuilds error", e); buildsContainer.innerHTML = `<div style="color:#f85149;padding:12px">Ошибка загрузки сборок: ${e.message}</div>`; }
 }
 
 function runPostFetch(gen, oldRuns) {
