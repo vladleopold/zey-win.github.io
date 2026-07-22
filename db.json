@@ -1492,7 +1492,20 @@
       "status": "queued",
       "created_at": "2026-07-20T20:20:01.102Z",
       "updated_at": "2026-07-20T20:20:01.102Z"
+    },
+    {
+      "run_id": 29901472597,
+      "request_id": "builder-mrvs4c1u",
+      "package_name": "com.socgame.black",
+      "app_name": "black",
+      "game_repository": "vladleopold/blackjack_sony",
+      "build_format": "apk",
+      "version_name": "1",
+      "version_code": "2",
+      "status": "queued",
+      "created_at": "2026-07-22T07:47:07.129Z",
+      "updated_at": "2026-07-22T07:47:07.129Z"
     }
   ],
-  "updated_at": "2026-07-22T06:59:54.549Z"
+  "updated_at": "2026-07-22T07:47:07.129Z"
 }
