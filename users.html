@@ -244,7 +244,7 @@
 </head>
 <body>
   <div class="stats-container">
-    <a href="https://zey-win.github.io" class="back-link">← Back to ZeyWin CI/CD</a>
+    <a href="./" class="back-link">← Back to ZeyWin CI/CD</a>
     
     <div class="stats-header">
       <h1>Visitor Statistics</h1>
@@ -368,7 +368,7 @@
   </div>
   
   <script>
-    const API_BASE = 'https://zeywin-android-builder-api.vercel.app';
+    const API_BASE = document.querySelector('meta[name="builder-api"]')?.content?.replace(/\/$/, '') || 'https://zeywin-android-builder-api.vercel.app';
     
     function api(path) {
       return `${API_BASE}${path}`;
