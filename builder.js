@@ -1620,7 +1620,7 @@ showPageSpinner();
   loadBuilds();
   loadConfigs();
   setInterval(loadBuilds, 15000);
-  setTimeout(loadReleases, 10000);
+  setTimeout(loadReleases, 10);
 })();
 
 function populateRepoSelect() {
