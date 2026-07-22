@@ -1680,26 +1680,26 @@ function updateModeTheme() {
   const btn = document.getElementById("mode-toggle");
   if (btn) {
     btn.textContent = isAdmin ? "сайт" : "админка";
-    btn.style.background = isAdmin ? "#2d1b4e" : "#1f2937";
-    btn.style.color = isAdmin ? "#c084fc" : "#9ca3af";
-    btn.style.border = isAdmin ? "1px solid #7c3aed" : "1px solid #4b5563";
+    btn.style.background = isAdmin ? "#1f2937" : "#2d1b4e";
+    btn.style.color = isAdmin ? "#9ca3af" : "#c084fc";
+    btn.style.border = isAdmin ? "1px solid #4b5563" : "1px solid #7c3aed";
   }
   const logo = document.getElementById("mode-logo");
   if (logo) {
     logo.textContent = isAdmin ? "CI / CD — админка" : "CI / CD";
-    logo.style.color = isAdmin ? "#c084fc" : "#f0f6fc";
+    logo.style.color = isAdmin ? "#58a6ff" : "#c084fc";
   }
   const indicator = document.getElementById("mode-indicator");
   if (indicator) {
     indicator.style.display = "inline";
     indicator.textContent = isAdmin ? "🔧 АДМИНКА" : "🌐 САЙТ";
-    indicator.style.background = isAdmin ? "rgba(124,58,237,0.2)" : "rgba(88,166,255,0.15)";
-    indicator.style.color = isAdmin ? "#c084fc" : "#58a6ff";
-    indicator.style.border = isAdmin ? "1px solid #7c3aed" : "1px solid #58a6ff";
+    indicator.style.background = isAdmin ? "rgba(88,166,255,0.15)" : "rgba(124,58,237,0.2)";
+    indicator.style.color = isAdmin ? "#58a6ff" : "#c084fc";
+    indicator.style.border = isAdmin ? "1px solid #58a6ff" : "1px solid #7c3aed";
   }
   const newBuildBtn = document.getElementById("new-build");
   if (newBuildBtn) {
-    newBuildBtn.style.background = isAdmin ? "#7c3aed" : "#58a6ff";
+    newBuildBtn.style.background = isAdmin ? "#58a6ff" : "#7c3aed";
     newBuildBtn.style.color = "#fff";
     newBuildBtn.style.fontWeight = "600";
     newBuildBtn.style.border = "none";
