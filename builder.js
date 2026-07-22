@@ -495,46 +495,49 @@ async function loadBuilds() {
     const oldRuns = runs;
     runs = Array.isArray(d.runs) ? d.runs : [];
     renderAll();
-    for (const r of runs) {
-      if (!runMeta[r.id]) runMeta[r.id] = {};
-      if (!runMeta[r.id].icon) {
-        let icon = r.iconUrl;
-        if (!icon) {
-          const meta = runMeta[r.id];
-          if (meta?.params?.iconDataUrl && String(meta.params.iconDataUrl).startsWith("data:")) {
-            icon = meta.params.iconDataUrl;
+    setTimeout(async () => {
+      for (const r of runs) {
+        if (!runMeta[r.id]) runMeta[r.id] = {};
+        if (!runMeta[r.id].icon) {
+          let icon = r.iconUrl;
+          if (!icon) {
+            const meta = runMeta[r.id];
+            if (meta?.params?.iconDataUrl && String(meta.params.iconDataUrl).startsWith("data:")) {
+              icon = meta.params.iconDataUrl;
+            }
+          }
+          if (icon) runMeta[r.id].icon = icon;
+        }
+      }
+      try {
+        const sv = JSON.parse(localStorage.getItem(modeKey('rv'))||'{}');
+        for (const [id, v] of Object.entries(sv)) {
+          const rid = parseInt(id);
+          if (!runMeta[rid]) runMeta[rid] = {};
+          if (v.ver) runMeta[rid].ver = v.ver;
+          if (v.code) runMeta[rid].code = v.code;
+          if (v.apk) runMeta[rid].apk = v.apk;
+          if (v.aab) runMeta[rid].aab = v.aab;
+          if (v.params) runMeta[rid].params = v.params;
+        }
+      } catch {}
+      for (const r of runs) {
+        if (r.status !== "completed" && !timers[r.id]) {
+          const created = r.createdAt ? new Date(r.createdAt).getTime() : Date.now();
+          timers[r.id] = { start: created, total: (39 + (r.id % 12)) * 60 * 1000 };
+        }
+      }
+      if (gen === loadBuildsGen) {
+        for (const r of runs) {
+          const old = oldRuns.find(o => o.id === r.id);
+          if (old && old.status !== "completed" && r.status === "completed") {
+            if (r.conclusion === "success") { playFanfare(); fireConfetti(4000); }
+            else { playErrorSound(); flashRed(); }
           }
         }
-        if (icon) runMeta[r.id].icon = icon;
+        renderAll();
+        loadArtifactVersions().then(() => { if (gen === loadBuildsGen) renderAll(); });
       }
-    }
-    try {
-      const sv = JSON.parse(localStorage.getItem(modeKey('rv'))||'{}');
-      for (const [id, v] of Object.entries(sv)) {
-        const rid = parseInt(id);
-        if (!runMeta[rid]) runMeta[rid] = {};
-        if (v.ver) runMeta[rid].ver = v.ver;
-        if (v.code) runMeta[rid].code = v.code;
-        if (v.apk) runMeta[rid].apk = v.apk;
-        if (v.aab) runMeta[rid].aab = v.aab;
-        if (v.params) runMeta[rid].params = v.params;
-      }
-    } catch {}
-    for (const r of runs) {
-      if (r.status !== "completed" && !timers[r.id]) {
-        const created = r.createdAt ? new Date(r.createdAt).getTime() : Date.now();
-        timers[r.id] = { start: created, total: (39 + (r.id % 12)) * 60 * 1000 };
-      }
-    }
-    setTimeout(() => {
-      for (const r of runs) {
-        const old = oldRuns.find(o => o.id === r.id);
-        if (old && old.status !== "completed" && r.status === "completed") {
-          if (r.conclusion === "success") { playFanfare(); fireConfetti(4000); }
-          else { playErrorSound(); flashRed(); }
-        }
-      }
-      renderAll();
     }, 0);
     renderAll();
     if (!buildsContainer.querySelector('.build-card') && !activeContainer.querySelector('.build-card')) {
@@ -542,7 +545,6 @@ async function loadBuilds() {
     } else {
       hidePageSpinner();
     }
-    loadArtifactVersions().then(() => renderAll());
   } catch(e) { console.error(e); } finally { if (loading) loading.style.display = "none"; }
 }
 
