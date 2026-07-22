@@ -526,7 +526,8 @@ async function loadBuilds() {
       }
     }
     renderAll();
-    loadArtifactVersions().then(() => renderAll());
+    await loadArtifactVersions();
+    renderAll();
   } catch(e) { console.error(e); } finally {
     if (loading) loading.style.display = "none";
     buildCardsLoading = false;
