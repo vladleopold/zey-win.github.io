@@ -417,7 +417,7 @@
       
       Object.entries(topPages).forEach(([path, data]) => {
         const percentage = ((data.views / totalViews) * 100).toFixed(1);
-        const uniqueCount = data.uniqueIPs?.size || 0;
+        const uniqueCount = data.uniqueIPs?.length || 0;
         
         const row = document.createElement('div');
         row.className = 'stats-row';
@@ -613,7 +613,7 @@
       
       Object.entries(topPages).forEach(([path, data]) => {
         const percentage = ((data.views / totalViews) * 100).toFixed(1);
-        const uniqueCount = data.uniqueIPs?.size || 0;
+        const uniqueCount = data.uniqueIPs?.length || 0;
         
         const row = document.createElement('tr');
         row.innerHTML = `
