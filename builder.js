@@ -25,7 +25,17 @@ const REPO_NAMES_ADMIN = { "zey-win/plinko": "plinko", "zey-win/blackjack": "bla
 
 let mode = localStorage.getItem('builder_mode') || 'main';
 function modeKey(base) { return base + (mode === "admin" ? "_admin" : ""); }
-function getRepoNames() { return mode === "admin" ? REPO_NAMES_ADMIN : REPO_NAMES; }
+function getRepoNames() {
+  const base = mode === "admin" ? REPO_NAMES_ADMIN : REPO_NAMES;
+  const result = { ...base };
+  for (const cfg of savedConfigs) {
+    const repo = safeString(cfg.game_repository);
+    if (repo && !result[repo]) {
+      result[repo] = safeString(cfg.app_name) || repo.split("/").pop();
+    }
+  }
+  return result;
+}
 function iconDir() { return mode === "admin" ? "icons-admin" : "icons"; }
 
 function isRunInMode(r) {
@@ -187,10 +197,11 @@ async function loadArtifactVersions() {
   }
 }
 
-async function loadVersionSuggestion(packageName, force = false) {
+ async function loadVersionSuggestion(packageName, force = false) {
   const pkg = (packageName || "").trim();
   if (!pkg) return null;
   if (!force && versionCache.has(pkg)) return versionCache.get(pkg);
+  if (!/^[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z][A-Za-z0-9_]*)+$/.test(pkg)) return null;
   let data = null;
   try {
     const res = await fetch(`${apiBase}/api/versions?package_name=${encodeURIComponent(pkg)}`, { headers: op() });
@@ -291,6 +302,18 @@ async function syncVersionFields(force = false) {
   if (versionMode && versionMode.value === "manual") return;
   const pkg = $("f-pkg")?.value?.trim();
   if (!pkg) return;
+  if (!force && versionCache.has(pkg)) {
+    const suggested = versionCache.get(pkg)?.aab || {};
+    const versionName = suggested.versionName || versionCache.get(pkg)?.latest?.versionName;
+    const versionCode = suggested.versionCode || versionCache.get(pkg)?.latest?.versionCode;
+    if (versionName && versionCode) {
+      const versionInput = $("f-version");
+      const codeInput = $("f-vcode");
+      if (versionInput) versionInput.value = versionName;
+      if (codeInput) codeInput.value = versionCode;
+    }
+    return;
+  }
   const data = await loadVersionSuggestion(pkg, force);
   const suggested = data?.aab || {};
   const versionName = suggested.versionName || data?.latest?.versionName;
@@ -616,7 +639,7 @@ function updateConfigVersion(appName, next) {
     localStorage.setItem(modeKey("savedConfigs"), JSON.stringify(local));
   } catch {}
   try {
-    fetch(`${apiBase}/api/configs`, { method: "POST", headers: op(), body: JSON.stringify({ config: cfg }) });
+    fetch(`${apiBase}/api/configs`, { method: "POST", headers: op(), body: JSON.stringify({ config: { ...cfg, mode: mode || localStorage.getItem('builder_mode') || 'main' } }) });
   } catch {}
 }
 
@@ -746,7 +769,7 @@ if (addRepoBtn) {
     savedConfigs = savedConfigs.filter(c => c.id !== id);
     savedConfigs.push(cfg);
     try { localStorage.setItem(modeKey("savedConfigs"), JSON.stringify(savedConfigs)); } catch {}
-    try { await fetch(apiBase + "/api/configs", { method: "POST", headers: op(), body: JSON.stringify({ config: cfg }) }); } catch {}
+     try { await fetch(apiBase + "/api/configs", { method: "POST", headers: op(), body: JSON.stringify({ config: { ...cfg, mode: mode || localStorage.getItem('builder_mode') || 'main' } }) }); } catch {}
     const opt = document.createElement("option");
     opt.value = repo;
     opt.textContent = label;
@@ -1252,9 +1275,13 @@ async function loadConfigs() {
   } catch {}
 
   if (backendConfigs) {
-    savedConfigs = backendConfigs;
+    const currentMode = mode || localStorage.getItem('builder_mode') || 'main';
+    const modeBackend = backendConfigs.filter((c) => {
+      const cm = c.mode || c._mode;
+      return !cm || cm === currentMode;
+    });
+    savedConfigs = modeBackend;
   } else {
-    // Fallback to static file (might be cached)
     try {
       const res = await fetch("./configs.json?" + Date.now());
       if (res.ok) { const data = await res.json(); savedConfigs = data.configs || []; }
@@ -1285,7 +1312,7 @@ async function loadConfigs() {
   if (backendConfigs && localOnly.length) {
     for (const cfg of localOnly) {
       try {
-        await fetch(`${apiBase}/api/configs`, { method: "POST", headers: op(), body: JSON.stringify({ config: cfg }) });
+        await fetch(`${apiBase}/api/configs`, { method: "POST", headers: op(), body: JSON.stringify({ config: { ...cfg, mode: mode || localStorage.getItem('builder_mode') || 'main' } }) });
       } catch {}
     }
   }
@@ -1430,7 +1457,7 @@ async function autoSaveConfig(fd) {
     await fetch(`${apiBase}/api/configs`, {
       method: "POST",
       headers: op(),
-      body: JSON.stringify({ config: cfg })
+      body: JSON.stringify({ config: { ...cfg, mode: mode || localStorage.getItem('builder_mode') || 'main' } })
     });
     // Reload from server so UI shows canonical state immediately
     const r = await fetch(`${apiBase}/api/configs`, { headers: op() });
