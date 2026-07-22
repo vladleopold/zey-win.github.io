@@ -570,7 +570,7 @@ async function submitBuildPayload(payload) {
   }
 
   try {
-    const requestPayload = { ...payload };
+    const requestPayload = { ...payload, mode: mode };
     // eslint-disable-next-line no-console
     console.log(`[builder] submitBuildPayload: iconDataUrl=${requestPayload.iconDataUrl ? "data:" + requestPayload.iconDataUrl.length + "B" : "(empty)"}, icon_png_path=${requestPayload.icon_png_path || "(empty)"}`);
     requestPayload.zeywin_sdk_version = normalizeSdkVersion(requestPayload.zeywin_sdk_version || sdkVersion?.value || "v3.9.37");
