@@ -19,6 +19,19 @@ const versionMode = null;
 const sdkVersion = $("sdk-version");
 const sparksBtn = null;
 const loading = $("loading");
+let buildCardsLoading = false;
+let buildCardsLoader = null;
+function ensureBuildCardsLoader() {
+  if (buildCardsLoader) return buildCardsLoader;
+  const el = document.createElement("div");
+  el.id = "build-cards-loader";
+  el.style.cssText = "display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:50;pointer-events:none";
+  el.innerHTML = '<div class="spinner" style="width:64px;height:64px;border:5px solid #30363d;border-top-color:#58a6ff;border-radius:50%;animation:spin .3s linear infinite"></div><div style="color:#8b949e;font-size:12px;margin-top:10px;text-align:center">Загрузка сборок...</div>';
+  buildsContainer.style.position = buildsContainer.style.position || "relative";
+  buildsContainer.appendChild(el);
+  buildCardsLoader = el;
+  return el;
+}
 
 const REPO_NAMES = { "zey-win/plinko": "plinko", "zey-win/blackjack": "blackjack", "zey-win/roulette": "roulette", "zey-win/dragon-tiger": "dragon tiger", "zey-win/baccarat-tiger": "baccarat", "zey-win/wheel-of-fortune": "lucky wheel", "zey-win/Unstopable": "unstopable", "zey-win/SlotSpot": "slotspot" };
 const REPO_NAMES_ADMIN = { "zey-win/plinko": "plinko", "zey-win/blackjack": "blackjack", "zey-win/roulette": "roulette", "zey-win/dragon-tiger": "dragon tiger", "zey-win/baccarat-tiger": "baccarat", "zey-win/wheel-of-fortune": "lucky wheel", "zey-win/Unstopable": "unstopable", "zey-win/SlotSpot": "slotspot" };
@@ -458,6 +471,9 @@ function renderAll() {
 async function loadBuilds() {
   if (loading) loading.style.display = "inline-flex";
   try {
+    const cardLoader = ensureBuildCardsLoader();
+    buildCardsLoading = true;
+    cardLoader.style.display = "block";
     const workflow = mode === "admin" ? "2" : "1";
     const [runsRes] = await Promise.all([fetch(`${apiBase}/api/runs?workflow=${workflow}`), loadReleases()]);
     if (!runsRes.ok) return;
@@ -504,7 +520,11 @@ async function loadBuilds() {
     }
     renderAll();
     loadArtifactVersions().then(() => renderAll());
-  } catch(e) { console.error(e); } finally { if (loading) loading.style.display = "none"; }
+  } catch(e) { console.error(e); } finally {
+    if (loading) loading.style.display = "none";
+    buildCardsLoading = false;
+    if (buildCardsLoader) buildCardsLoader.style.display = "none";
+  }
 }
 
 async function deleteRun(runId, e) {
