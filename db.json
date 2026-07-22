@@ -203,9 +203,9 @@
       "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__dragon-tiger.png",
       "icon_path": "",
       "firebase_json_base64": "",
-      "updated_at": "2026-07-22T06:59:54.549Z",
-      "icon_data_url": "",
-      "mode": "main"
+      "updated_at": "2026-07-22T08:19:36.373Z",
+      "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__dragon-tiger.png",
+      "mode": "admin"
     },
     {
       "id": "888-casino",
@@ -317,7 +317,7 @@
     {
       "package_name": "com.PlayMaxSolutions.DragonTiger",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__dragon-tiger.png",
-      "updated_at": "2026-07-22T06:59:54.549Z"
+      "updated_at": "2026-07-22T08:19:36.373Z"
     },
     {
       "package_name": "com.casino.game.socialfun",
@@ -1550,5 +1550,5 @@
       "updated_at": "2026-07-20T20:20:01.102Z"
     }
   ],
-  "updated_at": "2026-07-22T08:08:46.414Z"
+  "updated_at": "2026-07-22T08:19:36.373Z"
 }
