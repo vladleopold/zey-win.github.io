@@ -408,14 +408,8 @@ function buildCardHTML(r, idx) {
     </div>`;
   let downloads = { apk: null, aab: null };
   if (concl === "success") {
-    if (meta?.apk || meta?.aab) downloads = { apk: meta.apk || null, aab: meta.aab || null };
-    else downloads = findDownloads(pkg);
-    if (downloads.apk || downloads.aab) {
-      if (!runMeta[r.id]) runMeta[r.id] = {};
-      if (downloads.apk) runMeta[r.id].apk = downloads.apk;
-      if (downloads.aab) runMeta[r.id].aab = downloads.aab;
-      try { const sv = JSON.parse(localStorage.getItem(modeKey('rv'))||'{}'); if (!sv[r.id]) sv[r.id]={}; if (downloads.apk) sv[r.id].apk=downloads.apk; if (downloads.aab) sv[r.id].aab=downloads.aab; localStorage.setItem(modeKey('rv'),JSON.stringify(sv)); } catch {}
-    }
+    const cached = meta?.apk || meta?.aab ? { apk: meta.apk || null, aab: meta.aab || null } : null;
+    downloads = cached || findDownloads(pkg);
   }
   let label, cls;
   if (concl === "success") { label = "✅<span class='lt'> Готов</span>"; cls = "status-success"; }
@@ -425,7 +419,7 @@ function buildCardHTML(r, idx) {
   else { label = "🔄<span class='lt'> "+st+"</span>"; cls = "status-pending"; }
   const isProgress = ["in_progress","pending","queued","waiting"].includes(st);
   const bgStyle = idx % 2 === 0 ? 'background:#1a202c' : 'background:#161b22';
-    const iconBlock = iconUrl ? `<div class="card-icon-wrap"><img class="card-icon" src="${iconUrl}" alt="" decoding="async" onerror="this.onerror=null;this.alt='🎮'"></div>` : `<div class="card-icon-wrap card-icon-placeholder">🎮</div>`;
+  const iconBlock = iconUrl ? `<div class="card-icon-wrap"><img class="card-icon" src="${iconUrl}" alt="" decoding="async" onerror="this.onerror=null;this.alt='🎮'"></div>` : `<div class="card-icon-wrap card-icon-placeholder">🎮</div>`;
   const timerId = `t-${r.id}`;
   const timerHtml = `<span class="timer" id="${timerId}" data-run="${r.id}" style="display:${st!=='completed'&&timers[r.id]?'inline':'none'};color:#ffd700;font-size:11px;font-weight:700">⏱ </span>`;
   return `<div class="build-card${isProgress?' in-progress':''}" style="${bgStyle}" data-id="${r.id}">${iconBlock}<div class="card-body"><div class="card-text"><div class="app-name">${versionInfo}</div>${pkg?`<div class="meta">${esc(pkg)}</div>`:""}${versionBlock}</div><div class="btn-group">${concl==="success"&&downloads.apk?`<a class="dl-btn dl-btn-apk" href="${downloads.apk}" download>APK</a>`:""}${concl==="success"&&downloads.aab?`<a class="dl-btn dl-btn-aab" href="${downloads.aab}" download>AAB</a>`:""}${concl!=="success"?`<a href="${esc(url)}" target="_blank" class="log-btn" style="font-size:11px;padding:3px 6px">Логи</a>`:""}<div class="status-row">${timerHtml}<span class="status ${cls} status-small">${label}</span></div><button class="del-btn" onclick="deleteRun(${r.id},event)" title="Удалить">✕</button></div></div></div>`;
@@ -484,17 +478,26 @@ function renderAll() {
 
 async function loadBuilds() {
   const gen = ++loadBuildsGen;
+  const t0 = performance.now();
   try {
     const workflow = mode === "admin" ? "2" : "1";
     const res = await fetch(`${apiBase}/api/runs?workflow=${workflow}`);
+    const t1 = performance.now();
+    console.log(`[perf] loadBuilds fetch=${(t1-t0).toFixed(0)}ms`);
     if (gen !== loadBuildsGen) return;
     if (!res.ok) return;
     const d = await res.json();
+    const t2 = performance.now();
+    console.log(`[perf] loadBuilds json=${(t2-t1).toFixed(0)}ms`);
     if (gen !== loadBuildsGen) return;
     const oldRuns = runs;
     runs = Array.isArray(d.runs) ? d.runs : [];
+    const t3 = performance.now();
+    console.log(`[perf] loadBuilds aboutToRender=${(t3-t2).toFixed(0)}ms`);
     renderAll();
     hidePageSpinner();
+    const t4 = performance.now();
+    console.log(`[perf] loadBuilds renderDone=${(t4-t3).toFixed(0)}ms total=${(t4-t0).toFixed(0)}ms`);
     requestAnimationFrame(() => { if (gen === loadBuildsGen) runPostFetch(gen, oldRuns); });
   } catch(e) { console.error(e); }
 }
@@ -540,6 +543,34 @@ function runPostFetch(gen, oldRuns) {
   }
   renderAll();
   loadArtifactVersions().then(() => { if (gen === loadBuildsGen) renderAll(); });
+  setTimeout(syncDownloadsToStorage, 0);
+}
+
+function syncDownloadsToStorage() {
+  try {
+    let changed = false;
+    const sv = JSON.parse(localStorage.getItem(modeKey('rv')) || '{}');
+    for (const r of runs) {
+      if (r.status !== "success") continue;
+      const meta = runMeta[r.id];
+      if (!meta) continue;
+      const pkg = parseTitle(r.displayTitle || r.name || "").pkg;
+      if (!pkg) continue;
+      if (meta.apk || meta.aab) {
+        if (!sv[r.id]) { sv[r.id] = {}; changed = true; }
+        if (meta.apk && sv[r.id].apk !== meta.apk) { sv[r.id].apk = meta.apk; changed = true; }
+        if (meta.aab && sv[r.id].aab !== meta.aab) { sv[r.id].aab = meta.aab; changed = true; }
+      } else {
+        const dl = findDownloads(pkg);
+        if (dl.apk || dl.aab) {
+          if (!sv[r.id]) { sv[r.id] = {}; changed = true; }
+          if (dl.apk && sv[r.id].apk !== dl.apk) { sv[r.id].apk = dl.apk; changed = true; }
+          if (dl.aab && sv[r.id].aab !== dl.aab) { sv[r.id].aab = dl.aab; changed = true; }
+        }
+      }
+    }
+    if (changed) localStorage.setItem(modeKey('rv'), JSON.stringify(sv));
+  } catch {}
 }
 
 async function deleteRun(runId, e) {
