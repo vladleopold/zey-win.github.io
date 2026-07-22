@@ -38,6 +38,7 @@ const REPO_NAMES = { "zey-win/plinko": "plinko", "zey-win/blackjack": "blackjack
 const REPO_NAMES_ADMIN = { "zey-win/plinko": "plinko", "zey-win/blackjack": "blackjack", "zey-win/roulette": "roulette", "zey-win/dragon-tiger": "dragon tiger", "zey-win/baccarat-tiger": "baccarat", "zey-win/wheel-of-fortune": "lucky wheel", "zey-win/Unstopable": "unstopable", "zey-win/SlotSpot": "slotspot" };
 
 let mode = localStorage.getItem('builder_mode') || 'main';
+if (!["main", "admin"].includes(mode)) mode = 'main';
 function modeKey(base) { return base + (mode === "admin" ? "_admin" : ""); }
 function getRepoNames() {
   const base = mode === "admin" ? REPO_NAMES_ADMIN : REPO_NAMES;
@@ -1634,6 +1635,7 @@ const stopTimerLoop = startTimerLoop();
 syncSdkVersionField(true);
 showPageSpinner();
 
+console.log("[builder] startup IIFE starting");
 (async () => {
   updateIcon();
   loadBuilds();
@@ -1641,6 +1643,7 @@ showPageSpinner();
   setInterval(loadBuilds, 5000);
   setTimeout(loadReleases, 10);
 })();
+console.log("[builder] startup IIFE called");
 
 function populateRepoSelect() {
   const names = getRepoNames();
