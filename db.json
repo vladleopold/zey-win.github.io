@@ -236,16 +236,6 @@
       "package_name": "com.playsocgame.jack",
       "version_mode": "auto_next",
       "updated_at": "2026-07-22T06:07:51.573Z"
-    },
-    {
-      "id": "vladleopold-blackjack-sony",
-      "label": "blackjack_sony",
-      "game_repository": "vladleopold/blackjack_sony",
-      "app_name": "blackjack_sony",
-      "package_name": "com.socgame.black",
-      "version_mode": "auto_next",
-      "mode": "admin",
-      "updated_at": "2026-07-22T06:41:42.952Z"
     }
   ],
   "icons": [
@@ -1473,7 +1463,20 @@
       "status": "queued",
       "created_at": "2026-07-20T20:20:01.102Z",
       "updated_at": "2026-07-20T20:20:01.102Z"
+    },
+    {
+      "run_id": 29897617186,
+      "request_id": "builder-mrvpt7p0",
+      "package_name": "com.socgame.black",
+      "app_name": "black",
+      "game_repository": "vladleopold/blackjack_sony",
+      "build_format": "apk",
+      "version_name": "1",
+      "version_code": "1",
+      "status": "queued",
+      "created_at": "2026-07-22T06:42:27.445Z",
+      "updated_at": "2026-07-22T06:42:27.445Z"
     }
   ],
-  "updated_at": "2026-07-22T06:41:42.952Z"
+  "updated_at": "2026-07-22T06:42:27.445Z"
 }
