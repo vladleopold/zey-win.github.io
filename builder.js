@@ -69,6 +69,7 @@ const sdkVersionCache = new Map();
 const firebaseCache = new Map();
 let batchBuildRunning = false;
 let runs = [];
+let loadBuildsGen = 0;
 
 function repoFromTitle(t) { const s = (t || "").toLowerCase().replace(/[^a-z0-9 ]/g, " "); const names = getRepoNames(); for (const [repo, name] of Object.entries(names)) if (s.includes(name)) return repo; return null; }
 function parseTitle(title) { if (!title) return { app: "Build", pkg: "" }; const parts = title.replace(/^Android:\s*/i, "").split(" / ").map(p => p.trim()); return { app: parts[0] || "Build", pkg: parts[1] || "" }; }
@@ -145,7 +146,20 @@ function fireConfetti(dur = 4000) {
 }
 
 async function loadReleases() {
-  try { const res = await fetch("https://api.github.com/repos/zey-win/ci-cd/releases?per_page=50"); if (!res.ok) return; const data = await res.json(); releases.length = 0; for (const r of (data || [])) { const tag = r.tag_name || ""; const assets = (r.assets || []).map(a => ({ name: a.name, url: a.browser_download_url })); releases.push({ tag, name: r.name, assets }); } } catch {}
+  try {
+    const res = await Promise.race([
+      fetch("https://api.github.com/repos/zey-win/ci-cd/releases?per_page=50"),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("таймаут loadReleases")), 8000))
+    ]);
+    if (!res.ok) return;
+    const data = await res.json();
+    releases.length = 0;
+    for (const r of (data || [])) {
+      const tag = r.tag_name || "";
+      const assets = (r.assets || []).map(a => ({ name: a.name, url: a.browser_download_url }));
+      releases.push({ tag, name: r.name, assets });
+    }
+  } catch {}
 }
 function findDownloads(pkg) {
   if (!pkg) return { apk: null, aab: null };
@@ -470,12 +484,14 @@ function renderAll() {
 
 async function loadBuilds() {
   if (loading) loading.style.display = "inline-flex";
+  const gen = ++loadBuildsGen;
   try {
     const workflow = mode === "admin" ? "2" : "1";
-    const runsRes = await fetch(`${apiBase}/api/runs?workflow=${workflow}`);
-    loadReleases();
-    if (!runsRes.ok) return;
-    const d = await runsRes.json();
+    const res = await fetch(`${apiBase}/api/runs?workflow=${workflow}`);
+    if (gen !== loadBuildsGen) return;
+    if (!res.ok) return;
+    const d = await res.json();
+    if (gen !== loadBuildsGen) return;
     const oldRuns = runs;
     runs = Array.isArray(d.runs) ? d.runs : [];
     renderAll();
@@ -1594,7 +1610,7 @@ syncSdkVersionField(true);
 showPageSpinner();
 
 (async () => {
-  await loadReleases();
+  loadReleases();
   updateIcon();
   loadBuilds();
   loadConfigs();
