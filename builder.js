@@ -1681,6 +1681,7 @@ function toggleMode() {
   activeContainer.innerHTML = "";
   runs.length = 0;
   renderAll();
+  showPageSpinner();
 
   loadBuilds();
   loadConfigs();
