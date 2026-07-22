@@ -1697,14 +1697,6 @@ function updateModeTheme() {
     logo.textContent = isAdmin ? "CI / CD САЙТ" : "CI/CD";
     logo.style.color = isAdmin ? "#58a6ff" : "#c084fc";
   }
-  const indicator = document.getElementById("mode-indicator");
-  if (indicator) {
-    indicator.style.display = "inline";
-    indicator.textContent = isAdmin ? "🌐 САЙТ" : "🔧 АДМИНКА";
-    indicator.style.background = isAdmin ? "rgba(88,166,255,0.15)" : "rgba(124,58,237,0.2)";
-    indicator.style.color = isAdmin ? "#58a6ff" : "#c084fc";
-    indicator.style.border = isAdmin ? "1px solid #58a6ff" : "1px solid #7c3aed";
-  }
   const newBuildBtn = document.getElementById("new-build");
   if (newBuildBtn) {
     newBuildBtn.style.background = isAdmin ? "#58a6ff" : "#7c3aed";
