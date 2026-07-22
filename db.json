@@ -236,7 +236,7 @@
       "app_name": "Blackjack_Blad",
       "package_name": "com.playsocgame.jack",
       "version_mode": "auto_next",
-      "updated_at": "2026-07-22T08:43:59.784Z",
+      "updated_at": "2026-07-22T08:31:16.774Z",
       "version_name": "1",
       "version_code": "1",
       "zeywin_sdk_version": "v3.9.39",
@@ -250,7 +250,7 @@
       "icon_data_url": "",
       "firebase_cfg": "",
       "firebase_json_base64": "",
-      "mode": "main"
+      "mode": "admin"
     },
     {
       "id": "black",
@@ -295,8 +295,8 @@
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.socialapps.plinko.png",
       "firebase_cfg": "",
       "firebase_json_base64": "",
-      "mode": "admin",
-      "updated_at": "2026-07-22T08:19:39.995Z"
+      "mode": "main",
+      "updated_at": "2026-07-22T08:44:05.248Z"
     },
     {
       "id": "bl",
@@ -371,7 +371,7 @@
     {
       "package_name": "com.fbfn.fjjf",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/com.socialapps.plinko.png",
-      "updated_at": "2026-07-22T08:19:39.995Z"
+      "updated_at": "2026-07-22T08:44:05.248Z"
     },
     {
       "package_name": "com.com.com",
@@ -1569,5 +1569,5 @@
       "updated_at": "2026-07-20T20:20:01.102Z"
     }
   ],
-  "updated_at": "2026-07-22T08:43:59.784Z"
+  "updated_at": "2026-07-22T08:44:05.248Z"
 }
