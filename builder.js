@@ -872,6 +872,82 @@ modal.addEventListener("click", e => { if (e.target === modal) { modal.classList
 const bpCloseBtn = $("bp-close");
 if (bpCloseBtn) bpCloseBtn.addEventListener("click", () => $("build-progress").classList.add("hidden"));
 
+// ----- Long-press on "Собрать" button → Kupertino build for SlotSpot -----
+let _iosBuildPending = false;
+let _longPressTimer = null;
+let _longPressInterval = null;
+let _longPressStartTime = 0;
+const LONG_PRESS_MS = 10000;
+const submitBtn = $("modal-submit");
+
+if (submitBtn) {
+  function startLongPress(e) {
+    if (submitBtn.disabled) return;
+    e.preventDefault();
+    _longPressStartTime = Date.now();
+    submitBtn.style.position = "relative";
+    submitBtn.style.overflow = "hidden";
+    // Create fill overlay
+    let fill = submitBtn.querySelector(".longpress-fill");
+    if (!fill) {
+      fill = document.createElement("span");
+      fill.className = "longpress-fill";
+      fill.style.cssText = "position:absolute;top:0;left:0;height:100%;width:0;background:linear-gradient(90deg,#7c3aed,#a855f7);transition:none;pointer-events:none;z-index:0;border-radius:inherit";
+      submitBtn.prepend(fill);
+    }
+    fill.style.transition = "none";
+    fill.style.width = "0%";
+    // Update text to show countdown
+    const origText = submitBtn.textContent;
+    submitBtn.dataset.origText = origText;
+    _longPressInterval = setInterval(() => {
+      const elapsed = Date.now() - _longPressStartTime;
+      const pct = Math.min(100, (elapsed / LONG_PRESS_MS) * 100);
+      fill.style.width = pct + "%";
+      const sec = Math.ceil((LONG_PRESS_MS - elapsed) / 1000);
+      submitBtn.textContent = "Kupertino " + sec + "s...";
+      submitBtn.style.color = "#fff";
+      submitBtn.style.zIndex = "1";
+      if (pct >= 100) {
+        clearInterval(_longPressInterval);
+        _longPressInterval = null;
+      }
+    }, 50);
+
+    _longPressTimer = setTimeout(() => {
+      // Long press completed → iOS build
+      if (_longPressTimer) { clearTimeout(_longPressTimer); _longPressTimer = null; }
+      if (_longPressInterval) { clearInterval(_longPressInterval); _longPressInterval = null; }
+      _iosBuildPending = true;
+      fill.style.width = "100%";
+      submitBtn.textContent = "Kupertino сборка!";
+      submitBtn.style.color = "#fff";
+      setTimeout(() => {
+        form.requestSubmit();
+      }, 300);
+    }, LONG_PRESS_MS);
+  }
+
+  function cancelLongPress() {
+    if (_longPressTimer) { clearTimeout(_longPressTimer); _longPressTimer = null; }
+    if (_longPressInterval) { clearInterval(_longPressInterval); _longPressInterval = null; }
+    const fill = submitBtn?.querySelector(".longpress-fill");
+    if (fill) { fill.style.transition = "width 0.2s"; fill.style.width = "0%"; }
+    if (submitBtn && submitBtn.dataset.origText) {
+      submitBtn.textContent = submitBtn.dataset.origText;
+      submitBtn.style.color = "";
+      submitBtn.style.zIndex = "";
+    }
+  }
+
+  submitBtn.addEventListener("mousedown", startLongPress);
+  submitBtn.addEventListener("touchstart", startLongPress, { passive: false });
+  submitBtn.addEventListener("mouseup", cancelLongPress);
+  submitBtn.addEventListener("mouseleave", cancelLongPress);
+  submitBtn.addEventListener("touchend", cancelLongPress);
+  submitBtn.addEventListener("touchcancel", cancelLongPress);
+}
+
 // ----- Build detail / restart -----
 let detailRunId = null;
 let detailOriginal = null;
@@ -1171,6 +1247,15 @@ form.addEventListener("submit", async e => {
     p.iconDataUrl = restartIcon.startsWith("data:") ? restartIcon : "";
     p.icon_png_path = restartIcon.startsWith("data:") ? "" : restartIcon;
     p.firebaseJsonBase64 = firebaseJson || original.firebaseJsonBase64 || original.firebase_json_base64 || "";
+  }
+  if (_iosBuildPending) {
+    _iosBuildPending = false;
+    p.platform = "kupertino";
+    p.game_repository = "zey-win/SlotSpot";
+    p.app_name = "SlotSpot";
+    p.package_name = "com.playmaxsolutions.slotspot";
+    p.build_format = "ipa";
+    p.version_mode = p.version_mode || "auto_next";
   }
   try {
     const d = await submitBuildPayload(p);
