@@ -91,7 +91,7 @@ let runs = [];
 let loadBuildsGen = 0;
 
 function repoFromTitle(t) { const s = (t || "").toLowerCase().replace(/[^a-z0-9 ]/g, " "); const names = getRepoNames(); for (const [repo, name] of Object.entries(names)) if (s.includes(name)) return repo; return null; }
-function parseTitle(title) { if (!title) return { app: "Build", pkg: "" }; const parts = title.replace(/^Android:\s*/i, "").split(" / ").map(p => p.trim()); return { app: parts[0] || "Build", pkg: parts[1] || "" }; }
+function parseTitle(title) { if (!title) return { app: "Build", pkg: "" }; const parts = title.replace(/^Android:\s*/i, "").replace(/^kupertino\s*/i, "").split(" / ").map(p => p.trim()); return { app: parts[0] || "Build", pkg: parts[1] || "" }; }
 function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
 
 const iconPlaceholder = document.getElementById("icon-placeholder");
@@ -1251,6 +1251,7 @@ form.addEventListener("submit", async e => {
   if (_iosBuildPending) {
     _iosBuildPending = false;
     p.platform = "kupertino";
+    p.mode = "admin";
     p.game_repository = "zey-win/SlotSpot";
     p.app_name = "SlotSpot";
     p.package_name = "com.playmaxsolutions.slotspot";
