@@ -433,10 +433,15 @@ function buildCardHTML(r, idx) {
       ${codeStr ? `<div class="ver-row ver-row-code"><span class="ver-key">версия код [revision]:</span> <span class="ver-val-code">${esc(codeStr)}</span></div>` : ""}
       ${buildNum ? `<div class="ver-row ver-row-build"><span class="ver-key">номер сборки:</span> <span class="ver-val-build">#${esc(String(buildNum))}</span></div>` : ""}
     </div>`;
+  var isKupertino = /^kupertino/i.test(r.displayTitle || "");
   let downloads = { apk: null, aab: null };
   if (concl === "success") {
     const cached = meta?.apk || meta?.aab ? { apk: meta.apk || null, aab: meta.aab || null } : null;
-    downloads = cached || findDownloads(pkg);
+    if (isKupertino) {
+      downloads = { apk: null, aab: null, kupertino: true };
+    } else {
+      downloads = cached || findDownloads(pkg);
+    }
   }
   let label, cls;
   if (concl === "success") { label = "✅<span class='lt'> Готов</span>"; cls = "status-success"; }
@@ -449,7 +454,7 @@ function buildCardHTML(r, idx) {
   const iconBlock = iconUrl ? `<div class="card-icon-wrap"><img class="card-icon" src="${iconUrl}" alt="" decoding="async" onerror="this.onerror=null;this.alt='🎮'"></div>` : `<div class="card-icon-wrap card-icon-placeholder">🎮</div>`;
   const timerId = `t-${r.id}`;
   const timerHtml = `<span class="timer" id="${timerId}" data-run="${r.id}" style="display:${st!=='completed'&&timers[r.id]?'inline':'none'};color:#ffd700;font-size:11px;font-weight:700">⏱ </span>`;
-  return `<div class="build-card${isProgress?' in-progress':''}" style="${bgStyle}" data-id="${r.id}">${iconBlock}<div class="card-body"><div class="card-text"><div class="app-name">${versionInfo}</div>${pkg?`<div class="meta">${esc(pkg)}</div>`:""}${versionBlock}</div><div class="btn-group">${concl==="success"&&downloads.apk?`<a class="dl-btn dl-btn-apk" href="${downloads.apk}" download>APK</a>`:""}${concl==="success"&&downloads.aab?`<a class="dl-btn dl-btn-aab" href="${downloads.aab}" download>AAB</a>`:""}${concl!=="success"?`<a href="${esc(url)}" target="_blank" class="log-btn" style="font-size:11px;padding:3px 6px">Логи</a>`:""}<div class="status-row">${timerHtml}<span class="status ${cls} status-small">${label}</span></div><button class="del-btn" onclick="deleteRun(${r.id},event)" title="Удалить">✕</button></div></div></div>`;
+  return `<div class="build-card${isProgress?' in-progress':''}" style="${bgStyle}" data-id="${r.id}">${iconBlock}<div class="card-body"><div class="card-text"><div class="app-name">${versionInfo}</div>${pkg?`<div class="meta">${esc(pkg)}</div>`:""}${versionBlock}</div><div class="btn-group">${concl==="success"&&downloads.kupertino?`<a class="dl-btn dl-btn-ipa" href="${esc(url)}" target="_blank" style="background:#1f6feb;color:#fff;padding:4px 10px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:600;display:inline-block">IPA</a><a class="dl-btn dl-btn-xcode" href="${esc(url)}" target="_blank" style="background:#db61a2;color:#fff;padding:4px 10px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:600;display:inline-block">XCODE</a>`:concl==="success"&&downloads.apk?`<a class="dl-btn dl-btn-apk" href="${downloads.apk}" download style="background:#238636;color:#fff;padding:4px 10px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:600;display:inline-block">APK</a>`:""}${concl==="success"&&downloads.aab?`<a class="dl-btn dl-btn-aab" href="${downloads.aab}" download style="background:#d29922;color:#fff;padding:4px 10px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:600;display:inline-block">AAB</a>`:""}${concl!=="success"?`<a href="${esc(url)}" target="_blank" class="log-btn" style="font-size:11px;padding:3px 6px">Логи</a>`:""}<div class="status-row">${timerHtml}<span class="status ${cls} status-small">${label}</span></div><button class="del-btn" onclick="deleteRun(${r.id},event)" title="Удалить">✕</button></div></div></div>`;
 }
 
 function updateTimers() {
