@@ -45,13 +45,11 @@ function hidePageSpinner() {
 function startProgress() {
   const txt = document.getElementById("page-progress-text");
   if (!txt) return;
-  const totalMs = 27000;
+  const totalMs = 9000;
   const start = Date.now();
   function tick() {
     const elapsed = Date.now() - start;
-    const base = Math.min(95, (elapsed / totalMs) * 100);
-    const jitter = Math.sin(elapsed / 350) * 6 + Math.cos(elapsed / 170) * 4 + Math.sin(elapsed / 780) * 3;
-    let p = Math.max(0, Math.min(100, base + jitter));
+    const p = Math.min(100, Math.max(1, (elapsed / totalMs) * 100));
     txt.textContent = Math.floor(p) + "%";
     if (elapsed < totalMs) { progressAnimId = requestAnimationFrame(tick); }
     else { txt.textContent = "100%"; progressAnimId = null; }
