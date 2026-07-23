@@ -21,7 +21,9 @@ const sparksBtn = null;
 const loading = $("loading");
 let pageSpinner = null;
 let progressAnimId = null;
+let pageSpinnerStart = 0;
 function showPageSpinner() {
+  pageSpinnerStart = Date.now();
   if (pageSpinner) { pageSpinner.style.display = "flex"; return; }
   pageSpinner = document.createElement("div");
   pageSpinner.id = "page-spinner";
@@ -32,7 +34,13 @@ function showPageSpinner() {
 }
 function hidePageSpinner() {
   if (progressAnimId) { cancelAnimationFrame(progressAnimId); progressAnimId = null; }
-  if (pageSpinner) pageSpinner.style.display = "none";
+  if (!pageSpinner) return;
+  var elapsed = Date.now() - pageSpinnerStart;
+  if (elapsed < 10000) {
+    setTimeout(function() { pageSpinner.style.display = "none"; }, 10000 - elapsed);
+  } else {
+    pageSpinner.style.display = "none";
+  }
 }
 function startProgress() {
   const txt = document.getElementById("page-progress-text");
