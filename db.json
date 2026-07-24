@@ -1608,7 +1608,20 @@
       "status": "queued",
       "created_at": "2026-07-20T20:20:01.102Z",
       "updated_at": "2026-07-20T20:20:01.102Z"
+    },
+    {
+      "run_id": null,
+      "request_id": "builder-mrz0i7sn",
+      "package_name": "com.playsocgame.blackjacknew",
+      "app_name": "Black Jack New",
+      "game_repository": "zey-win/BlackJackNew",
+      "build_format": "apk",
+      "version_name": "2",
+      "version_code": "2",
+      "status": "queued",
+      "created_at": "2026-07-24T14:05:20.777Z",
+      "updated_at": "2026-07-24T14:05:20.777Z"
     }
   ],
-  "updated_at": "2026-07-24T13:59:33.566Z"
+  "updated_at": "2026-07-24T14:05:20.777Z"
 }
