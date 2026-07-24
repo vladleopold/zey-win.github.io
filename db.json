@@ -323,6 +323,16 @@
       "firebase_json_base64": "",
       "mode": "admin",
       "updated_at": "2026-07-22T09:38:16.990Z"
+    },
+    {
+      "id": "zey-win-blackjacknew",
+      "label": "BlackJackNew",
+      "game_repository": "zey-win/BlackJackNew",
+      "app_name": "BlackJackNew",
+      "package_name": "com.playsocialgames.blackjacknew",
+      "version_mode": "auto_next",
+      "mode": "admin",
+      "updated_at": "2026-07-24T13:33:19.470Z"
     }
   ],
   "icons": [
@@ -1572,5 +1582,5 @@
       "updated_at": "2026-07-20T20:20:01.102Z"
     }
   ],
-  "updated_at": "2026-07-23T10:35:03.485Z"
+  "updated_at": "2026-07-24T13:33:19.470Z"
 }
