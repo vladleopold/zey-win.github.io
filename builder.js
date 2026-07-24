@@ -3,7 +3,6 @@ const operatorKey = document.querySelector('meta[name="builder-key"]')?.content?
 const op = (extra = {}) => ({ "Content-Type": "application/json", "x-builder-key": operatorKey, ...extra });
 const $ = id => document.getElementById(id);
 function safeString(v) { return v == null ? "" : String(v).trim(); }
-const $ = id => document.getElementById(id);
 function ensureContainer(id) { return $(id) || (() => { const d = document.createElement("div"); d.id = id; d.style.cssText = "padding:0 12px 12px"; document.querySelector("header").after(d); return d; })(); }
 const buildsContainer = ensureContainer("builds-container");
 const activeContainer = ensureContainer("active-container");
