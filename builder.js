@@ -101,6 +101,24 @@ function repoFromTitle(t) { const s = (t || "").toLowerCase().replace(/[^a-z0-9 
 function parseTitle(title) { if (!title) return { app: "Build", pkg: "" }; const parts = title.replace(/^Android:\s*/i, "").replace(/^kupertino\s*/i, "").split(" / ").map(p => p.trim()); var pkg = parts[1] || ""; pkg = pkg.replace(/\s+\d+$/, ""); return { app: parts[0] || "Build", pkg: pkg }; }
 function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
 
+async function fetchScreenshots(runId) {
+  const screenshots = [];
+  for (let i = 1; i <= 4; i++) {
+    try {
+      const res = await fetch(`${apiBase}/api/artifact?run_id=${runId}&name=screen-${i}`);
+      if (res.ok) {
+        const blob = await res.blob();
+        screenshots.push(URL.createObjectURL(blob));
+      } else {
+        screenshots.push(null);
+      }
+    } catch (e) {
+      screenshots.push(null);
+    }
+  }
+  return screenshots;
+}
+
 const iconPlaceholder = document.getElementById("icon-placeholder");
 function showPlaceholder() { if (iconPlaceholder) iconPlaceholder.style.display = ""; }
 function hidePlaceholder() { if (iconPlaceholder) iconPlaceholder.style.display = "none"; }
@@ -1122,6 +1140,7 @@ function showBuildInfo(runId) {
       }
       if (parts.length >= 3 && !params.build_format) params.build_format = parts[2].trim();
     }
+    var isKupertino = /^kupertino/i.test(run.displayTitle || "");
     var iconUrl = meta.icon || resolveIcon(run) || "";
     var url = run.htmlUrl || "";
     var isActive = ["in_progress","pending","queued","waiting"].indexOf(run.status) !== -1;
@@ -1154,7 +1173,10 @@ function showBuildInfo(runId) {
     }
     fields.push(["Статус", run.status || ""]);
     fields.push(["# сборки", String(run.runNumber || run.run_number || "")]);
-    var html = '<div style="display:flex;gap:12px;margin-bottom:12px">';
+    var html = '<div style="display:flex;gap:24px;align-items:flex-start">';
+    // Left column: build info
+    html += '<div style="flex:1;min-width:0">';
+    html += '<div style="display:flex;gap:12px;margin-bottom:12px">';
     if (iconUrl) html += '<img src="' + iconUrl + '" style="width:64px;height:64px;border-radius:12px;flex-shrink:0;object-fit:cover" alt="">';
     html += '<div style="flex:1;min-width:0">';
     html += '<div style="font-size:18px;font-weight:700;color:#f0f6fc;margin-bottom:4px">' + esc(params.app_name || run.displayTitle || "") + '</div>';
@@ -1175,6 +1197,12 @@ function showBuildInfo(runId) {
     if (isActive) {
       html += '<div style="margin-top:12px"><div style="font-size:13px;font-weight:600;color:#ffd700;margin-bottom:4px">📋 Логи сборки:</div><pre id="dm-logs" style="background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:8px;font-size:11px;line-height:1.4;max-height:300px;overflow-y:auto;color:#c9d1d9;white-space:pre-wrap;word-break:break-all">Загрузка...</pre></div>';
     }
+    html += '</div>';
+    // Right column: screenshot grid for kupertino builds
+    if (isKupertino) {
+      html += '<div id="dm-screenshots" style="width:320px;flex-shrink:0"><div style="font-size:13px;font-weight:600;color:#8b949e;margin-bottom:8px">Скриншоты симулятора</div><div class="screenshot-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div></div>';
+    }
+    html += '</div>';
     document.getElementById("dm-content").innerHTML = html;
     document.getElementById("detail-modal").classList.remove("hidden");
     if (isActive) {
@@ -1187,6 +1215,23 @@ function showBuildInfo(runId) {
       }
       pollLogs();
       _logTimer = setInterval(pollLogs, 7000);
+    }
+    // Fetch and display screenshots for kupertino builds
+    if (isKupertino) {
+      fetchScreenshots(runId).then(function(urls) {
+        var grid = document.querySelector("#dm-screenshots .screenshot-grid");
+        if (!grid) return;
+        for (var i = 0; i < 4; i++) {
+          var div = document.createElement("div");
+          div.style.cssText = "aspect-ratio:1;border-radius:8px;overflow:hidden;background:#0d1117;border:1px solid #30363d";
+          if (urls[i]) {
+            div.innerHTML = '<img src="' + urls[i] + '" style="width:100%;height:100%;object-fit:cover" alt="Screenshot ' + (i+1) + '" loading="lazy">';
+          } else {
+            div.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#484f58;font-size:12px">Нет скриншота</div>';
+          }
+          grid.appendChild(div);
+        }
+      });
     }
   } catch(e) { console.error(e); }
 }

@@ -139,3 +139,31 @@ input[name="zeywin_api_key"]{text-align:right;direction:rtl}
 #config-list{background:#161b22;border:1px solid #30363d;border-radius:4px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
 #config-list button:hover{background:#30363d}
 #config-list div[style*="cursor:pointer"]:hover{background:#1c2333}
+
+/* Screenshot grid in detail modal */
+#dm-screenshots .screenshot-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+#dm-screenshots .screenshot-grid > div {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #0d1117;
+  border: 1px solid #30363d;
+}
+#dm-screenshots .screenshot-grid img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+#dm-screenshots .screenshot-grid > div:hover img {
+  transform: scale(1.02);
+}
+@media (max-width: 768px) {
+  #dm-screenshots {
+    display: none;
+  }
+}
