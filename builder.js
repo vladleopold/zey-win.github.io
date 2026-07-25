@@ -1397,7 +1397,7 @@ function renderConfigDropdown() {
             localStorage.setItem(modeKey("savedConfigs"), JSON.stringify(local.filter(x => x.id !== id)));
           } catch {}
           try {
-            await fetch(`${apiBase}/api/configs`, { method: "DELETE", headers: op(), body: JSON.stringify({ id }) });
+            await fetch(`${apiBase}/api/configs`, { method: "POST", headers: op(), body: JSON.stringify({ id }) });
           } catch {}
           if (selectedConfigId === id) selectedConfigId = null;
           renderConfigDropdown();
