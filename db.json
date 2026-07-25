@@ -68,8 +68,8 @@
       "game_repository": "zey-win/SlotSpot",
       "app_name": "SlotSpot",
       "package_name": "com.playmaxsolutions.slotspot",
-      "version_name": "13.0",
-      "version_code": "25",
+      "version_name": "2",
+      "version_code": "2",
       "version_mode": "auto_next",
       "zeywin_sdk_version": "v3.9.37",
       "zeywin_api_key": "zw_7b07dc24806408f6e655dcf0422e15c5e028d40d440b3e1a",
@@ -77,12 +77,13 @@
       "admob_banner": "ca-app-pub-1585565865476548/2893595529",
       "admob_interstitial": "ca-app-pub-1585565865476548/2521834122",
       "admob_rewarded": "ca-app-pub-1585565865476548/7091315351",
-      "firebase_cfg": "com.playmaxsolutions.slotspot.json",
+      "firebase_cfg": "ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiOTQxMTgzMDg1OTMxIiwKICAgICJwcm9qZWN0X2lkIjogInNsb3RzLXBvdCIsCiAgICAic3RvcmFnZV9idWNrZXQiOiAic2xvdHMtcG90LmZpcmViYXNlc3RvcmFnZS5hcHAiCiAgfSwKICAiY2xpZW50IjogWwogICAgewogICAgICAiY2xpZW50X2luZm8iOiB7CiAgICAgICAgIm1vYmlsZXNka19hcHBfaWQiOiAiMTo5NDExODMwODU5MzE6YW5kcm9pZDoxZTEyOTYwMmY3MmU5YTNkMTJmMDJlIiwKICAgICAgICAiYW5kcm9pZF9jbGllbnRfaW5mbyI6IHsKICAgICAgICAgICJwYWNrYWdlX25hbWUiOiAiY29tLnBsYXltYXhzb2x1dGlvbnMuc2xvdHNwb3QiCiAgICAgICAgfQogICAgICB9LAogICAgICAib2F1dGhfY2xpZW50IjogW10sCiAgICAgICJhcGlfa2V5IjogWwogICAgICAgIHsKICAgICAgICAgICJjdXJyZW50X2tleSI6ICJBSXphU3lDZTV4eF9mYWlhMkFIZVhqRC1yMGVlZUhRc0VvM2hZUjgiCiAgICAgICAgfQogICAgICBdLAogICAgICAic2VydmljZXMiOiB7CiAgICAgICAgImFwcGludml0ZV9zZXJ2aWNlIjogewogICAgICAgICAgIm90aGVyX3BsYXRmb3JtX29hdXRoX2NsaWVudCI6IFtdCiAgICAgICAgfQogICAgICB9CiAgICB9CiAgXSwKICAiY29uZmlndXJhdGlvbl92ZXJzaW9uIjogIjEiCn0=",
       "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__SlotSpot.png",
       "icon_path": "",
-      "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__SlotSpot.png",
-      "firebase_json_base64": "data:application/json;base64,ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiOTQxMTgzMDg1OTMxIiwKICAgICJwcm9qZWN0X2lkIjogInNsb3RzLXBvdCIsCiAgICAic3RvcmFnZV9idWNrZXQiOiAic2xvdHMtcG90LmZpcmViYXNlc3RvcmFnZS5hcHAiCiAgfSwKICAiY2xpZW50IjogWwogICAgewogICAgICAiY2xpZW50X2luZm8iOiB7CiAgICAgICAgIm1vYmlsZXNka19hcHBfaWQiOiAiMTo5NDExODMwODU5MzE6YW5kcm9pZDoxZTEyOTYwMmY3MmU5YTNkMTJmMDJlIiwKICAgICAgICAiYW5kcm9pZF9jbGllbnRfaW5mbyI6IHsKICAgICAgICAgICJwYWNrYWdlX25hbWUiOiAiY29tLnBsYXltYXhzb2x1dGlvbnMuc2xvdHNwb3QiCiAgICAgICAgfQogICAgICB9LAogICAgICAib2F1dGhfY2xpZW50IjogW10sCiAgICAgICJhcGlfa2V5IjogWwogICAgICAgIHsKICAgICAgICAgICJjdXJyZW50X2tleSI6ICJBSXphU3lDZTV4eF9mYWlhMkFIZVhqRC1yMGVlZUhRc0VvM2hZUjgiCiAgICAgICAgfQogICAgICBdLAogICAgICAic2VydmljZXMiOiB7CiAgICAgICAgImFwcGludml0ZV9zZXJ2aWNlIjogewogICAgICAgICAgIm90aGVyX3BsYXRmb3JtX29hdXRoX2NsaWVudCI6IFtdCiAgICAgICAgfQogICAgICB9CiAgICB9CiAgXSwKICAiY29uZmlndXJhdGlvbl92ZXJzaW9uIjogIjEiCn0=",
-      "updated_at": "2026-07-21T18:58:28.956Z"
+      "icon_data_url": "",
+      "firebase_json_base64": "ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiOTQxMTgzMDg1OTMxIiwKICAgICJwcm9qZWN0X2lkIjogInNsb3RzLXBvdCIsCiAgICAic3RvcmFnZV9idWNrZXQiOiAic2xvdHMtcG90LmZpcmViYXNlc3RvcmFnZS5hcHAiCiAgfSwKICAiY2xpZW50IjogWwogICAgewogICAgICAiY2xpZW50X2luZm8iOiB7CiAgICAgICAgIm1vYmlsZXNka19hcHBfaWQiOiAiMTo5NDExODMwODU5MzE6YW5kcm9pZDoxZTEyOTYwMmY3MmU5YTNkMTJmMDJlIiwKICAgICAgICAiYW5kcm9pZF9jbGllbnRfaW5mbyI6IHsKICAgICAgICAgICJwYWNrYWdlX25hbWUiOiAiY29tLnBsYXltYXhzb2x1dGlvbnMuc2xvdHNwb3QiCiAgICAgICAgfQogICAgICB9LAogICAgICAib2F1dGhfY2xpZW50IjogW10sCiAgICAgICJhcGlfa2V5IjogWwogICAgICAgIHsKICAgICAgICAgICJjdXJyZW50X2tleSI6ICJBSXphU3lDZTV4eF9mYWlhMkFIZVhqRC1yMGVlZUhRc0VvM2hZUjgiCiAgICAgICAgfQogICAgICBdLAogICAgICAic2VydmljZXMiOiB7CiAgICAgICAgImFwcGludml0ZV9zZXJ2aWNlIjogewogICAgICAgICAgIm90aGVyX3BsYXRmb3JtX29hdXRoX2NsaWVudCI6IFtdCiAgICAgICAgfQogICAgICB9CiAgICB9CiAgXSwKICAiY29uZmlndXJhdGlvbl92ZXJzaW9uIjogIjEiCn0=",
+      "updated_at": "2026-07-25T20:29:10.014Z",
+      "mode": "admin"
     },
     {
       "id": "unstopable-real-money",
@@ -382,7 +383,7 @@
     {
       "package_name": "com.playmaxsolutions.slotspot",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__SlotSpot.png",
-      "updated_at": "2026-07-21T18:58:28.956Z"
+      "updated_at": "2026-07-25T20:29:10.014Z"
     },
     {
       "package_name": "com.playsocialgames.blackjakck",
@@ -1626,20 +1627,7 @@
       "status": "queued",
       "created_at": "2026-07-25T20:02:11.049Z",
       "updated_at": "2026-07-25T20:02:11.049Z"
-    },
-    {
-      "run_id": null,
-      "request_id": "builder-ms0tnnab",
-      "package_name": "com.playmaxsolutions.slotspot",
-      "app_name": "SlotSpot",
-      "game_repository": "zey-win/SlotSpot",
-      "build_format": "apk",
-      "version_name": "2",
-      "version_code": "2",
-      "status": "queued",
-      "created_at": "2026-07-25T20:29:04.464Z",
-      "updated_at": "2026-07-25T20:29:04.464Z"
     }
   ],
-  "updated_at": "2026-07-25T20:29:04.464Z"
+  "updated_at": "2026-07-25T20:29:10.014Z"
 }
