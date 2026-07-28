@@ -82,7 +82,7 @@
       "icon_path": "",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__SlotSpot.png",
       "firebase_json_base64": "ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiOTQxMTgzMDg1OTMxIiwKICAgICJwcm9qZWN0X2lkIjogInNsb3RzLXBvdCIsCiAgICAic3RvcmFnZV9idWNrZXQiOiAic2xvdHMtcG90LmZpcmViYXNlc3RvcmFnZS5hcHAiCiAgfSwKICAiY2xpZW50IjogWwogICAgewogICAgICAiY2xpZW50X2luZm8iOiB7CiAgICAgICAgIm1vYmlsZXNka19hcHBfaWQiOiAiMTo5NDExODMwODU5MzE6YW5kcm9pZDoxZTEyOTYwMmY3MmU5YTNkMTJmMDJlIiwKICAgICAgICAiYW5kcm9pZF9jbGllbnRfaW5mbyI6IHsKICAgICAgICAgICJwYWNrYWdlX25hbWUiOiAiY29tLnBsYXltYXhzb2x1dGlvbnMuc2xvdHNwb3QiCiAgICAgICAgfQogICAgICB9LAogICAgICAib2F1dGhfY2xpZW50IjogW10sCiAgICAgICJhcGlfa2V5IjogWwogICAgICAgIHsKICAgICAgICAgICJjdXJyZW50X2tleSI6ICJBSXphU3lDZTV4eF9mYWlhMkFIZVhqRC1yMGVlZUhRc0VvM2hZUjgiCiAgICAgICAgfQogICAgICBdLAogICAgICAic2VydmljZXMiOiB7CiAgICAgICAgImFwcGludml0ZV9zZXJ2aWNlIjogewogICAgICAgICAgIm90aGVyX3BsYXRmb3JtX29hdXRoX2NsaWVudCI6IFtdCiAgICAgICAgfQogICAgICB9CiAgICB9CiAgXSwKICAiY29uZmlndXJhdGlvbl92ZXJzaW9uIjogIjEiCn0=",
-      "updated_at": "2026-07-28T15:19:44.464Z",
+      "updated_at": "2026-07-28T15:20:04.119Z",
       "mode": "admin"
     },
     {
@@ -383,7 +383,7 @@
     {
       "package_name": "com.playmaxsolutions.slotspot",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__SlotSpot.png",
-      "updated_at": "2026-07-28T15:19:44.464Z"
+      "updated_at": "2026-07-28T15:20:04.120Z"
     },
     {
       "package_name": "com.playsocialgames.blackjakck",
@@ -1642,5 +1642,5 @@
       "updated_at": "2026-07-25T20:47:14.269Z"
     }
   ],
-  "updated_at": "2026-07-28T15:19:44.464Z"
+  "updated_at": "2026-07-28T15:20:04.120Z"
 }
