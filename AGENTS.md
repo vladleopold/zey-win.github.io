@@ -1,4 +1,18 @@
-## Critical Rule
+## 🔴 ПРАВИЛО №1 (НАВСЕГДА)
+
+**НИКОГДА НЕ ВРАТЬ ПРО СТАТУС РАБОТЫ.**
+
+После каждого изменения:
+
+1. **Поднять версию** в `index.html`: `builder.js?vN` (N+1), `styles-20260626.css?vN` (если менял CSS)
+2. **Залить на GitHub** (`git push`)
+3. **Дождаться** деплоя GitHub Pages (проверить `gh run list -R zey-win/zey-win.github.io`)
+4. **Проверить** на https://zey-win.github.io — очистить кеш, убедиться что изменения работают
+5. **Только после этого** писать пользователю что готово
+
+Проверять на https://zey-win.github.io (НЕ на Vercel — Vercel может быть не актуальным).
+
+## Cache Versioning
 
 After every change to `builder.js`, bump the cache version in `index.html`:
 ```
