@@ -91,7 +91,7 @@ let runs = [];
 let loadBuildsGen = 0;
 
 function repoFromTitle(t) { const s = (t || "").toLowerCase().replace(/[^a-z0-9 ]/g, " "); const names = getRepoNames(); for (const [repo, name] of Object.entries(names)) if (s.includes(name)) return repo; return null; }
-function parseTitle(title) { if (!title) return { app: "Build", pkg: "" }; const parts = title.replace(/^Android:\s*/i, "").replace(/^kupertino\s*/i, "").split(" / ").map(p => p.trim()); var pkg = parts[1] || ""; pkg = pkg.replace(/\s+\d+$/, ""); var app = parts[0] || "Build"; app = app.replace(/(apk_aab|apk|aab|ipa)$/i, "").trim(); return { app: app || "Build", pkg: pkg }; }
+function parseTitle(title) { if (!title) return { app: "Build", pkg: "" }; const parts = title.replace(/^Android:\s*/i, "").replace(/^kupertino\s*/i, "").split("/ ").map(p => p.trim()); var pkg = parts[1] || ""; pkg = pkg.replace(/\s+\d+$/, ""); var app = parts[0] || "Build"; app = app.replace(/(apk_aab|apk|aab|ipa)$/i, "").trim(); return { app: app || "Build", pkg: pkg }; }
 function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
 
 async function fetchScreenshots(runId) {
