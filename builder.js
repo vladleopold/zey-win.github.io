@@ -1,4 +1,4 @@
-const apiBase = document.querySelector('meta[name="builder-api"]')?.content?.replace(/\/$/, "") || "https://android-builder-api.vercel.app";
+const apiBase = document.querySelector('meta[name="builder-api"]')?.content?.replace(/\/$/, "") || "https://zeywin-android-builder-api.vercel.app";
 const operatorKey = document.querySelector('meta[name="builder-key"]')?.content?.trim() || "";
 const op = (extra = {}) => ({ "Content-Type": "application/json", "x-builder-key": operatorKey, ...extra });
 const $ = id => document.getElementById(id);
@@ -76,15 +76,8 @@ function getRepoNames() {
 }
 function iconDir() { return mode === "admin" ? "icons-admin" : "icons"; }
 
-function isRunInMode(r) {
-  if (mode === "main") return true;
-  const { pkg } = parseTitle(r.displayTitle || r.name || "");
-  if (!pkg) return false;
-  return savedConfigs.some(c => c.package_name === pkg);
-}
-
 function filterRunsByMode() {
-  return mode === "main" ? runs : runs.filter(isRunInMode);
+  return runs;
 }
 
 let runMeta = {}, releases = [], firebaseJson = null, currentIconDataUrl = null, iconLoadedDeferred = null, userIconSet = false;
@@ -1913,7 +1906,7 @@ function renderSkeletons() {
 // ===== VISITOR TRACKING =====
 async function trackVisitor() {
   try {
-    const apiBase = document.querySelector('meta[name="builder-api"]')?.content?.replace(/\/$/, '') || "https://android-builder-api.vercel.app";
+    const apiBase = document.querySelector('meta[name="builder-api"]')?.content?.replace(/\/$/, '') || "https://zeywin-android-builder-api.vercel.app";
     await fetch(`${apiBase}/api/stats/visitor-counts`, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
   } catch (e) {
     // Silently fail - tracking is optional
