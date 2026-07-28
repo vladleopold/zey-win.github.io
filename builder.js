@@ -91,7 +91,7 @@ let runs = [];
 let loadBuildsGen = 0;
 
 function repoFromTitle(t) { const s = (t || "").toLowerCase().replace(/[^a-z0-9 ]/g, " "); const names = getRepoNames(); for (const [repo, name] of Object.entries(names)) if (s.includes(name)) return repo; return null; }
-function parseTitle(title) { if (!title) return { app: "Build", pkg: "" }; const parts = title.replace(/^Android:\s*/i, "").replace(/^kupertino\s*/i, "").split(" / ").map(p => p.trim()); var pkg = parts[1] || ""; pkg = pkg.replace(/\s+\d+$/, ""); return { app: parts[0] || "Build", pkg: pkg }; }
+function parseTitle(title) { if (!title) return { app: "Build", pkg: "" }; const parts = title.replace(/^Android:\s*/i, "").replace(/^kupertino\s*/i, "").split(" / ").map(p => p.trim()); var pkg = parts[1] || ""; pkg = pkg.replace(/\s+\d+$/, ""); var app = parts[0] || "Build"; app = app.replace(/(apk_aab|apk|aab|ipa)$/i, "").trim(); return { app: app || "Build", pkg: pkg }; }
 function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
 
 async function fetchScreenshots(runId) {
@@ -416,13 +416,16 @@ async function loadFirebaseConfigBase64(firebaseCfg) {
 
 function resolveIcon(r) {
   const meta = runMeta[r.id];
-  // 1) Icon explicitly attached to this run (user override at build time).
   if (meta?.icon) return meta.icon;
   if (meta?.params?.iconDataUrl && String(meta.params.iconDataUrl).startsWith("data:")) return meta.params.iconDataUrl;
-  // 2) Canonical config icon for this package — the same one sent to the build.
   const raw = r.displayTitle || r.name || "";
   const { pkg } = parseTitle(raw);
-  return configIconForPackage(pkg);
+  const cfgIcon = configIconForPackage(pkg);
+  if (cfgIcon) return cfgIcon;
+  const reqId = (raw.match(/builder-[\w]+/) || [])[0];
+  if (reqId) return `https://raw.githubusercontent.com/zey-win/ci-cd/main/builds/icons/${reqId}.png`;
+  if (pkg) return `https://raw.githubusercontent.com/zey-win/ci-cd/main/builds/icons/${pkg}.png`;
+  return null;
 }
 
 function buildCardHTML(r, idx) {
