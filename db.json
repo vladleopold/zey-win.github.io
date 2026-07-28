@@ -68,8 +68,8 @@
       "game_repository": "zey-win/SlotSpot",
       "app_name": "SlotSpot",
       "package_name": "com.playmaxsolutions.slotspot",
-      "version_name": "13.0",
-      "version_code": "25",
+      "version_name": "2",
+      "version_code": "2",
       "version_mode": "auto_next",
       "zeywin_sdk_version": "v3.9.37",
       "zeywin_api_key": "zw_7b07dc24806408f6e655dcf0422e15c5e028d40d440b3e1a",
@@ -77,13 +77,13 @@
       "admob_banner": "ca-app-pub-1585565865476548/2893595529",
       "admob_interstitial": "ca-app-pub-1585565865476548/2521834122",
       "admob_rewarded": "ca-app-pub-1585565865476548/7091315351",
-      "firebase_cfg": "com.playmaxsolutions.slotspot.json",
+      "firebase_cfg": "ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiOTQxMTgzMDg1OTMxIiwKICAgICJwcm9qZWN0X2lkIjogInNsb3RzLXBvdCIsCiAgICAic3RvcmFnZV9idWNrZXQiOiAic2xvdHMtcG90LmZpcmViYXNlc3RvcmFnZS5hcHAiCiAgfSwKICAiY2xpZW50IjogWwogICAgewogICAgICAiY2xpZW50X2luZm8iOiB7CiAgICAgICAgIm1vYmlsZXNka19hcHBfaWQiOiAiMTo5NDExODMwODU5MzE6YW5kcm9pZDoxZTEyOTYwMmY3MmU5YTNkMTJmMDJlIiwKICAgICAgICAiYW5kcm9pZF9jbGllbnRfaW5mbyI6IHsKICAgICAgICAgICJwYWNrYWdlX25hbWUiOiAiY29tLnBsYXltYXhzb2x1dGlvbnMuc2xvdHNwb3QiCiAgICAgICAgfQogICAgICB9LAogICAgICAib2F1dGhfY2xpZW50IjogW10sCiAgICAgICJhcGlfa2V5IjogWwogICAgICAgIHsKICAgICAgICAgICJjdXJyZW50X2tleSI6ICJBSXphU3lDZTV4eF9mYWlhMkFIZVhqRC1yMGVlZUhRc0VvM2hZUjgiCiAgICAgICAgfQogICAgICBdLAogICAgICAic2VydmljZXMiOiB7CiAgICAgICAgImFwcGludml0ZV9zZXJ2aWNlIjogewogICAgICAgICAgIm90aGVyX3BsYXRmb3JtX29hdXRoX2NsaWVudCI6IFtdCiAgICAgICAgfQogICAgICB9CiAgICB9CiAgXSwKICAiY29uZmlndXJhdGlvbl92ZXJzaW9uIjogIjEiCn0=",
       "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__SlotSpot.png",
       "icon_path": "",
-      "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__SlotSpot.png",
-      "firebase_json_base64": "data:application/json;base64,ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiOTQxMTgzMDg1OTMxIiwKICAgICJwcm9qZWN0X2lkIjogInNsb3RzLXBvdCIsCiAgICAic3RvcmFnZV9idWNrZXQiOiAic2xvdHMtcG90LmZpcmViYXNlc3RvcmFnZS5hcHAiCiAgfSwKICAiY2xpZW50IjogWwogICAgewogICAgICAiY2xpZW50X2luZm8iOiB7CiAgICAgICAgIm1vYmlsZXNka19hcHBfaWQiOiAiMTo5NDExODMwODU5MzE6YW5kcm9pZDoxZTEyOTYwMmY3MmU5YTNkMTJmMDJlIiwKICAgICAgICAiYW5kcm9pZF9jbGllbnRfaW5mbyI6IHsKICAgICAgICAgICJwYWNrYWdlX25hbWUiOiAiY29tLnBsYXltYXhzb2x1dGlvbnMuc2xvdHNwb3QiCiAgICAgICAgfQogICAgICB9LAogICAgICAib2F1dGhfY2xpZW50IjogW10sCiAgICAgICJhcGlfa2V5IjogWwogICAgICAgIHsKICAgICAgICAgICJjdXJyZW50X2tleSI6ICJBSXphU3lDZTV4eF9mYWlhMkFIZVhqRC1yMGVlZUhRc0VvM2hZUjgiCiAgICAgICAgfQogICAgICBdLAogICAgICAic2VydmljZXMiOiB7CiAgICAgICAgImFwcGludml0ZV9zZXJ2aWNlIjogewogICAgICAgICAgIm90aGVyX3BsYXRmb3JtX29hdXRoX2NsaWVudCI6IFtdCiAgICAgICAgfQogICAgICB9CiAgICB9CiAgXSwKICAiY29uZmlndXJhdGlvbl92ZXJzaW9uIjogIjEiCn0=",
-      "updated_at": "2026-07-28T09:45:37.845Z",
-      "mode": "main"
+      "icon_data_url": "",
+      "firebase_json_base64": "ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiOTQxMTgzMDg1OTMxIiwKICAgICJwcm9qZWN0X2lkIjogInNsb3RzLXBvdCIsCiAgICAic3RvcmFnZV9idWNrZXQiOiAic2xvdHMtcG90LmZpcmViYXNlc3RvcmFnZS5hcHAiCiAgfSwKICAiY2xpZW50IjogWwogICAgewogICAgICAiY2xpZW50X2luZm8iOiB7CiAgICAgICAgIm1vYmlsZXNka19hcHBfaWQiOiAiMTo5NDExODMwODU5MzE6YW5kcm9pZDoxZTEyOTYwMmY3MmU5YTNkMTJmMDJlIiwKICAgICAgICAiYW5kcm9pZF9jbGllbnRfaW5mbyI6IHsKICAgICAgICAgICJwYWNrYWdlX25hbWUiOiAiY29tLnBsYXltYXhzb2x1dGlvbnMuc2xvdHNwb3QiCiAgICAgICAgfQogICAgICB9LAogICAgICAib2F1dGhfY2xpZW50IjogW10sCiAgICAgICJhcGlfa2V5IjogWwogICAgICAgIHsKICAgICAgICAgICJjdXJyZW50X2tleSI6ICJBSXphU3lDZTV4eF9mYWlhMkFIZVhqRC1yMGVlZUhRc0VvM2hZUjgiCiAgICAgICAgfQogICAgICBdLAogICAgICAic2VydmljZXMiOiB7CiAgICAgICAgImFwcGludml0ZV9zZXJ2aWNlIjogewogICAgICAgICAgIm90aGVyX3BsYXRmb3JtX29hdXRoX2NsaWVudCI6IFtdCiAgICAgICAgfQogICAgICB9CiAgICB9CiAgXSwKICAiY29uZmlndXJhdGlvbl92ZXJzaW9uIjogIjEiCn0=",
+      "updated_at": "2026-07-28T09:40:48.464Z",
+      "mode": "admin"
     },
     {
       "id": "unstopable:-real-money",
@@ -103,10 +103,10 @@
       "firebase_cfg": "unstopablerealmoney.json",
       "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__Unstopable.png",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__Unstopable.png",
-      "updated_at": "2026-07-26T09:11:09.060Z",
+      "updated_at": "2026-07-28T09:48:39.116Z",
       "icon_path": "",
       "firebase_json_base64": "ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiNDYwNjU3NDQzODE3IiwKICAgICJwcm9qZWN0X2lkIjogInVuc3RvcGFibGVyZWFsbW9uZXkiLAogICAgInN0b3JhZ2VfYnVja2V0IjogInVuc3RvcGFibGVyZWFsbW9uZXkuZmlyZWJhc2VzdG9yYWdlLmFwcCIKICB9LAogICJjbGllbnQiOiBbCiAgICB7CiAgICAgICJjbGllbnRfaW5mbyI6IHsKICAgICAgICAibW9iaWxlc2RrX2FwcF9pZCI6ICIxOjQ2MDY1NzQ0MzgxNzphbmRyb2lkOmZkYjMyMTk4MTBjNjEwNDNlNzAxNzgiLAogICAgICAgICJhbmRyb2lkX2NsaWVudF9pbmZvIjogewogICAgICAgICAgInBhY2thZ2VfbmFtZSI6ICJjb20ucGxheXNvY2lhbGdhbWVzLmNoaWNrZW4ucm9hZCIKICAgICAgICB9CiAgICAgIH0sCiAgICAgICJvYXV0aF9jbGllbnQiOiBbXSwKICAgICAgImFwaV9rZXkiOiBbCiAgICAgICAgewogICAgICAgICAgImN1cnJlbnRfa2V5IjogIkFJemFTeUNTNWVaclVMSlFNMkhRZkZFQVBzdnRvVlVZWU1XR1pHMCIKICAgICAgICB9CiAgICAgIF0sCiAgICAgICJzZXJ2aWNlcyI6IHsKICAgICAgICAiYXBwaW52aXRlX3NlcnZpY2UiOiB7CiAgICAgICAgICAib3RoZXJfcGxhdGZvcm1fb2F1dGhfY2xpZW50IjogW10KICAgICAgICB9CiAgICAgIH0KICAgIH0KICBdLAogICJjb25maWd1cmF0aW9uX3ZlcnNpb24iOiAiMSIKfQ==",
-      "mode": "main"
+      "mode": "admin"
     },
     {
       "id": "lucky-wheel",
@@ -383,7 +383,7 @@
     {
       "package_name": "com.playmaxsolutions.slotspot",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__SlotSpot.png",
-      "updated_at": "2026-07-28T09:45:37.845Z"
+      "updated_at": "2026-07-28T09:40:48.464Z"
     },
     {
       "package_name": "com.playsocialgames.blackjakck",
@@ -398,7 +398,7 @@
     {
       "package_name": "com.playsocialgames.chicken.road",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__Unstopable.png",
-      "updated_at": "2026-07-26T09:11:09.061Z"
+      "updated_at": "2026-07-28T09:48:39.116Z"
     },
     {
       "package_name": "com.socgame.black",
@@ -1642,5 +1642,5 @@
       "updated_at": "2026-07-25T20:47:14.269Z"
     }
   ],
-  "updated_at": "2026-07-28T09:45:37.845Z"
+  "updated_at": "2026-07-28T09:48:39.116Z"
 }
