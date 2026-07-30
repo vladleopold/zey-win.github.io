@@ -508,22 +508,20 @@ function renderAll() {
   const active = other.filter(r => r.status !== "completed");
   const done = other.filter(r => r.status === "completed" && r.conclusion === "success");
   const fail = other.filter(r => r.status === "completed" && r.conclusion !== "success");
-  const allDone = [...kupertino, ...done, ...fail].slice(0, 100);
+  const allRuns = [...kupertino, ...active, ...done, ...fail].slice(0, 100);
 
-  const activeHtml = active.length ? active.map((r, i) => buildCardHTML(r, i)).join("") : "";
-  const doneHtml = allDone.length ? allDone.map((r, i) => buildCardHTML(r, i + active.length)).join("") : "";
+  const html = allRuns.length ? allRuns.map((r, i) => buildCardHTML(r, i)).join("") : "";
 
-  if (activeContainer.innerHTML !== activeHtml) activeContainer.innerHTML = activeHtml;
-  if (buildsContainer.innerHTML !== doneHtml) buildsContainer.innerHTML = doneHtml;
-  activeContainer.style.display = activeHtml ? "" : "none";
-  buildsContainer.style.display = doneHtml ? "" : "none";
+  if (activeContainer.innerHTML !== html) activeContainer.innerHTML = html;
+  activeContainer.style.display = html ? "" : "none";
+  buildsContainer.style.display = "none";
 
   let statsEl = document.getElementById("stats");
   if (!statsEl) {
     statsEl = document.createElement("div");
     statsEl.id = "stats";
     statsEl.style.cssText = "text-align:center;color:#8b949e;font-size:13px;padding:8px 0";
-    buildsContainer.appendChild(statsEl);
+    activeContainer.appendChild(statsEl);
   }
   statsEl.textContent = `Всего: ${runs.length} | Активные: ${active.length} | Успешно: ${done.length} | Ошибок: ${fail.length}`;
 }
