@@ -613,7 +613,7 @@ async function deleteRun(runId, e) {
   if (!confirm("Удалить эту сборку?")) return;
   const btn = e?.target; if (btn) btn.disabled = true;
   try {
-    await fetch(`${apiBase}/api/delete`, { method: "POST", headers: op(), body: JSON.stringify({ run_id: runId }) });
+    await fetch(`${apiBase}/api/manage/delete`, { method: "POST", headers: op(), body: JSON.stringify({ run_id: runId }) });
     runs = runs.filter(r => r.id !== runId);
     delete runMeta[runId];
     delete timers[runId];
