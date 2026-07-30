@@ -524,7 +524,7 @@ function renderAll() {
 async function loadBuilds() {
   const gen = ++loadBuildsGen;
   try {
-    const workflow = mode === "admin" ? "2" : "1";
+    const workflow = "2";
     const res = await fetch(`${apiBase}/api/runs?workflow=${workflow}`);
     if (gen !== loadBuildsGen) return;
     if (!res.ok) return;
