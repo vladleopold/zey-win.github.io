@@ -91,7 +91,7 @@ let runs = [];
 let loadBuildsGen = 0;
 
 function repoFromTitle(t) { const s = (t || "").toLowerCase().replace(/[^a-z0-9 ]/g, " "); const names = getRepoNames(); for (const [repo, name] of Object.entries(names)) if (s.includes(name)) return repo; return null; }
-function parseTitle(title) { if (!title) return { app: "Build", pkg: "" }; const parts = title.replace(/^Android:\s*/i, "").replace(/^kupertino\s*/i, "").split("/ ").map(p => p.trim()); var pkg = parts[1] || ""; pkg = pkg.replace(/\s+builder-[\w]+$/, "").replace(/\s+\d+$/, "").trim(); var app = parts[0] || "Build"; app = app.replace(/(apk_aab|apk|aab|ipa)$/i, "").trim(); return { app: app || "Build", pkg: pkg }; }
+function parseTitle(title) { if (!title) return { app: "Build", pkg: "" }; const parts = title.replace(/^Android:\s*/i, "").replace(/^kupertino\s*/i, "").split("/ ").map(p => p.trim()); var pkg = parts[1] || ""; pkg = pkg.replace(/\s+builder-[\w]+$/, "").replace(/\s+\d+$/, "").trim(); if (!/^[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z][A-Za-z0-9_]*)+$/.test(pkg)) pkg = ""; var app = parts[0] || "Build"; app = app.replace(/(apk_aab|apk|aab|ipa)$/i, "").trim(); return { app: app || "Build", pkg: pkg }; }
 function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
 
 async function fetchScreenshots(runId) {
@@ -496,12 +496,19 @@ function startTimerLoop() {
   return () => { running = false; };
 }
 
+function isKupertino(r) {
+  const t = (r.displayTitle || r.name || "").toLowerCase();
+  return t.startsWith("kupertino") || t.includes(" kupertino");
+}
+
 function renderAll() {
   const modeRuns = filterRunsByMode();
-  const active = modeRuns.filter(r => r.status !== "completed");
-  const done = modeRuns.filter(r => r.status === "completed" && r.conclusion === "success");
-  const fail = modeRuns.filter(r => r.status === "completed" && r.conclusion !== "success");
-  const allDone = [...done, ...fail].slice(0, 100);
+  const kupertino = modeRuns.filter(isKupertino);
+  const other = modeRuns.filter(r => !isKupertino(r));
+  const active = other.filter(r => r.status !== "completed");
+  const done = other.filter(r => r.status === "completed" && r.conclusion === "success");
+  const fail = other.filter(r => r.status === "completed" && r.conclusion !== "success");
+  const allDone = [...kupertino, ...done, ...fail].slice(0, 100);
 
   const activeHtml = active.length ? active.map((r, i) => buildCardHTML(r, i)).join("") : "";
   const doneHtml = allDone.length ? allDone.map((r, i) => buildCardHTML(r, i + active.length)).join("") : "";
