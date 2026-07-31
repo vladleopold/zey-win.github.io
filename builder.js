@@ -1360,24 +1360,10 @@ function renderConfigDropdown() {
   if (!list) return;
   list.innerHTML = "";
   
-  // Toolbar
+// Toolbar
   const toolbar = document.createElement("div");
-  toolbar.style.cssText = "display:flex;gap:6px;align-items:center;padding:8px 10px;border-bottom:1px solid #21262d;background:#0d1117;position:sticky;top:0;z-index:1";
-  
-  const expandAllBtn = document.createElement("button");
-  expandAllBtn.type = "button";
-  expandAllBtn.textContent = "▼ Развернуть все";
-  expandAllBtn.style.cssText = "padding:6px 8px;background:#21262d;border:1px solid #30363d;border-radius:4px;color:#c9d1d9;font-size:12px;cursor:pointer";
-  expandAllBtn.onclick = (e) => { e.stopPropagation(); expandAllGroups(true); };
-  toolbar.appendChild(expandAllBtn);
-  
-  const collapseAllBtn = document.createElement("button");
-  collapseAllBtn.type = "button";
-  collapseAllBtn.textContent = "▲ Свернуть все";
-  collapseAllBtn.style.cssText = "padding:6px 8px;background:#21262d;border:1px solid #30363d;border-radius:4px;color:#c9d1d9;font-size:12px;cursor:pointer";
-  collapseAllBtn.onclick = (e) => { e.stopPropagation(); expandAllGroups(false); };
-  toolbar.appendChild(collapseAllBtn);
-  
+  toolbar.style.cssText = "display:flex;gap:6px;align-items:center;padding:8px 10px;border-bottom:1px solid #21262d;background:#0d1117;position:sticky;top:0;z-index=1";
+
   const batchBtn = document.createElement("button");
   batchBtn.type = "button";
   batchBtn.textContent = "🚀 Собрать и Обновить Всё";
@@ -1804,7 +1790,7 @@ showPageSpinner();
   updateIcon();
   loadBuilds();
   loadConfigs();
-  setInterval(loadBuilds, 5000);
+  setInterval(loadBuilds, 45000);
   setTimeout(loadReleases, 10);
 })();
 
