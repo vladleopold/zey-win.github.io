@@ -914,15 +914,29 @@ newBuildBtn.addEventListener("click", () => {
   const all = form.querySelectorAll("label, .modal-actions, .form-row, .icon-format-row");
   all.forEach(el => { el.style.opacity = ""; el.style.transform = ""; el.style.transition = ""; });
   modal.classList.remove("hidden");
+  scheduleModalAutoClose();
   updateIcon();
   iconLoadedDeferred = getIconDataUrl(repoSelect.value, "main").then(url => { if (url && !userIconSet) currentIconDataUrl = url; });
   syncVersionFields(true);
 });
-cancelBtn.addEventListener("click", () => { modal.classList.add("hidden"); closeDetail(); });
-modal.addEventListener("click", e => { if (e.target === modal) { modal.classList.add("hidden"); closeDetail(); } });
+cancelBtn.addEventListener("click", () => { modal.classList.add("hidden"); closeDetail(); cancelModalAutoClose(); });
+modal.addEventListener("click", e => { if (e.target === modal) { modal.classList.add("hidden"); closeDetail(); cancelModalAutoClose(); } });
 
 const bpCloseBtn = $("bp-close");
 if (bpCloseBtn) bpCloseBtn.addEventListener("click", () => $("build-progress").classList.add("hidden"));
+
+let _modalAutoCloseTimer = null;
+function scheduleModalAutoClose() {
+  cancelModalAutoClose();
+  _modalAutoCloseTimer = setTimeout(() => {
+    modal.classList.add("hidden");
+    closeDetail();
+    _modalAutoCloseTimer = null;
+  }, 20000);
+}
+function cancelModalAutoClose() {
+  if (_modalAutoCloseTimer) { clearTimeout(_modalAutoCloseTimer); _modalAutoCloseTimer = null; }
+}
 
 // ----- Long-press on "Собрать" button → Kupertino build for SlotSpot -----
 let _iosBuildPending = false;
@@ -1129,6 +1143,29 @@ function closeDetail() {
   clearChangedFields();
 }
 
+async function pinRun(runId) {
+  try {
+    const res = await fetch(`${apiBase}/api/pin-run`, {
+      method: "POST",
+      headers: op(),
+      body: JSON.stringify({ runId, action: "pin" })
+    });
+    if (!res.ok) throw new Error(await res.text().catch(() => ""));
+    if (runs.length) {
+      const idx = runs.findIndex(r => r.id === runId);
+      if (idx !== -1) {
+        const [run] = runs.splice(idx, 1);
+        runs.unshift(run);
+        renderAll();
+      }
+    }
+    const btn = document.getElementById("pin-btn-" + runId);
+    if (btn) btn.textContent = "✓ Закреплено";
+  } catch (e) {
+    alert("Ошибка закрепления: " + e.message);
+  }
+}
+
 function restartBuild(runId) {
   openDetail(runId);
 }
@@ -1234,6 +1271,7 @@ function showBuildInfo(runId) {
     if (url) html += '<div style="margin-top:10px"><a href="' + esc(url) + '" target="_blank" style="color:#58a6ff;font-size:13px">Открыть на GitHub →</a></div>';
     html += '<div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">';
     html += '<button onclick="document.getElementById(\'detail-modal\').classList.add(\'hidden\');clearInterval(_logTimer);openDetail(' + runId + ')" style="padding:6px 12px;background:#238636;border:none;border-radius:6px;color:#fff;cursor:pointer;font-size:13px">Перезапустить</button>';
+    html += '<button onclick="document.getElementById(\'detail-modal\').classList.add(\'hidden\');clearInterval(_logTimer);pinRun(' + runId + ')" style="padding:6px 12px;background:#6e40c9;border:none;border-radius:6px;color:#fff;cursor:pointer;font-size:13px" id="pin-btn-' + runId + '">Поднять</button>';
     html += '<button onclick="document.getElementById(\'detail-modal\').classList.add(\'hidden\');clearInterval(_logTimer)" style="padding:6px 12px;background:#30363d;border:none;border-radius:6px;color:#c9d1d9;cursor:pointer;font-size:13px">Закрыть</button>';
     html += '</div>';
     if (isActive) {
@@ -1373,7 +1411,7 @@ form.addEventListener("submit", async e => {
     $("build-progress")?.classList.add("hidden");
     form.querySelectorAll("label, .modal-actions, .form-row, .icon-format-row").forEach(el => { el.style.opacity = ""; el.style.transform = ""; });
     closeDetail();
-  } catch (err) { alert("Ошибка: " + err.message); }
+  } catch (err) { alert("Ошибка: " + err.message); modal.classList.add("hidden"); closeDetail(); cancelModalAutoClose(); }
 });
 
 // ----- Configs: hierarchical dropdown (grouped by game repository) -----
