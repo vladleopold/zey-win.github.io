@@ -65,6 +65,9 @@ input[name="zeywin_api_key"]{text-align:right;direction:rtl}
 .btn-cancel:hover{background:#30363d;color:#c9d1d9}
 @keyframes btn-rainbow{0%,100%{background:#238636;box-shadow:0 0 8px rgba(35,134,54,0.5)}33%{background:#1f6feb;box-shadow:0 0 8px rgba(31,111,235,0.5)}66%{background:#d4871a;box-shadow:0 0 8px rgba(212,135,26,0.5)}}
 .modal-actions button[type=submit]{background:#238636;color:#fff;animation:btn-rainbow 7.5s ease-in-out infinite;font-weight:700}
+#modal-submit{position:relative}
+#modal-submit.btn-pressed{transform:translateY(1px);filter:brightness(.85);box-shadow:inset 0 2px 6px rgba(0,0,0,.45);animation:none}
+#modal-submit .btn-spinner{position:relative;z-index:2;display:inline-block;width:14px;height:14px;margin-right:6px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px}
 #build-progress{position:absolute;inset:0;background:#161b22;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;padding:24px}
 #build-progress.hidden{display:none}
 #bp-spinner{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:14px}

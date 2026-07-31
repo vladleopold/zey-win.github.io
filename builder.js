@@ -508,12 +508,17 @@ function isKupertino(r) {
 
 function renderAll() {
   const modeRuns = filterRunsByMode();
-  const kupertino = modeRuns.filter(isKupertino);
-  const other = modeRuns.filter(r => !isKupertino(r));
-  const active = other.filter(r => r.status !== "completed");
-  const done = other.filter(r => r.status === "completed" && r.conclusion === "success");
-  const fail = other.filter(r => r.status === "completed" && r.conclusion !== "success");
-  const allRuns = [...kupertino, ...active, ...done, ...fail].slice(0, 100);
+  const active = modeRuns.filter(r => r.status !== "completed");
+  const done = modeRuns.filter(r => r.status === "completed" && r.conclusion === "success");
+  const fail = modeRuns.filter(r => r.status === "completed" && r.conclusion !== "success");
+  // Builds of different workflows are sorted together by date added to the page
+  // (newest first) — kupertino is NOT pinned on top anymore.
+  const sorted = [...modeRuns].sort((a, b) => {
+    const ta = new Date(a.createdAt || a.updatedAt || 0).getTime() || 0;
+    const tb = new Date(b.createdAt || b.updatedAt || 0).getTime() || 0;
+    return tb - ta;
+  });
+  const allRuns = sorted.slice(0, 100);
 
   const html = allRuns.length ? allRuns.map((r, i) => buildCardHTML(r, i)).join("") : "";
 
@@ -534,7 +539,10 @@ function renderAll() {
 async function loadBuilds() {
   const gen = ++loadBuildsGen;
   try {
-    const workflow = "2";
+    // Each mode shows only its own workflow builds:
+    // - "админка" mode → workflow=2 → build-apk.yml (админка) + build-kupertino.yml
+    // - "сайт" mode → workflow=1 → build-site.yml (сайт) only
+    const workflow = mode === "admin" ? "2" : "1";
     const res = await fetch(`${apiBase}/api/runs?workflow=${workflow}`);
     if (gen !== loadBuildsGen) return;
     if (!res.ok) return;
@@ -678,7 +686,11 @@ async function submitBuildPayload(payload) {
   const btn = $("modal-submit");
   if (btn) {
     btn.disabled = true;
-    btn.textContent = "Подожди...";
+    btn.classList.add("btn-pressed");
+    btn.textContent = "Собираю...";
+    const sp = document.createElement("span");
+    sp.className = "btn-spinner";
+    btn.prepend(sp);
   }
 
   try {
@@ -721,8 +733,10 @@ async function submitBuildPayload(payload) {
   } finally {
     if (btn) {
       btn.disabled = false;
-      btn.textContent = "Собрать";
+      btn.classList.remove("btn-pressed");
+      btn.textContent = detailRunId ? "Перезапустить" : "Собрать";
     }
+    _longPressDone = false;
   }
 }
 
@@ -915,12 +929,24 @@ let _iosBuildPending = false;
 let _longPressTimer = null;
 let _longPressInterval = null;
 let _longPressStartTime = 0;
-const LONG_PRESS_MS = 10000;
+let _longPressDone = false;
+const LONG_PRESS_MS = 5000;
 const submitBtn = $("modal-submit");
+
+function setSubmitBusy(label) {
+  const btn = $("modal-submit");
+  if (!btn) return;
+  btn.disabled = true;
+  btn.classList.add("btn-pressed");
+  btn.textContent = label || "Собираю...";
+  const sp = document.createElement("span");
+  sp.className = "btn-spinner";
+  btn.prepend(sp);
+}
 
 if (submitBtn) {
   function startLongPress(e) {
-    if (submitBtn.disabled) return;
+    if (submitBtn.disabled || _longPressDone) return;
     e.preventDefault();
     _longPressStartTime = Date.now();
     submitBtn.style.position = "relative";
@@ -957,9 +983,10 @@ if (submitBtn) {
       if (_longPressTimer) { clearTimeout(_longPressTimer); _longPressTimer = null; }
       if (_longPressInterval) { clearInterval(_longPressInterval); _longPressInterval = null; }
       _iosBuildPending = true;
+      _longPressDone = true;
       fill.style.width = "100%";
-      submitBtn.textContent = "Kupertino сборка!";
-      submitBtn.style.color = "#fff";
+      // Stay pressed with spinner even when the cursor leaves the button.
+      setSubmitBusy("Kupertino сборка...");
       setTimeout(() => {
         form.requestSubmit();
       }, 300);
@@ -967,6 +994,9 @@ if (submitBtn) {
   }
 
   function cancelLongPress() {
+    // Once the build has started the button must stay pressed (with spinner),
+    // so mouseup/mouseleave must not reset it.
+    if (submitBtn.disabled || _longPressDone) return;
     if (_longPressTimer) { clearTimeout(_longPressTimer); _longPressTimer = null; }
     if (_longPressInterval) { clearInterval(_longPressInterval); _longPressInterval = null; }
     const fill = submitBtn?.querySelector(".longpress-fill");
@@ -1127,6 +1157,10 @@ function showBuildInfo(runId) {
           .then(function(r) { return r.ok ? r.json() : null; })
           .then(function(data) {
             if (!data || !data.ok || !data.config) return;
+            // If the user closed the popup while the request was in flight,
+            // it must stay closed — do not re-render/re-open it.
+            var dm = document.getElementById("detail-modal");
+            if (!dm || dm.classList.contains("hidden")) return;
             var cfg = data.config;
             if (!runMeta[runId]) runMeta[runId] = {};
             if (!runMeta[runId].params) runMeta[runId].params = {};
