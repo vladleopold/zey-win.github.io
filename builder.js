@@ -1050,9 +1050,16 @@ function renderCustomRepoList() {
       savedConfigs = savedConfigs.filter(x => x.id !== id);
       try { localStorage.setItem(modeKey("savedConfigs"), JSON.stringify(savedConfigs)); } catch {}
       try { await fetch(`${apiBase}/api/configs`, { method: "POST", headers: op(), body: JSON.stringify({ id }) }); } catch {}
-      const opt = [...repoSelect.options].find(o => o.value === c.game_repository);
-      if (opt) repoSelect.removeChild(opt);
-      renderCustomRepoList();
+      const names = getRepoNames();
+      if (names[c.game_repository]) {
+        const repo = c.game_repository;
+        const hidden = window.__hiddenRepos || new Set();
+        if (!hidden.has(repo)) {
+          // We can't easily remove from custom dropdown, just re-render
+          renderRepoDropdown();
+        }
+      }
+      closeDropdown();
     };
     row.appendChild(btn);
     list.appendChild(row);
@@ -1304,7 +1311,7 @@ function closeDetail() {
 
 async function pinRun(runId) {
   try {
-    const res = await fetch(`${apiBase}/api/pin-run`, {
+    const res = await fetch(`${apiBase}/api/manage/pin-run`, {
       method: "POST",
       headers: op(),
       body: JSON.stringify({ runId, action: "pin" })
@@ -1765,14 +1772,11 @@ async function loadConfigs() {
   // Sync repoSelect dropdown with savedConfigs (add dynamic options)
   const currentVal = repoSelect.value;
   for (const c of savedConfigs) {
-    if (c.game_repository && ![...repoSelect.options].some(o => o.value === c.game_repository)) {
-      const opt = document.createElement("option");
-      opt.value = c.game_repository;
-      opt.textContent = c.app_name || c.label || c.game_repository.split("/").pop();
-      repoSelect.appendChild(opt);
+    if (c.game_repository) {
+      selectRepo(c.game_repository);
     }
   }
-  if (currentVal && [...repoSelect.options].some(o => o.value === currentVal)) repoSelect.value = currentVal;
+  if (currentVal && getRepoNames()[currentVal]) repoSelect.value = currentVal;
 }
 
 function buildConfigTree() {
