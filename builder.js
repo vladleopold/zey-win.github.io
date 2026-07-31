@@ -938,6 +938,11 @@ function cancelModalAutoClose() {
   if (_modalAutoCloseTimer) { clearTimeout(_modalAutoCloseTimer); _modalAutoCloseTimer = null; }
 }
 
+// Trigger immediate build list refresh after a new build is submitted
+function refreshBuildsAfterSubmit() {
+  loadBuilds();
+}
+
 // ----- Long-press on "Собрать" button → Kupertino build for SlotSpot -----
 let _iosBuildPending = false;
 let _longPressTimer = null;
@@ -1406,11 +1411,13 @@ form.addEventListener("submit", async e => {
     }
     autoSaveConfig(fd);
     iconLoadedDeferred = null;
+    cancelModalAutoClose();
     modal.classList.add("hidden");
     form.style.display = "";
     $("build-progress")?.classList.add("hidden");
     form.querySelectorAll("label, .modal-actions, .form-row, .icon-format-row").forEach(el => { el.style.opacity = ""; el.style.transform = ""; });
     closeDetail();
+    refreshBuildsAfterSubmit();
   } catch (err) { alert("Ошибка: " + err.message); modal.classList.add("hidden"); closeDetail(); cancelModalAutoClose(); }
 });
 
