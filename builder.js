@@ -1310,24 +1310,37 @@ function closeDetail() {
 }
 
 async function pinRun(runId) {
+  console.log('[pinRun] Starting pin for runId:', runId);
   try {
     const res = await fetch(`${apiBase}/api/manage/pin-run`, {
       method: "POST",
       headers: op(),
       body: JSON.stringify({ runId, action: "pin" })
     });
-    if (!res.ok) throw new Error(await res.text().catch(() => ""));
+    console.log('[pinRun] Response status:', res.status, res.ok);
+    if (!res.ok) {
+      const errText = await res.text().catch(() => "");
+      console.error('[pinRun] Server error:', errText);
+      throw new Error(errText || `HTTP ${res.status}`);
+    }
+    const data = await res.json().catch(() => ({}));
+    console.log('[pinRun] Response data:', data);
     if (runs.length) {
       const idx = runs.findIndex(r => r.id === runId);
+      console.log('[pinRun] Found run at index:', idx, 'total runs:', runs.length);
       if (idx !== -1) {
         const [run] = runs.splice(idx, 1);
         runs.unshift(run);
+        console.log('[pinRun] Moved run to front, new order:', runs.map(r => r.id).slice(0, 5));
         renderAll();
+      } else {
+        console.warn('[pinRun] Run not found in local runs array');
       }
     }
     const btn = document.getElementById("pin-btn-" + runId);
     if (btn) btn.textContent = "✓ Закреплено";
   } catch (e) {
+    console.error('[pinRun] Error:', e);
     alert("Ошибка закрепления: " + e.message);
   }
 }
