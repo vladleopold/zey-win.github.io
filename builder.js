@@ -124,7 +124,9 @@ function setIcon(src) { if (src) { gameIcon.src = src; gameIcon.style.display = 
 // the APK always show the identical image.
 function configIconUrl(cfg) {
   if (!cfg) return null;
-  return cfg.icon_url || cfg.icon_data_url || null;
+  if (cfg.icon_url || cfg.icon_data_url) return cfg.icon_url || cfg.icon_data_url;
+  if (cfg.package_name) return `https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/${cfg.package_name}.png`;
+  return null;
 }
 function configIconForRepo(repo) {
   return configIconUrl(savedConfigs.find(c => c.game_repository === repo));
@@ -422,6 +424,9 @@ function resolveIcon(r) {
   const { pkg } = parseTitle(raw);
   const cfgIcon = configIconForPackage(pkg);
   if (cfgIcon) return cfgIcon;
+  if (pkg && /^[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z][A-Za-z0-9_]*)+$/.test(pkg)) {
+    return `https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/${pkg}.png`;
+  }
   const reqId = (raw.match(/builder-[\w]+/) || [])[0];
   if (reqId) return `https://raw.githubusercontent.com/zey-win/ci-cd/main/builds/icons/${reqId}.png`;
   if (pkg) return `https://raw.githubusercontent.com/zey-win/ci-cd/main/builds/icons/${pkg}.png`;
