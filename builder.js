@@ -74,6 +74,118 @@ function getRepoNames() {
   }
   return result;
 }
+
+async function loadHiddenRepos() {
+  try {
+    const res = await fetch(`${apiBase}/api/configs`, { headers: op() });
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data.hiddenRepoIds)) return new Set(data.hiddenRepoIds);
+    }
+  } catch {}
+  return new Set();
+}
+
+function getVisibleRepos() {
+  const names = getRepoNames();
+  return names;
+}
+
+function renderRepoDropdown() {
+  const list = $("repo-list");
+  if (!list) return;
+  list.innerHTML = "";
+  const names = getVisibleRepos();
+  const hidden = window.__hiddenRepos || new Set();
+  for (const [repo, label] of Object.entries(names)) {
+    const isHidden = hidden.has(repo);
+    const isDefault = REPO_NAMES[repo] || REPO_NAMES_ADMIN[repo];
+    const item = document.createElement("div");
+    item.style.cssText = "display:flex;align-items:center;padding:8px 10px;cursor:pointer;border-bottom:1px solid #21262d;font-size:13px;background:#0d1117";
+    item.onmouseenter = () => { item.style.background = "#1c2333"; };
+    item.onmouseleave = () => { item.style.background = "#0d1117"; };
+    const repoShort = repo.split("/").pop() || repo;
+    item.innerHTML = `<span style="flex:1;color:${isHidden ? "#8b949e" : "#c9d1d9"};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(label)} <span style="color:#58a6ff;font-size:11px">${esc(repoShort)}</span></span>`;
+    if (!isHidden) {
+      const del = document.createElement("button");
+      del.type = "button";
+      del.textContent = isDefault ? "скрыть" : "✕";
+      del.title = isDefault ? "Скрыть из списка" : "Удалить";
+      del.style.cssText = "background:none;border:none;color:#ff4444;cursor:pointer;font-size:11px;padding:2px 6px;border-radius:3px;flex-shrink:0;margin-left:8px";
+      del.onmouseenter = () => { del.style.background = "#ff444422"; };
+      del.onmouseleave = () => { del.style.background = "none"; };
+      del.onclick = async (e) => {
+        e.stopPropagation();
+        const confirmMsg = isDefault ? `Скрыть "${label}" из списка?` : `Удалить "${label}"?`;
+        if (!confirm(confirmMsg)) return;
+        try {
+          await fetch(`${apiBase}/api/configs`, { method: "POST", headers: op(), body: JSON.stringify({ hiddenRepo: repo }) });
+          hidden.add(repo);
+          window.__hiddenRepos = hidden;
+          renderRepoDropdown();
+          closeRepoDropdown();
+          if (repoSelect.value === repo) {
+            const first = Object.entries(getVisibleRepos()).find(([r]) => !hidden.has(r));
+            if (first) selectRepo(first[0]);
+          }
+        } catch (err) {
+          alert("Ошибка: " + err.message);
+        }
+      };
+      item.appendChild(del);
+    } else {
+      const restore = document.createElement("button");
+      restore.type = "button";
+      restore.textContent = "показать";
+      restore.title = "Вернуть в список";
+      restore.style.cssText = "background:none;border:none;color:#3fb950;cursor:pointer;font-size:11px;padding:2px 6px;border-radius:3px;flex-shrink:0;margin-left:8px";
+      restore.onmouseenter = () => { restore.style.background = "#3fb95022"; };
+      restore.onmouseleave = () => { restore.style.background = "none"; };
+      restore.onclick = async (e) => {
+        e.stopPropagation();
+        try {
+          await fetch(`${apiBase}/api/configs`, { method: "POST", headers: op(), body: JSON.stringify({ unhiddenRepo: repo }) });
+          hidden.delete(repo);
+          window.__hiddenRepos = hidden;
+          renderRepoDropdown();
+        } catch (err) {
+          alert("Ошибка: " + err.message);
+        }
+      };
+      item.appendChild(restore);
+    }
+    item.onclick = () => { if (!isHidden) selectRepo(repo); };
+    list.appendChild(item);
+  }
+}
+
+function selectRepo(repo) {
+  repoSelect.value = repo;
+  const names = getVisibleRepos();
+  const label = names[repo] || repo.split("/").pop() || repo;
+  const triggerText = $("repo-trigger-text");
+  if (triggerText) triggerText.textContent = label;
+  repoSelect.dispatchEvent(new Event("change"));
+  closeRepoDropdown();
+}
+
+function closeRepoDropdown() {
+  const list = $("repo-list");
+  if (list) list.style.display = "none";
+}
+
+function toggleRepoDropdown() {
+  const list = $("repo-list");
+  if (!list) return;
+  list.style.display = list.style.display === "none" ? "block" : "none";
+  if (list.style.display === "block") {
+    loadHiddenRepos().then(hidden => {
+      window.__hiddenRepos = hidden;
+      renderRepoDropdown();
+    });
+  }
+}
+
 function iconDir() { return mode === "admin" ? "icons-admin" : "icons"; }
 
 function filterRunsByMode() {
@@ -877,6 +989,13 @@ async function runBatchBuilds() {
 }
 
 repoSelect.addEventListener("change", () => { updateIcon(); syncVersionFields(true); });
+
+// Repo dropdown trigger
+const repoTrigger = $("repo-trigger");
+if (repoTrigger) {
+  repoTrigger.addEventListener("click", (e) => { e.stopPropagation(); toggleRepoDropdown(); });
+}
+
 const addRepoBtn = $("add-repo-btn");
 if (addRepoBtn) {
   addRepoBtn.addEventListener("click", async () => {
@@ -884,7 +1003,8 @@ if (addRepoBtn) {
     if (!val) return;
     const repo = val.trim();
     if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) { alert("Неверный формат. Используйте owner/name"); return; }
-    if ([...repoSelect.options].some(o => o.value === repo)) { repoSelect.value = repo; updateIcon(); syncVersionFields(true); return; }
+    const names = getRepoNames();
+    if (names[repo]) { selectRepo(repo); return; }
     const defaultLabel = repo.split("/").pop().replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
     const label = prompt("Название игры:", defaultLabel);
     if (!label) return;
@@ -896,14 +1016,48 @@ if (addRepoBtn) {
     savedConfigs.push(cfg);
     try { localStorage.setItem(modeKey("savedConfigs"), JSON.stringify(savedConfigs)); } catch {}
      try { await fetch(apiBase + "/api/configs", { method: "POST", headers: op(), body: JSON.stringify({ config: { ...cfg, mode: mode || localStorage.getItem('builder_mode') || 'main' } }) }); } catch {}
-    const opt = document.createElement("option");
-    opt.value = repo;
-    opt.textContent = label;
-    repoSelect.appendChild(opt);
-    repoSelect.value = repo;
+    selectRepo(repo);
     updateIcon();
     syncVersionFields(true);
   });
+}
+
+function renderCustomRepoList() {
+  const existing = document.getElementById("custom-repos-list");
+  if (existing) existing.remove();
+  const customConfigs = savedConfigs.filter(c => c.game_repository && c.id);
+  if (!customConfigs.length) return;
+  const dd = document.getElementById("config-dropdown");
+  if (!dd) return;
+  const list = document.createElement("div");
+  list.id = "custom-repos-list";
+  list.style.cssText = "padding:4px 10px;background:#0d1117;border-top:1px solid #21262d;font-size:12px";
+  for (const c of customConfigs) {
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex;align-items:center;padding:2px 0;gap:6px";
+    row.innerHTML = "<span style=\"color:#c9d1d9;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap\">" + esc(c.label) + "</span><span style=\"color:#8b949e;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px\">" + esc(c.game_repository) + "</span>";
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = "✕";
+    btn.title = "Удалить репозиторий";
+    btn.style.cssText = "background:none;border:none;color:#ff4444;cursor:pointer;font-size:11px;padding:2px 5px;border-radius:3px;flex-shrink:0";
+    btn.onmouseenter = () => { btn.style.background = "#ff444422"; };
+    btn.onmouseleave = () => { btn.style.background = "none"; };
+    btn.onclick = async (e) => {
+      e.stopPropagation();
+      if (!confirm(`Удалить репозиторий «${c.label}» и убрать из списка?`)) return;
+      const id = c.id;
+      savedConfigs = savedConfigs.filter(x => x.id !== id);
+      try { localStorage.setItem(modeKey("savedConfigs"), JSON.stringify(savedConfigs)); } catch {}
+      try { await fetch(`${apiBase}/api/configs`, { method: "POST", headers: op(), body: JSON.stringify({ id }) }); } catch {}
+      const opt = [...repoSelect.options].find(o => o.value === c.game_repository);
+      if (opt) repoSelect.removeChild(opt);
+      renderCustomRepoList();
+    };
+    row.appendChild(btn);
+    list.appendChild(row);
+  }
+  dd.parentNode.insertBefore(list, dd.nextSibling);
 }
 newBuildBtn.addEventListener("click", () => {
   closeDetail();
@@ -1762,14 +1916,18 @@ async function autoSaveConfig(fd) {
       }
     }
   } catch {}
+  renderCustomRepoList();
 }
 
 // Dropdown trigger click
 $("config-trigger").addEventListener("click", (e) => { e.stopPropagation(); toggleDropdown(); });
+$("repo-trigger").addEventListener("click", (e) => { e.stopPropagation(); toggleRepoDropdown(); });
 // Close on outside click
 document.addEventListener("click", e => {
   const dd = $("config-dropdown");
   if (dd && !dd.contains(e.target)) closeDropdown();
+  const rd = $("repo-dropdown");
+  if (rd && !rd.contains(e.target)) closeRepoDropdown();
 });
 
 // ----- Step buttons -----
@@ -1875,15 +2033,11 @@ showPageSpinner();
 
 function populateRepoSelect() {
   const names = getRepoNames();
-  const currentVal = repoSelect.value;
-  repoSelect.innerHTML = "";
-  for (const [repo, label] of Object.entries(names)) {
-    const opt = document.createElement("option");
-    opt.value = repo;
-    opt.textContent = label;
-    repoSelect.appendChild(opt);
-  }
-  if ([...repoSelect.options].some(o => o.value === currentVal)) repoSelect.value = currentVal;
+  const currentVal = repoSelect.value || "zey-win/plinko";
+  const label = names[currentVal] || currentVal.split("/").pop() || currentVal;
+  const triggerText = $("repo-trigger-text");
+  if (triggerText) triggerText.textContent = label;
+  repoSelect.value = currentVal;
 }
 
 function cleanupLocalStorage() {

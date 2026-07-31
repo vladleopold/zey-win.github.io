@@ -90,16 +90,11 @@ header h1 { font-size: clamp(20px, 4vw, 28px); font-weight: 700; }
 <label class="il">
 <span class="fw">
 <span class="fp">ИГРА:</span>
-<select name="game_repository" id="repo-select">
-<option value="zey-win/plinko">Plinko</option>
-<option value="zey-win/blackjack">Blackjack</option>
-<option value="zey-win/roulette">Roulette</option>
-<option value="zey-win/dragon-tiger">Dragon Tiger</option>
-<option value="zey-win/baccarat-tiger">Baccarat Tiger</option>
-<option value="zey-win/wheel-of-fortune">Wheel of Fortune</option>
-<option value="zey-win/Unstopable">Unstopable</option>
-<option value="zey-win/SlotSpot">SlotSpot</option>
-</select>
+<div style="position:relative;width:100%" id="repo-dropdown">
+<button type="button" id="repo-trigger" style="width:100%;text-align:left;padding:8px;background:#0d1117;border:1px solid #30363d;border-radius:4px;color:#c9d1d9;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between"><span id="repo-trigger-text">Plinko</span><span style="font-size:10px;color:#8b949e">▼</span></button>
+<div id="repo-list" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:999;background:#161b22;border:1px solid #30363d;border-radius:4px;max-height:300px;overflow-y:auto"></div>
+</div>
+<input type="hidden" name="game_repository" id="repo-select" value="zey-win/plinko">
 <button type="button" id="add-repo-btn" class="step-btn" title="Добавить репозиторий" style="flex-shrink:0;width:26px;height:26px;font-size:14px;line-height:1;padding:0">+</button>
 </span>
 </label>
