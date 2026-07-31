@@ -227,7 +227,7 @@ async function fetchVersionFromCiCd(pkg) {
 }
 
 async function loadArtifactVersions() {
-  const promises = runs.filter(r => r.status === "completed").map(async (r) => {
+  const promises = runs.filter(r => r.status === "completed" && r.conclusion === "success").map(async (r) => {
     if (runMeta[r.id]?.ver && runMeta[r.id].ver !== "1") return;
     var verName = "", verCode = "";
     try {
@@ -1134,12 +1134,14 @@ function showBuildInfo(runId) {
     }
     // fallback: parse displayTitle for app/pkg/format when params empty
     if (!params.app_name || !params.package_name) {
-      var parts = (run.displayTitle || "").split(" / ");
-      if (parts.length >= 2) {
-        if (!params.app_name) params.app_name = parts[0].replace(/^Android:\s*/i, "").trim();
-        if (!params.package_name) params.package_name = parts[1].trim();
+      var pt = parseTitle(run.displayTitle || run.name || "");
+      if (!params.app_name) params.app_name = pt.app;
+      if (!params.package_name) params.package_name = pt.pkg;
+      if (!params.build_format) {
+        var fParts = (run.displayTitle || run.name || "").replace(/^Android:\s*/i, "").replace(/^kupertino\s*/i, "").split("/").map(function(p) { return p.trim(); });
+        var fSuffix = (fParts[0] || "").match(/(apk_aab|apk|aab|ipa)$/i);
+        params.build_format = /^kupertino/i.test(run.displayTitle || "") ? "ipa" : fSuffix ? fSuffix[1].toLowerCase() : "apk";
       }
-      if (parts.length >= 3 && !params.build_format) params.build_format = parts[2].trim();
     }
     var isKupertino = /^kupertino/i.test(run.displayTitle || "");
     var iconUrl = meta.icon || resolveIcon(run) || "";
