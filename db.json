@@ -91,8 +91,8 @@
       "game_repository": "zey-win/Unstopable",
       "app_name": "Unstopable: Real Money",
       "package_name": "com.playsocialgames.chicken.road",
-      "version_name": "26",
-      "version_code": "26",
+      "version_name": "27",
+      "version_code": "27",
       "version_mode": "auto_next",
       "zeywin_sdk_version": "v3.9.37",
       "zeywin_api_key": "zw_f392b95e529f0f76d9d5df2baf18b6572607dfa30f19334d",
@@ -103,7 +103,7 @@
       "firebase_cfg": "ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiNDYwNjU3NDQzODE3IiwKICAgICJwcm9qZWN0X2lkIjogInVuc3RvcGFibGVyZWFsbW9uZXkiLAogICAgInN0b3JhZ2VfYnVja2V0IjogInVuc3RvcGFibGVyZWFsbW9uZXkuZmlyZWJhc2VzdG9yYWdlLmFwcCIKICB9LAogICJjbGllbnQiOiBbCiAgICB7CiAgICAgICJjbGllbnRfaW5mbyI6IHsKICAgICAgICAibW9iaWxlc2RrX2FwcF9pZCI6ICIxOjQ2MDY1NzQ0MzgxNzphbmRyb2lkOmZkYjMyMTk4MTBjNjEwNDNlNzAxNzgiLAogICAgICAgICJhbmRyb2lkX2NsaWVudF9pbmZvIjogewogICAgICAgICAgInBhY2thZ2VfbmFtZSI6ICJjb20ucGxheXNvY2lhbGdhbWVzLmNoaWNrZW4ucm9hZCIKICAgICAgICB9CiAgICAgIH0sCiAgICAgICJvYXV0aF9jbGllbnQiOiBbXSwKICAgICAgImFwaV9rZXkiOiBbCiAgICAgICAgewogICAgICAgICAgImN1cnJlbnRfa2V5IjogIkFJemFTeUNTNWVaclVMSlFNMkhRZkZFQVBzdnRvVlVZWU1XR1pHMCIKICAgICAgICB9CiAgICAgIF0sCiAgICAgICJzZXJ2aWNlcyI6IHsKICAgICAgICAiYXBwaW52aXRlX3NlcnZpY2UiOiB7CiAgICAgICAgICAib3RoZXJfcGxhdGZvcm1fb2F1dGhfY2xpZW50IjogW10KICAgICAgICB9CiAgICAgIH0KICAgIH0KICBdLAogICJjb25maWd1cmF0aW9uX3ZlcnNpb24iOiAiMSIKfQ==",
       "icon_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__Unstopable.png",
       "icon_data_url": "",
-      "updated_at": "2026-07-31T07:27:37.554Z",
+      "updated_at": "2026-07-31T07:34:52.705Z",
       "icon_path": "",
       "firebase_json_base64": "ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiNDYwNjU3NDQzODE3IiwKICAgICJwcm9qZWN0X2lkIjogInVuc3RvcGFibGVyZWFsbW9uZXkiLAogICAgInN0b3JhZ2VfYnVja2V0IjogInVuc3RvcGFibGVyZWFsbW9uZXkuZmlyZWJhc2VzdG9yYWdlLmFwcCIKICB9LAogICJjbGllbnQiOiBbCiAgICB7CiAgICAgICJjbGllbnRfaW5mbyI6IHsKICAgICAgICAibW9iaWxlc2RrX2FwcF9pZCI6ICIxOjQ2MDY1NzQ0MzgxNzphbmRyb2lkOmZkYjMyMTk4MTBjNjEwNDNlNzAxNzgiLAogICAgICAgICJhbmRyb2lkX2NsaWVudF9pbmZvIjogewogICAgICAgICAgInBhY2thZ2VfbmFtZSI6ICJjb20ucGxheXNvY2lhbGdhbWVzLmNoaWNrZW4ucm9hZCIKICAgICAgICB9CiAgICAgIH0sCiAgICAgICJvYXV0aF9jbGllbnQiOiBbXSwKICAgICAgImFwaV9rZXkiOiBbCiAgICAgICAgewogICAgICAgICAgImN1cnJlbnRfa2V5IjogIkFJemFTeUNTNWVaclVMSlFNMkhRZkZFQVBzdnRvVlVZWU1XR1pHMCIKICAgICAgICB9CiAgICAgIF0sCiAgICAgICJzZXJ2aWNlcyI6IHsKICAgICAgICAiYXBwaW52aXRlX3NlcnZpY2UiOiB7CiAgICAgICAgICAib3RoZXJfcGxhdGZvcm1fb2F1dGhfY2xpZW50IjogW10KICAgICAgICB9CiAgICAgIH0KICAgIH0KICBdLAogICJjb25maWd1cmF0aW9uX3ZlcnNpb24iOiAiMSIKfQ==",
       "mode": "main"
@@ -398,7 +398,7 @@
     {
       "package_name": "com.playsocialgames.chicken.road",
       "icon_data_url": "https://raw.githubusercontent.com/zey-win/zey-win.github.io/main/repo-icons/zey-win__Unstopable.png",
-      "updated_at": "2026-07-31T07:27:37.554Z"
+      "updated_at": "2026-07-31T07:34:52.706Z"
     },
     {
       "package_name": "com.socgame.black",
@@ -1640,20 +1640,7 @@
       "status": "queued",
       "created_at": "2026-07-25T20:47:14.269Z",
       "updated_at": "2026-07-25T20:47:14.269Z"
-    },
-    {
-      "run_id": 30613306332,
-      "request_id": "builder-ms8mn8kh",
-      "package_name": "com.playsocialgames.chicken.road",
-      "app_name": "Unstopable: Real Money",
-      "game_repository": "zey-win/Unstopable",
-      "build_format": "apk_aab",
-      "version_name": "27",
-      "version_code": "27",
-      "status": "queued",
-      "created_at": "2026-07-31T07:34:46.533Z",
-      "updated_at": "2026-07-31T07:34:46.533Z"
     }
   ],
-  "updated_at": "2026-07-31T07:34:46.533Z"
+  "updated_at": "2026-07-31T07:34:52.706Z"
 }
